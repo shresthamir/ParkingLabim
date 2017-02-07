@@ -1,0 +1,9 @@
+.vs
+mscorlib.pdb
+packages
+Parking Management System Setup
+ParkingManagement\bin
+ParkingManagement\obj
+ParkingService\bin
+ParkingService\obj
+RawPrintFunctions

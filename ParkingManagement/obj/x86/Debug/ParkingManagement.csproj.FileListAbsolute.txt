@@ -1,0 +1,775 @@
+C:\Users\Admin\documents\visual studio 2013\Projects\ParkingManagement\ParkingManagement\bin\x86\Debug\ParkingManagement.exe
+C:\Users\Admin\documents\visual studio 2013\Projects\ParkingManagement\ParkingManagement\bin\x86\Debug\Xceed.Wpf.AvalonDock.dll
+C:\Users\Admin\documents\visual studio 2013\Projects\ParkingManagement\ParkingManagement\bin\x86\Debug\ParkingManagement.exe.config
+C:\Users\Admin\documents\visual studio 2013\Projects\ParkingManagement\ParkingManagement\bin\x86\Debug\ParkingManagement.pdb
+C:\Users\Admin\documents\visual studio 2013\Projects\ParkingManagement\ParkingManagement\bin\x86\Debug\Microsoft.Expression.Interactions.dll
+C:\Users\Admin\documents\visual studio 2013\Projects\ParkingManagement\ParkingManagement\bin\x86\Debug\Microsoft.Windows.Shell.dll
+C:\Users\Admin\documents\visual studio 2013\Projects\ParkingManagement\ParkingManagement\bin\x86\Debug\RibbonControlsLibrary.dll
+C:\Users\Admin\documents\visual studio 2013\Projects\ParkingManagement\ParkingManagement\bin\x86\Debug\System.Windows.Interactivity.dll
+C:\Users\Admin\documents\visual studio 2013\Projects\ParkingManagement\ParkingManagement\bin\x86\Debug\Xceed.Wpf.AvalonDock.Themes.Metro.dll
+C:\Users\Admin\documents\visual studio 2013\Projects\ParkingManagement\ParkingManagement\bin\x86\Debug\Xceed.Wpf.Toolkit.dll
+C:\Users\Admin\documents\visual studio 2013\Projects\ParkingManagement\ParkingManagement\bin\x86\Debug\Zen.Barcode.dll
+C:\Users\Admin\documents\visual studio 2013\Projects\ParkingManagement\ParkingManagement\bin\x86\Debug\Microsoft.Expression.Interactions.xml
+C:\Users\Admin\documents\visual studio 2013\Projects\ParkingManagement\ParkingManagement\bin\x86\Debug\System.Windows.Interactivity.xml
+C:\Users\Admin\documents\visual studio 2013\Projects\ParkingManagement\ParkingManagement\bin\x86\Debug\de\Microsoft.Expression.Interactions.resources.dll
+C:\Users\Admin\documents\visual studio 2013\Projects\ParkingManagement\ParkingManagement\bin\x86\Debug\en\Microsoft.Expression.Interactions.resources.dll
+C:\Users\Admin\documents\visual studio 2013\Projects\ParkingManagement\ParkingManagement\bin\x86\Debug\es\Microsoft.Expression.Interactions.resources.dll
+C:\Users\Admin\documents\visual studio 2013\Projects\ParkingManagement\ParkingManagement\bin\x86\Debug\fr\Microsoft.Expression.Interactions.resources.dll
+C:\Users\Admin\documents\visual studio 2013\Projects\ParkingManagement\ParkingManagement\bin\x86\Debug\it\Microsoft.Expression.Interactions.resources.dll
+C:\Users\Admin\documents\visual studio 2013\Projects\ParkingManagement\ParkingManagement\bin\x86\Debug\ja\Microsoft.Expression.Interactions.resources.dll
+C:\Users\Admin\documents\visual studio 2013\Projects\ParkingManagement\ParkingManagement\bin\x86\Debug\ko\Microsoft.Expression.Interactions.resources.dll
+C:\Users\Admin\documents\visual studio 2013\Projects\ParkingManagement\ParkingManagement\bin\x86\Debug\zh-Hans\Microsoft.Expression.Interactions.resources.dll
+C:\Users\Admin\documents\visual studio 2013\Projects\ParkingManagement\ParkingManagement\bin\x86\Debug\zh-Hant\Microsoft.Expression.Interactions.resources.dll
+C:\Users\Admin\documents\visual studio 2013\Projects\ParkingManagement\ParkingManagement\bin\x86\Debug\de\System.Windows.Interactivity.resources.dll
+C:\Users\Admin\documents\visual studio 2013\Projects\ParkingManagement\ParkingManagement\bin\x86\Debug\en\System.Windows.Interactivity.resources.dll
+C:\Users\Admin\documents\visual studio 2013\Projects\ParkingManagement\ParkingManagement\bin\x86\Debug\es\System.Windows.Interactivity.resources.dll
+C:\Users\Admin\documents\visual studio 2013\Projects\ParkingManagement\ParkingManagement\bin\x86\Debug\fr\System.Windows.Interactivity.resources.dll
+C:\Users\Admin\documents\visual studio 2013\Projects\ParkingManagement\ParkingManagement\bin\x86\Debug\it\System.Windows.Interactivity.resources.dll
+C:\Users\Admin\documents\visual studio 2013\Projects\ParkingManagement\ParkingManagement\bin\x86\Debug\ja\System.Windows.Interactivity.resources.dll
+C:\Users\Admin\documents\visual studio 2013\Projects\ParkingManagement\ParkingManagement\bin\x86\Debug\ko\System.Windows.Interactivity.resources.dll
+C:\Users\Admin\documents\visual studio 2013\Projects\ParkingManagement\ParkingManagement\bin\x86\Debug\zh-Hans\System.Windows.Interactivity.resources.dll
+C:\Users\Admin\documents\visual studio 2013\Projects\ParkingManagement\ParkingManagement\bin\x86\Debug\zh-Hant\System.Windows.Interactivity.resources.dll
+C:\Users\Admin\documents\visual studio 2013\Projects\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Parking Out\ucParkingOut.baml
+C:\Users\Admin\documents\visual studio 2013\Projects\ParkingManagement\ParkingManagement\obj\x86\Debug\MainWindow.baml
+C:\Users\Admin\documents\visual studio 2013\Projects\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Master\Rate\ucRate.g.cs
+C:\Users\Admin\documents\visual studio 2013\Projects\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Parking Out\ucParkingOut.g.cs
+C:\Users\Admin\documents\visual studio 2013\Projects\ParkingManagement\ParkingManagement\obj\x86\Debug\MainWindow.g.cs
+C:\Users\Admin\documents\visual studio 2013\Projects\ParkingManagement\ParkingManagement\obj\x86\Debug\App.g.cs
+C:\Users\Admin\documents\visual studio 2013\Projects\ParkingManagement\ParkingManagement\obj\x86\Debug\ParkingManagement_MarkupCompile.cache
+C:\Users\Admin\documents\visual studio 2013\Projects\ParkingManagement\ParkingManagement\obj\x86\Debug\ParkingManagement_MarkupCompile.lref
+C:\Users\Admin\documents\visual studio 2013\Projects\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Master\Rate\ucRate.baml
+C:\Users\Admin\documents\visual studio 2013\Projects\ParkingManagement\ParkingManagement\obj\x86\Debug\ParkingManagement.g.resources
+C:\Users\Admin\documents\visual studio 2013\Projects\ParkingManagement\ParkingManagement\obj\x86\Debug\ParkingManagement.Properties.Resources.resources
+C:\Users\Admin\documents\visual studio 2013\Projects\ParkingManagement\ParkingManagement\obj\x86\Debug\ParkingManagement.csproj.GenerateResource.Cache
+C:\Users\Admin\documents\visual studio 2013\Projects\ParkingManagement\ParkingManagement\obj\x86\Debug\ParkingManagement.exe
+C:\Users\Admin\documents\visual studio 2013\Projects\ParkingManagement\ParkingManagement\obj\x86\Debug\ParkingManagement.pdb
+C:\Users\Admin\documents\visual studio 2013\Projects\ParkingManagement\ParkingManagement\obj\x86\Debug\ParkingManagement.csprojResolveAssemblyReference.cache
+G:\ParkingManagement\ParkingManagement\bin\x86\Debug\ParkingManagement.exe.config
+G:\ParkingManagement\ParkingManagement\obj\x86\Debug\ParkingManagement.exe
+G:\ParkingManagement\ParkingManagement\obj\x86\Debug\ParkingManagement.pdb
+G:\ParkingManagement\ParkingManagement\bin\x86\Debug\ParkingManagement.exe
+G:\ParkingManagement\ParkingManagement\bin\x86\Debug\ParkingManagement.pdb
+G:\ParkingManagement\ParkingManagement\bin\x86\Debug\Microsoft.Expression.Interactions.dll
+G:\ParkingManagement\ParkingManagement\bin\x86\Debug\RawPrintFunctions.dll
+G:\ParkingManagement\ParkingManagement\bin\x86\Debug\System.Windows.Interactivity.dll
+G:\ParkingManagement\ParkingManagement\bin\x86\Debug\RawPrintFunctions.pdb
+G:\ParkingManagement\ParkingManagement\bin\x86\Debug\Microsoft.Expression.Interactions.xml
+G:\ParkingManagement\ParkingManagement\bin\x86\Debug\System.Windows.Interactivity.xml
+G:\ParkingManagement\ParkingManagement\bin\x86\Debug\de\Microsoft.Expression.Interactions.resources.dll
+G:\ParkingManagement\ParkingManagement\bin\x86\Debug\en\Microsoft.Expression.Interactions.resources.dll
+G:\ParkingManagement\ParkingManagement\bin\x86\Debug\es\Microsoft.Expression.Interactions.resources.dll
+G:\ParkingManagement\ParkingManagement\bin\x86\Debug\fr\Microsoft.Expression.Interactions.resources.dll
+G:\ParkingManagement\ParkingManagement\bin\x86\Debug\it\Microsoft.Expression.Interactions.resources.dll
+G:\ParkingManagement\ParkingManagement\bin\x86\Debug\ja\Microsoft.Expression.Interactions.resources.dll
+G:\ParkingManagement\ParkingManagement\bin\x86\Debug\ko\Microsoft.Expression.Interactions.resources.dll
+G:\ParkingManagement\ParkingManagement\bin\x86\Debug\zh-Hans\Microsoft.Expression.Interactions.resources.dll
+G:\ParkingManagement\ParkingManagement\bin\x86\Debug\zh-Hant\Microsoft.Expression.Interactions.resources.dll
+G:\ParkingManagement\ParkingManagement\bin\x86\Debug\de\System.Windows.Interactivity.resources.dll
+G:\ParkingManagement\ParkingManagement\bin\x86\Debug\en\System.Windows.Interactivity.resources.dll
+G:\ParkingManagement\ParkingManagement\bin\x86\Debug\es\System.Windows.Interactivity.resources.dll
+G:\ParkingManagement\ParkingManagement\bin\x86\Debug\fr\System.Windows.Interactivity.resources.dll
+G:\ParkingManagement\ParkingManagement\bin\x86\Debug\it\System.Windows.Interactivity.resources.dll
+G:\ParkingManagement\ParkingManagement\bin\x86\Debug\ja\System.Windows.Interactivity.resources.dll
+G:\ParkingManagement\ParkingManagement\bin\x86\Debug\ko\System.Windows.Interactivity.resources.dll
+G:\ParkingManagement\ParkingManagement\bin\x86\Debug\zh-Hans\System.Windows.Interactivity.resources.dll
+G:\ParkingManagement\ParkingManagement\bin\x86\Debug\zh-Hant\System.Windows.Interactivity.resources.dll
+G:\ParkingManagement\ParkingManagement\obj\x86\Debug\ParkingManagement.csprojResolveAssemblyReference.cache
+G:\ParkingManagement\ParkingManagement\obj\x86\Debug\MainWindow.baml
+G:\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Master\Rate\ucRate.g.cs
+G:\ParkingManagement\ParkingManagement\obj\x86\Debug\MainWindow.g.cs
+G:\ParkingManagement\ParkingManagement\obj\x86\Debug\App.g.cs
+G:\ParkingManagement\ParkingManagement\obj\x86\Debug\ParkingManagement_MarkupCompile.cache
+G:\ParkingManagement\ParkingManagement\obj\x86\Debug\ParkingManagement_MarkupCompile.lref
+G:\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Master\Rate\ucRate.baml
+G:\ParkingManagement\ParkingManagement\obj\x86\Debug\ParkingManagement.g.resources
+G:\ParkingManagement\ParkingManagement\obj\x86\Debug\ParkingManagement.Properties.Resources.resources
+G:\ParkingManagement\ParkingManagement\obj\x86\Debug\ParkingManagement.csproj.GenerateResource.Cache
+J:\ParkingManagement\ParkingManagement\bin\x86\Debug\ParkingManagement.exe.config
+J:\ParkingManagement\ParkingManagement\obj\x86\Debug\ParkingManagement.exe
+J:\ParkingManagement\ParkingManagement\obj\x86\Debug\ParkingManagement.pdb
+J:\ParkingManagement\ParkingManagement\obj\x86\Debug\ParkingManagement.csprojResolveAssemblyReference.cache
+J:\ParkingManagement\ParkingManagement\obj\x86\Debug\MainWindow.baml
+J:\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Master\Rate\ucRate.g.cs
+J:\ParkingManagement\ParkingManagement\obj\x86\Debug\MainWindow.g.cs
+J:\ParkingManagement\ParkingManagement\obj\x86\Debug\App.g.cs
+J:\ParkingManagement\ParkingManagement\obj\x86\Debug\ParkingManagement_MarkupCompile.cache
+J:\ParkingManagement\ParkingManagement\obj\x86\Debug\ParkingManagement_MarkupCompile.lref
+J:\ParkingManagement\ParkingManagement\bin\x86\Debug\ParkingManagement.exe
+J:\ParkingManagement\ParkingManagement\bin\x86\Debug\ParkingManagement.pdb
+J:\ParkingManagement\ParkingManagement\bin\x86\Debug\Microsoft.Expression.Interactions.dll
+J:\ParkingManagement\ParkingManagement\bin\x86\Debug\RawPrintFunctions.dll
+J:\ParkingManagement\ParkingManagement\bin\x86\Debug\System.Windows.Interactivity.dll
+J:\ParkingManagement\ParkingManagement\bin\x86\Debug\RawPrintFunctions.pdb
+J:\ParkingManagement\ParkingManagement\bin\x86\Debug\Microsoft.Expression.Interactions.xml
+J:\ParkingManagement\ParkingManagement\bin\x86\Debug\System.Windows.Interactivity.xml
+J:\ParkingManagement\ParkingManagement\bin\x86\Debug\de\Microsoft.Expression.Interactions.resources.dll
+J:\ParkingManagement\ParkingManagement\bin\x86\Debug\en\Microsoft.Expression.Interactions.resources.dll
+J:\ParkingManagement\ParkingManagement\bin\x86\Debug\es\Microsoft.Expression.Interactions.resources.dll
+J:\ParkingManagement\ParkingManagement\bin\x86\Debug\fr\Microsoft.Expression.Interactions.resources.dll
+J:\ParkingManagement\ParkingManagement\bin\x86\Debug\it\Microsoft.Expression.Interactions.resources.dll
+J:\ParkingManagement\ParkingManagement\bin\x86\Debug\ja\Microsoft.Expression.Interactions.resources.dll
+J:\ParkingManagement\ParkingManagement\bin\x86\Debug\ko\Microsoft.Expression.Interactions.resources.dll
+J:\ParkingManagement\ParkingManagement\bin\x86\Debug\zh-Hans\Microsoft.Expression.Interactions.resources.dll
+J:\ParkingManagement\ParkingManagement\bin\x86\Debug\zh-Hant\Microsoft.Expression.Interactions.resources.dll
+J:\ParkingManagement\ParkingManagement\bin\x86\Debug\de\System.Windows.Interactivity.resources.dll
+J:\ParkingManagement\ParkingManagement\bin\x86\Debug\en\System.Windows.Interactivity.resources.dll
+J:\ParkingManagement\ParkingManagement\bin\x86\Debug\es\System.Windows.Interactivity.resources.dll
+J:\ParkingManagement\ParkingManagement\bin\x86\Debug\fr\System.Windows.Interactivity.resources.dll
+J:\ParkingManagement\ParkingManagement\bin\x86\Debug\it\System.Windows.Interactivity.resources.dll
+J:\ParkingManagement\ParkingManagement\bin\x86\Debug\ja\System.Windows.Interactivity.resources.dll
+J:\ParkingManagement\ParkingManagement\bin\x86\Debug\ko\System.Windows.Interactivity.resources.dll
+J:\ParkingManagement\ParkingManagement\bin\x86\Debug\zh-Hans\System.Windows.Interactivity.resources.dll
+J:\ParkingManagement\ParkingManagement\bin\x86\Debug\zh-Hant\System.Windows.Interactivity.resources.dll
+J:\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Master\Rate\ucRate.baml
+J:\ParkingManagement\ParkingManagement\obj\x86\Debug\ParkingManagement.g.resources
+J:\ParkingManagement\ParkingManagement\obj\x86\Debug\ParkingManagement.Properties.Resources.resources
+J:\ParkingManagement\ParkingManagement\obj\x86\Debug\ParkingManagement.csproj.GenerateResource.Cache
+J:\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Transaction\Parking Out\ucParkingOut.baml
+J:\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Master\Vehicle Type\ucVehicleType.g.cs
+J:\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Transaction\Parking Out\ucParkingOut.g.cs
+J:\ParkingManagement\ParkingManagement\obj\x86\Debug\GeneratedInternalTypeHelper.g.cs
+J:\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Master\Vehicle Type\ucVehicleType.baml
+J:\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Transaction\Parking In\ucParkingIn.g.cs
+J:\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Transaction\Parking In\ucParkingIn.baml
+J:\ParkingManagement\ParkingManagement\bin\x86\Debug\DateFunction.dll
+J:\ParkingManagement\ParkingManagement\bin\x86\Debug\DateFunction.pdb
+J:\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Master\Party\ucParty.g.cs
+J:\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Master\Party\ucParty.baml
+J:\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\File\ChangePassword.baml
+J:\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\File\Login.baml
+J:\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\File\PrinterSetting.baml
+J:\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\File\ChangePassword.g.cs
+J:\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\File\Login.g.cs
+J:\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\File\PrinterSetting.g.cs
+G:\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\File\ChangePassword.baml
+G:\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\File\Login.baml
+G:\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\File\PrinterSetting.baml
+G:\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Transaction\Parking Out\ucParkingOut.baml
+G:\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\File\ChangePassword.g.cs
+G:\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\File\Login.g.cs
+G:\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\File\PrinterSetting.g.cs
+G:\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Master\Party\ucParty.g.cs
+G:\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Master\User Setting\UserSetting.g.cs
+G:\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Master\Vehicle Type\ucVehicleType.g.cs
+G:\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Transaction\Parking Out\ucParkingOut.g.cs
+G:\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Transaction\Parking In\ucParkingIn.g.cs
+G:\ParkingManagement\ParkingManagement\obj\x86\Debug\GeneratedInternalTypeHelper.g.cs
+G:\ParkingManagement\ParkingManagement\bin\x86\Debug\DateFunction.dll
+G:\ParkingManagement\ParkingManagement\bin\x86\Debug\DateFunction.pdb
+G:\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Master\Party\ucParty.baml
+G:\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Master\User Setting\UserSetting.baml
+G:\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Master\Vehicle Type\ucVehicleType.baml
+G:\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Transaction\Parking In\ucParkingIn.baml
+G:\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Transaction\Cash Receipt\CashReceipt.g.cs
+G:\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Transaction\Cash Receipt\CashReceipt.baml
+D:\ParkingManagement\ParkingManagement\bin\x86\Debug\ParkingManagement.exe.config
+D:\ParkingManagement\ParkingManagement\obj\x86\Debug\ParkingManagement.exe
+D:\ParkingManagement\ParkingManagement\obj\x86\Debug\ParkingManagement.pdb
+D:\ParkingManagement\ParkingManagement\obj\x86\Debug\ParkingManagement.csprojResolveAssemblyReference.cache
+D:\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\File\ChangePassword.baml
+D:\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\File\Login.baml
+D:\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\File\PrinterSetting.baml
+D:\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Transaction\Parking Out\ucParkingOut.baml
+D:\ParkingManagement\ParkingManagement\obj\x86\Debug\MainWindow.baml
+D:\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\File\ChangePassword.g.cs
+D:\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\File\Login.g.cs
+D:\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\File\PrinterSetting.g.cs
+D:\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Master\Party\ucParty.g.cs
+D:\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Master\Rate\ucRate.g.cs
+D:\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Master\User Setting\UserSetting.g.cs
+D:\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Master\Vehicle Type\ucVehicleType.g.cs
+D:\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Transaction\Cash Receipt\CashReceipt.g.cs
+D:\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Transaction\Parking Out\ucParkingOut.g.cs
+D:\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Transaction\Parking In\ucParkingIn.g.cs
+D:\ParkingManagement\ParkingManagement\obj\x86\Debug\MainWindow.g.cs
+D:\ParkingManagement\ParkingManagement\obj\x86\Debug\App.g.cs
+D:\ParkingManagement\ParkingManagement\obj\x86\Debug\GeneratedInternalTypeHelper.g.cs
+D:\ParkingManagement\ParkingManagement\obj\x86\Debug\ParkingManagement_MarkupCompile.cache
+D:\ParkingManagement\ParkingManagement\obj\x86\Debug\ParkingManagement_MarkupCompile.lref
+D:\ParkingManagement\ParkingManagement\bin\x86\Debug\ParkingManagement.exe
+D:\ParkingManagement\ParkingManagement\bin\x86\Debug\ParkingManagement.pdb
+D:\ParkingManagement\ParkingManagement\bin\x86\Debug\Microsoft.Expression.Interactions.dll
+D:\ParkingManagement\ParkingManagement\bin\x86\Debug\RawPrintFunctions.dll
+D:\ParkingManagement\ParkingManagement\bin\x86\Debug\System.Windows.Interactivity.dll
+D:\ParkingManagement\ParkingManagement\bin\x86\Debug\RawPrintFunctions.pdb
+D:\ParkingManagement\ParkingManagement\bin\x86\Debug\DateFunction.pdb
+D:\ParkingManagement\ParkingManagement\bin\x86\Debug\Microsoft.Expression.Interactions.xml
+D:\ParkingManagement\ParkingManagement\bin\x86\Debug\System.Windows.Interactivity.xml
+D:\ParkingManagement\ParkingManagement\bin\x86\Debug\de\Microsoft.Expression.Interactions.resources.dll
+D:\ParkingManagement\ParkingManagement\bin\x86\Debug\en\Microsoft.Expression.Interactions.resources.dll
+D:\ParkingManagement\ParkingManagement\bin\x86\Debug\es\Microsoft.Expression.Interactions.resources.dll
+D:\ParkingManagement\ParkingManagement\bin\x86\Debug\fr\Microsoft.Expression.Interactions.resources.dll
+D:\ParkingManagement\ParkingManagement\bin\x86\Debug\it\Microsoft.Expression.Interactions.resources.dll
+D:\ParkingManagement\ParkingManagement\bin\x86\Debug\ja\Microsoft.Expression.Interactions.resources.dll
+D:\ParkingManagement\ParkingManagement\bin\x86\Debug\ko\Microsoft.Expression.Interactions.resources.dll
+D:\ParkingManagement\ParkingManagement\bin\x86\Debug\zh-Hans\Microsoft.Expression.Interactions.resources.dll
+D:\ParkingManagement\ParkingManagement\bin\x86\Debug\zh-Hant\Microsoft.Expression.Interactions.resources.dll
+D:\ParkingManagement\ParkingManagement\bin\x86\Debug\de\System.Windows.Interactivity.resources.dll
+D:\ParkingManagement\ParkingManagement\bin\x86\Debug\en\System.Windows.Interactivity.resources.dll
+D:\ParkingManagement\ParkingManagement\bin\x86\Debug\es\System.Windows.Interactivity.resources.dll
+D:\ParkingManagement\ParkingManagement\bin\x86\Debug\fr\System.Windows.Interactivity.resources.dll
+D:\ParkingManagement\ParkingManagement\bin\x86\Debug\it\System.Windows.Interactivity.resources.dll
+D:\ParkingManagement\ParkingManagement\bin\x86\Debug\ja\System.Windows.Interactivity.resources.dll
+D:\ParkingManagement\ParkingManagement\bin\x86\Debug\ko\System.Windows.Interactivity.resources.dll
+D:\ParkingManagement\ParkingManagement\bin\x86\Debug\zh-Hans\System.Windows.Interactivity.resources.dll
+D:\ParkingManagement\ParkingManagement\bin\x86\Debug\zh-Hant\System.Windows.Interactivity.resources.dll
+D:\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Master\Party\ucParty.baml
+D:\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Master\Rate\ucRate.baml
+D:\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Master\User Setting\UserSetting.baml
+D:\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Master\Vehicle Type\ucVehicleType.baml
+D:\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Transaction\Cash Receipt\CashReceipt.baml
+D:\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Transaction\Parking In\ucParkingIn.baml
+D:\ParkingManagement\ParkingManagement\obj\x86\Debug\ParkingManagement.g.resources
+D:\ParkingManagement\ParkingManagement\obj\x86\Debug\ParkingManagement.Properties.Resources.resources
+D:\ParkingManagement\ParkingManagement\obj\x86\Debug\ParkingManagement.csproj.GenerateResource.Cache
+D:\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Transaction\Parking In\Ticket format\PrintTicket.g.cs
+D:\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Transaction\Parking In\Ticket format\PrintTicket.baml
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\bin\x86\Debug\ParkingManagement.exe.config
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\bin\x86\Debug\ParkingManagement.exe
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\bin\x86\Debug\ParkingManagement.pdb
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\bin\x86\Debug\Microsoft.Expression.Interactions.dll
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\bin\x86\Debug\Microsoft.Windows.Shell.dll
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\bin\x86\Debug\RawPrintFunctions.dll
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\bin\x86\Debug\System.Windows.Interactivity.dll
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\bin\x86\Debug\Xceed.Wpf.AvalonDock.dll
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\bin\x86\Debug\Xceed.Wpf.AvalonDock.Themes.Metro.dll
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\bin\x86\Debug\RawPrintFunctions.pdb
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\bin\x86\Debug\Microsoft.Expression.Interactions.xml
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\bin\x86\Debug\System.Windows.Interactivity.xml
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\bin\x86\Debug\de\Microsoft.Expression.Interactions.resources.dll
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\bin\x86\Debug\en\Microsoft.Expression.Interactions.resources.dll
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\bin\x86\Debug\es\Microsoft.Expression.Interactions.resources.dll
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\bin\x86\Debug\fr\Microsoft.Expression.Interactions.resources.dll
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\bin\x86\Debug\it\Microsoft.Expression.Interactions.resources.dll
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\bin\x86\Debug\ja\Microsoft.Expression.Interactions.resources.dll
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\bin\x86\Debug\ko\Microsoft.Expression.Interactions.resources.dll
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\bin\x86\Debug\zh-Hans\Microsoft.Expression.Interactions.resources.dll
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\bin\x86\Debug\zh-Hant\Microsoft.Expression.Interactions.resources.dll
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\bin\x86\Debug\de\System.Windows.Interactivity.resources.dll
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\bin\x86\Debug\en\System.Windows.Interactivity.resources.dll
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\bin\x86\Debug\es\System.Windows.Interactivity.resources.dll
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\bin\x86\Debug\fr\System.Windows.Interactivity.resources.dll
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\bin\x86\Debug\it\System.Windows.Interactivity.resources.dll
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\bin\x86\Debug\ja\System.Windows.Interactivity.resources.dll
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\bin\x86\Debug\ko\System.Windows.Interactivity.resources.dll
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\bin\x86\Debug\zh-Hans\System.Windows.Interactivity.resources.dll
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\bin\x86\Debug\zh-Hant\System.Windows.Interactivity.resources.dll
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\ParkingManagement.csprojResolveAssemblyReference.cache
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\File\ChangePassword.baml
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\File\Login.baml
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\File\PrinterSetting.baml
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Reports\Cash Collection Reports\CCVehicleWise.baml
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Reports\ucReportViewer.baml
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Transaction\Parking Out\ucParkingOut.baml
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\MainWindow.baml
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\File\ChangePassword.g.cs
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\File\Login.g.cs
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\File\PrinterSetting.g.cs
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Master\Party\ucParty.g.cs
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Master\Rate\ucRate.g.cs
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Master\User Setting\UserSetting.g.cs
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Master\Vehicle Type\ucVehicleType.g.cs
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Reports\Cash Collection Reports\CCVehicleWise.g.cs
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Reports\ucReportViewer.g.cs
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Transaction\Cash Receipt\CashReceipt.g.cs
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Transaction\Parking In\Ticket format\PrintTicket.g.cs
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Transaction\Parking Out\ucParkingOut.g.cs
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Transaction\Parking In\ucParkingIn.g.cs
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\MainWindow.g.cs
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\App.g.cs
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\GeneratedInternalTypeHelper.g.cs
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\ParkingManagement_MarkupCompile.cache
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\ParkingManagement_MarkupCompile.lref
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Master\Party\ucParty.baml
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Master\Rate\ucRate.baml
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Master\User Setting\UserSetting.baml
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Master\Vehicle Type\ucVehicleType.baml
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Transaction\Cash Receipt\CashReceipt.baml
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Transaction\Parking In\Ticket format\PrintTicket.baml
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Transaction\Parking In\ucParkingIn.baml
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\ParkingManagement.g.resources
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\ParkingManagement.Properties.Resources.resources
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\ParkingManagement.csproj.GenerateResource.Cache
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\ParkingManagement.exe
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\ParkingManagement.pdb
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\bin\x86\Debug\DateFunction.dll
+C:\Users\Admin\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\bin\x86\Debug\DateFunction.pdb
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\bin\x86\Debug\ParkingManagement.exe.config
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\ParkingManagement.exe
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\ParkingManagement.pdb
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\bin\x86\Debug\ParkingManagement.exe
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\bin\x86\Debug\ParkingManagement.pdb
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\bin\x86\Debug\Microsoft.Expression.Interactions.dll
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\bin\x86\Debug\RawPrintFunctions.dll
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\bin\x86\Debug\System.Windows.Interactivity.dll
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\bin\x86\Debug\WPFCustomToolKit.dll
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\bin\x86\Debug\RawPrintFunctions.pdb
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\bin\x86\Debug\DateFunction.pdb
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\bin\x86\Debug\Microsoft.Expression.Interactions.xml
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\bin\x86\Debug\System.Windows.Interactivity.xml
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\bin\x86\Debug\WPFCustomToolKit.pdb
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\bin\x86\Debug\de\Microsoft.Expression.Interactions.resources.dll
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\bin\x86\Debug\en\Microsoft.Expression.Interactions.resources.dll
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\bin\x86\Debug\es\Microsoft.Expression.Interactions.resources.dll
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\bin\x86\Debug\fr\Microsoft.Expression.Interactions.resources.dll
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\bin\x86\Debug\it\Microsoft.Expression.Interactions.resources.dll
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\bin\x86\Debug\ja\Microsoft.Expression.Interactions.resources.dll
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\bin\x86\Debug\ko\Microsoft.Expression.Interactions.resources.dll
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\bin\x86\Debug\zh-Hans\Microsoft.Expression.Interactions.resources.dll
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\bin\x86\Debug\zh-Hant\Microsoft.Expression.Interactions.resources.dll
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\bin\x86\Debug\de\System.Windows.Interactivity.resources.dll
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\bin\x86\Debug\en\System.Windows.Interactivity.resources.dll
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\bin\x86\Debug\es\System.Windows.Interactivity.resources.dll
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\bin\x86\Debug\fr\System.Windows.Interactivity.resources.dll
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\bin\x86\Debug\it\System.Windows.Interactivity.resources.dll
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\bin\x86\Debug\ja\System.Windows.Interactivity.resources.dll
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\bin\x86\Debug\ko\System.Windows.Interactivity.resources.dll
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\bin\x86\Debug\zh-Hans\System.Windows.Interactivity.resources.dll
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\bin\x86\Debug\zh-Hant\System.Windows.Interactivity.resources.dll
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\ParkingManagement.csprojResolveAssemblyReference.cache
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\File\ChangePassword.baml
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\File\Login.baml
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\File\PrinterSetting.baml
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Reports\Cash Collection Reports\CCVehicleWise.baml
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Reports\ucReportViewer.baml
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Transaction\Parking Out\ucParkingOut.baml
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\MainWindow.baml
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\File\ChangePassword.g.cs
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\File\Login.g.cs
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\File\PrinterSetting.g.cs
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Master\Party\ucParty.g.cs
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Master\Rate\ucRate.g.cs
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Master\User Setting\UserSetting.g.cs
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Master\Vehicle Type\ucVehicleType.g.cs
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Reports\Cash Collection Reports\CCVehicleWise.g.cs
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Reports\ucDailySalesReport.g.cs
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Reports\ucReportViewer.g.cs
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Transaction\Cash Receipt\CashReceipt.g.cs
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Transaction\Parking In\Ticket format\PrintTicket.g.cs
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Transaction\Parking Out\ucParkingOut.g.cs
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Transaction\Parking In\ucParkingIn.g.cs
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\MainWindow.g.cs
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\App.g.cs
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\GeneratedInternalTypeHelper.g.cs
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\ParkingManagement_MarkupCompile.cache
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\ParkingManagement_MarkupCompile.lref
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Master\Party\ucParty.baml
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Master\Rate\ucRate.baml
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Master\User Setting\UserSetting.baml
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Master\Vehicle Type\ucVehicleType.baml
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Reports\ucDailySalesReport.baml
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Transaction\Cash Receipt\CashReceipt.baml
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Transaction\Parking In\Ticket format\PrintTicket.baml
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Transaction\Parking In\ucParkingIn.baml
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\ParkingManagement.g.resources
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\ParkingManagement.Properties.Resources.resources
+C:\Users\harami baba\Desktop\ParkingManagement2\ParkingManagement\ParkingManagement\obj\x86\Debug\ParkingManagement.csproj.GenerateResource.Cache
+D:\Projects\ParkingManagement\ParkingManagement\bin\x86\Debug\ParkingManagement.exe.config
+D:\Projects\ParkingManagement\ParkingManagement\bin\x86\Debug\ParkingManagement.exe
+D:\Projects\ParkingManagement\ParkingManagement\bin\x86\Debug\ParkingManagement.pdb
+D:\Projects\ParkingManagement\ParkingManagement\bin\x86\Debug\DateFunction.dll
+D:\Projects\ParkingManagement\ParkingManagement\bin\x86\Debug\Microsoft.Expression.Interactions.dll
+D:\Projects\ParkingManagement\ParkingManagement\bin\x86\Debug\Microsoft.Windows.Shell.dll
+D:\Projects\ParkingManagement\ParkingManagement\bin\x86\Debug\RawPrintFunctions.dll
+D:\Projects\ParkingManagement\ParkingManagement\bin\x86\Debug\System.Windows.Interactivity.dll
+D:\Projects\ParkingManagement\ParkingManagement\bin\x86\Debug\Xceed.Wpf.AvalonDock.dll
+D:\Projects\ParkingManagement\ParkingManagement\bin\x86\Debug\Xceed.Wpf.AvalonDock.Themes.Metro.dll
+D:\Projects\ParkingManagement\ParkingManagement\bin\x86\Debug\Xceed.Wpf.Toolkit.dll
+D:\Projects\ParkingManagement\ParkingManagement\bin\x86\Debug\Zen.Barcode.dll
+D:\Projects\ParkingManagement\ParkingManagement\bin\x86\Debug\RawPrintFunctions.pdb
+D:\Projects\ParkingManagement\ParkingManagement\bin\x86\Debug\DateFunction.pdb
+D:\Projects\ParkingManagement\ParkingManagement\bin\x86\Debug\Microsoft.Expression.Interactions.xml
+D:\Projects\ParkingManagement\ParkingManagement\bin\x86\Debug\System.Windows.Interactivity.xml
+D:\Projects\ParkingManagement\ParkingManagement\bin\x86\Debug\de\Microsoft.Expression.Interactions.resources.dll
+D:\Projects\ParkingManagement\ParkingManagement\bin\x86\Debug\en\Microsoft.Expression.Interactions.resources.dll
+D:\Projects\ParkingManagement\ParkingManagement\bin\x86\Debug\es\Microsoft.Expression.Interactions.resources.dll
+D:\Projects\ParkingManagement\ParkingManagement\bin\x86\Debug\fr\Microsoft.Expression.Interactions.resources.dll
+D:\Projects\ParkingManagement\ParkingManagement\bin\x86\Debug\it\Microsoft.Expression.Interactions.resources.dll
+D:\Projects\ParkingManagement\ParkingManagement\bin\x86\Debug\ja\Microsoft.Expression.Interactions.resources.dll
+D:\Projects\ParkingManagement\ParkingManagement\bin\x86\Debug\ko\Microsoft.Expression.Interactions.resources.dll
+D:\Projects\ParkingManagement\ParkingManagement\bin\x86\Debug\zh-Hans\Microsoft.Expression.Interactions.resources.dll
+D:\Projects\ParkingManagement\ParkingManagement\bin\x86\Debug\zh-Hant\Microsoft.Expression.Interactions.resources.dll
+D:\Projects\ParkingManagement\ParkingManagement\bin\x86\Debug\de\System.Windows.Interactivity.resources.dll
+D:\Projects\ParkingManagement\ParkingManagement\bin\x86\Debug\en\System.Windows.Interactivity.resources.dll
+D:\Projects\ParkingManagement\ParkingManagement\bin\x86\Debug\es\System.Windows.Interactivity.resources.dll
+D:\Projects\ParkingManagement\ParkingManagement\bin\x86\Debug\fr\System.Windows.Interactivity.resources.dll
+D:\Projects\ParkingManagement\ParkingManagement\bin\x86\Debug\it\System.Windows.Interactivity.resources.dll
+D:\Projects\ParkingManagement\ParkingManagement\bin\x86\Debug\ja\System.Windows.Interactivity.resources.dll
+D:\Projects\ParkingManagement\ParkingManagement\bin\x86\Debug\ko\System.Windows.Interactivity.resources.dll
+D:\Projects\ParkingManagement\ParkingManagement\bin\x86\Debug\zh-Hans\System.Windows.Interactivity.resources.dll
+D:\Projects\ParkingManagement\ParkingManagement\bin\x86\Debug\zh-Hant\System.Windows.Interactivity.resources.dll
+D:\Projects\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\File\ChangePassword.baml
+D:\Projects\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\File\Login.baml
+D:\Projects\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\File\PrinterSetting.baml
+D:\Projects\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Reports\Cash Collection Reports\CCVehicleWise.baml
+D:\Projects\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Reports\ucReportViewer.baml
+D:\Projects\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Transaction\Parking Out\ucParkingOut.baml
+D:\Projects\ParkingManagement\ParkingManagement\obj\x86\Debug\MainWindow.baml
+D:\Projects\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\File\ChangePassword.g.cs
+D:\Projects\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\File\Login.g.cs
+D:\Projects\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\File\PrinterSetting.g.cs
+D:\Projects\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Master\Party\ucParty.g.cs
+D:\Projects\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Master\Rate\ucRate.g.cs
+D:\Projects\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Master\User Setting\UserSetting.g.cs
+D:\Projects\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Master\Vehicle Type\ucVehicleType.g.cs
+D:\Projects\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Reports\Cash Collection Reports\CCVehicleWise.g.cs
+D:\Projects\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Reports\ucDailySalesReport.g.cs
+D:\Projects\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Reports\ucParkingReport.g.cs
+D:\Projects\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Reports\ucPartyLedger.g.cs
+D:\Projects\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Reports\ucReportViewer.g.cs
+D:\Projects\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Transaction\Cash Receipt\CashReceipt.g.cs
+D:\Projects\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Transaction\Parking In\Ticket format\PrintTicket.g.cs
+D:\Projects\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Transaction\Parking Out\ucParkingOut.g.cs
+D:\Projects\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Transaction\Parking In\ucParkingIn.g.cs
+D:\Projects\ParkingManagement\ParkingManagement\obj\x86\Debug\MainWindow.g.cs
+D:\Projects\ParkingManagement\ParkingManagement\obj\x86\Debug\App.g.cs
+D:\Projects\ParkingManagement\ParkingManagement\obj\x86\Debug\GeneratedInternalTypeHelper.g.cs
+D:\Projects\ParkingManagement\ParkingManagement\obj\x86\Debug\ParkingManagement_MarkupCompile.cache
+D:\Projects\ParkingManagement\ParkingManagement\obj\x86\Debug\ParkingManagement_MarkupCompile.lref
+D:\Projects\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Master\Party\ucParty.baml
+D:\Projects\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Master\Rate\ucRate.baml
+D:\Projects\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Master\User Setting\UserSetting.baml
+D:\Projects\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Master\Vehicle Type\ucVehicleType.baml
+D:\Projects\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Reports\ucDailySalesReport.baml
+D:\Projects\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Reports\ucParkingReport.baml
+D:\Projects\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Reports\ucPartyLedger.baml
+D:\Projects\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Transaction\Cash Receipt\CashReceipt.baml
+D:\Projects\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Transaction\Parking In\Ticket format\PrintTicket.baml
+D:\Projects\ParkingManagement\ParkingManagement\obj\x86\Debug\Forms\Transaction\Parking In\ucParkingIn.baml
+D:\Projects\ParkingManagement\ParkingManagement\obj\x86\Debug\ParkingManagement.g.resources
+D:\Projects\ParkingManagement\ParkingManagement\obj\x86\Debug\ParkingManagement.Properties.Resources.resources
+D:\Projects\ParkingManagement\ParkingManagement\obj\x86\Debug\ParkingManagement.csproj.GenerateResource.Cache
+D:\Projects\ParkingManagement\ParkingManagement\obj\x86\Debug\ParkingManagement.exe
+D:\Projects\ParkingManagement\ParkingManagement\obj\x86\Debug\ParkingManagement.pdb
+D:\Projects\ParkingManagement\ParkingManagement\obj\x86\Debug\ParkingManagement.csprojResolveAssemblyReference.cache
+D:\Projects\ParkingManagement\ParkingManagement\bin\x86\Debug\Microsoft.Windows.Shell.pdb
+D:\Projects\ParkingManagement\ParkingManagement\bin\x86\Debug\Microsoft.Windows.Shell.xml
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\ParkingManagement.exe.config
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\ParkingManagement.exe
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\ParkingManagement.pdb
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\BarcodeLib.dll
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\Dapper.dll
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\DateFunction.dll
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\Microsoft.Expression.Interactions.dll
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\Microsoft.Windows.Shell.dll
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\RawPrintFunctions.dll
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\System.Windows.Interactivity.dll
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\WPFCustomToolKit.dll
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\Xceed.Wpf.AvalonDock.dll
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\Xceed.Wpf.AvalonDock.Themes.Metro.dll
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\Xceed.Wpf.Toolkit.dll
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\Zen.Barcode.dll
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\DateFunction.pdb
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\Microsoft.Expression.Interactions.xml
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\Microsoft.Windows.Shell.pdb
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\Microsoft.Windows.Shell.xml
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\System.Windows.Interactivity.xml
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\WPFCustomToolKit.pdb
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\de\Microsoft.Expression.Interactions.resources.dll
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\en\Microsoft.Expression.Interactions.resources.dll
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\es\Microsoft.Expression.Interactions.resources.dll
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\fr\Microsoft.Expression.Interactions.resources.dll
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\it\Microsoft.Expression.Interactions.resources.dll
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\ja\Microsoft.Expression.Interactions.resources.dll
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\ko\Microsoft.Expression.Interactions.resources.dll
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\zh-Hans\Microsoft.Expression.Interactions.resources.dll
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\zh-Hant\Microsoft.Expression.Interactions.resources.dll
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\de\System.Windows.Interactivity.resources.dll
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\en\System.Windows.Interactivity.resources.dll
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\es\System.Windows.Interactivity.resources.dll
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\fr\System.Windows.Interactivity.resources.dll
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\it\System.Windows.Interactivity.resources.dll
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\ja\System.Windows.Interactivity.resources.dll
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\ko\System.Windows.Interactivity.resources.dll
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\zh-Hans\System.Windows.Interactivity.resources.dll
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\zh-Hant\System.Windows.Interactivity.resources.dll
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\ParkingManagement.csprojResolveAssemblyReference.cache
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\File\ChangePassword.baml
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\File\Login.baml
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\File\PrinterSetting.baml
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Reports\Cash Collection Reports\CCVehicleWise.baml
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Reports\ucReportViewer.baml
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Transaction\Parking In\ucTouchParkingIn.baml
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Transaction\Parking Out\ucParkingOut.baml
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Library\Controls\ucNumPad.baml
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Styles\GeneralStyles.baml
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Styles\Styles.baml
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Styles\TreeView.baml
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\App.baml
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\File\ChangePassword.g.cs
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\File\Login.g.cs
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\File\PrinterSetting.g.cs
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Master\AttendantShift\ucShift.g.cs
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Master\Rate\ucRate.g.cs
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Master\TerminalSetting\ucTerminal.g.cs
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Master\User Setting\UserSetting.g.cs
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Master\ucParkingArea.g.cs
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Master\Vehicle Type\ucVehicleType.g.cs
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Reports\Cash Collection Reports\CCVehicleWise.g.cs
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Reports\ucDailySalesReport.g.cs
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Reports\ucParkingReport.g.cs
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Reports\ucPartyLedger.g.cs
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Reports\ucReportViewer.g.cs
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Transaction\Cash Receipt\CashReceipt.g.cs
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Transaction\Cash Settlement\Denomination.g.cs
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Transaction\Cash Settlement\CashSettleMent.g.cs
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Transaction\Parking In\ucTouchParkingIn.g.cs
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Transaction\Parking Out\ucParkingOut.g.cs
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Transaction\Parking In\ucParkingIn.g.cs
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Transaction\Parking Out\ucTouchParkingOut.g.cs
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Library\Controls\ucNumPad.g.cs
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\MainWindow.g.cs
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\App.g.cs
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\GeneratedInternalTypeHelper.g.cs
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\ParkingManagement_MarkupCompile.cache
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\ParkingManagement_MarkupCompile.lref
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Master\AttendantShift\ucShift.baml
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Master\Rate\ucRate.baml
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Master\TerminalSetting\ucTerminal.baml
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Master\User Setting\UserSetting.baml
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Master\ucParkingArea.baml
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Master\Vehicle Type\ucVehicleType.baml
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Reports\ucDailySalesReport.baml
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Reports\ucParkingReport.baml
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Reports\ucPartyLedger.baml
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Transaction\Cash Receipt\CashReceipt.baml
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Transaction\Cash Settlement\Denomination.baml
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Transaction\Cash Settlement\CashSettleMent.baml
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Transaction\Parking In\ucParkingIn.baml
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Transaction\Parking Out\ucTouchParkingOut.baml
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\MainWindow.baml
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Styles\ButtonStyle.baml
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Styles\Templates.baml
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Styles\ValueConverters.baml
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\ParkingManagement.g.resources
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\ParkingManagement.Properties.Resources.resources
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\ParkingManagement.csproj.GenerateResource.Cache
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\ParkingManagement.exe
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\ParkingManagement.pdb
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Transaction\Cash Receipt\ucTouchCashReceipt.g.cs
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Transaction\Cash Receipt\ucTouchCashReceipt.baml
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Master\usStaffRegistration.g.cs
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Master\usStaffRegistration.baml
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Transaction\Parking Out\wStaffBarcode.g.cs
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Transaction\Parking Out\wStaffBarcode.baml
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\DataUtility\wDataBackup.baml
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\DataUtility\wDataRestore.baml
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\File\ChangePassword.baml
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\File\PrinterSetting.baml
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Reports\wTranLogReport.baml
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Transaction\ucTouchParkingIn.baml
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\wExportFormat.baml
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Library\Controls\ucNumPad.baml
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Styles\GeneralStyles.baml
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Styles\Styles.baml
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Styles\TreeView.baml
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\App.baml
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\DataUtility\wDataBackup.g.cs
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\DataUtility\wDataRestore.g.cs
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\File\ChangePassword.g.cs
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\File\Login.g.cs
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\File\PrinterSetting.g.cs
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Master\ucShift.g.cs
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Master\ucRate.g.cs
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Master\ucTerminal.g.cs
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Master\usStaffRegistration.g.cs
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Master\UserSetting.g.cs
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Master\ucParkingArea.g.cs
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Master\ucVehicleType.g.cs
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Reports\ReportViewer.g.cs
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Reports\RePrintLogReport.g.cs
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Reports\ucDailySalesReport.g.cs
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Reports\ucParkingReport.g.cs
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Reports\wTranLogReport.g.cs
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Transaction\CashSettlement.g.cs
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Transaction\Denomination.g.cs
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Transaction\ucCreditNote.g.cs
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Transaction\ucParkingOutWithoutSlip.g.cs
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Transaction\ucTouchParkingOut.g.cs
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Transaction\ucTouchParkingIn.g.cs
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Transaction\ucTouchCashReceipt.g.cs
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Transaction\wStaffBarcode.g.cs
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\wExportFormat.g.cs
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Library\Controls\ucNumPad.g.cs
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\MainWindow.g.cs
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\App.g.cs
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\GeneratedInternalTypeHelper.g.cs
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\ParkingManagement_MarkupCompile.cache
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\ParkingManagement_MarkupCompile.lref
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\File\Login.baml
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Master\ucShift.baml
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Master\ucRate.baml
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Master\ucTerminal.baml
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Master\usStaffRegistration.baml
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Master\UserSetting.baml
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Master\ucParkingArea.baml
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Master\ucVehicleType.baml
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Reports\ucDailySalesReport.baml
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Reports\ucParkingReport.baml
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Transaction\CashSettlement.baml
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Transaction\Denomination.baml
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Transaction\ucCreditNote.baml
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Transaction\ucParkingOutWithoutSlip.baml
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Transaction\ucTouchParkingOut.baml
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Transaction\ucTouchCashReceipt.baml
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Transaction\wStaffBarcode.baml
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\MainWindow.baml
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Styles\ButtonStyle.baml
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Styles\Templates.baml
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Styles\ValueConverters.baml
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\ParkingManagement.exe
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\ParkingManagement.pdb
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\ParkingManagement.exe.config
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\ParkingManagement.exe
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\ParkingManagement.pdb
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\DateFunction.dll
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\Microsoft.Expression.Interactions.dll
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\Microsoft.Windows.Shell.dll
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\Newtonsoft.Json.dll
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\System.Windows.Interactivity.dll
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\Xceed.Wpf.AvalonDock.dll
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\Xceed.Wpf.AvalonDock.Themes.Metro.dll
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\Xceed.Wpf.Toolkit.dll
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\DateFunction.pdb
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\Microsoft.Expression.Interactions.xml
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\Microsoft.Windows.Shell.pdb
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\Microsoft.Windows.Shell.xml
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\System.Windows.Interactivity.xml
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\de\Microsoft.Expression.Interactions.resources.dll
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\en\Microsoft.Expression.Interactions.resources.dll
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\es\Microsoft.Expression.Interactions.resources.dll
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\fr\Microsoft.Expression.Interactions.resources.dll
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\it\Microsoft.Expression.Interactions.resources.dll
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\ja\Microsoft.Expression.Interactions.resources.dll
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\ko\Microsoft.Expression.Interactions.resources.dll
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\zh-Hans\Microsoft.Expression.Interactions.resources.dll
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\zh-Hant\Microsoft.Expression.Interactions.resources.dll
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\de\System.Windows.Interactivity.resources.dll
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\en\System.Windows.Interactivity.resources.dll
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\es\System.Windows.Interactivity.resources.dll
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\fr\System.Windows.Interactivity.resources.dll
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\it\System.Windows.Interactivity.resources.dll
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\ja\System.Windows.Interactivity.resources.dll
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\ko\System.Windows.Interactivity.resources.dll
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\zh-Hans\System.Windows.Interactivity.resources.dll
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\bin\x86\Debug\zh-Hant\System.Windows.Interactivity.resources.dll
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Reports\ReportViewer.baml
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\Forms\Reports\RePrintLogReport.baml
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\ParkingManagement.g.resources
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\ParkingManagement.Properties.Resources.resources
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\ParkingManagement.csproj.GenerateResource.Cache
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\ParkingManagement.csprojResolveAssemblyReference.cache
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\HelpViewer.baml
+D:\Projects\Live Projects\ParkingManagement - LaBiM\ParkingManagement\obj\x86\Debug\HelpViewer.g.cs
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\bin\x86\Debug\ParkingManagement.exe.config
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\ParkingManagement.exe
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\ParkingManagement.pdb
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\bin\x86\Debug\ParkingManagement.exe
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\bin\x86\Debug\ParkingManagement.pdb
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\bin\x86\Debug\DateFunction.dll
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\bin\x86\Debug\Microsoft.Expression.Interactions.dll
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\bin\x86\Debug\Microsoft.Windows.Shell.dll
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\bin\x86\Debug\Newtonsoft.Json.dll
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\bin\x86\Debug\System.Windows.Interactivity.dll
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\bin\x86\Debug\Xceed.Wpf.AvalonDock.dll
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\bin\x86\Debug\Xceed.Wpf.AvalonDock.Themes.Metro.dll
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\bin\x86\Debug\Xceed.Wpf.Toolkit.dll
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\bin\x86\Debug\DateFunction.pdb
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\bin\x86\Debug\Microsoft.Expression.Interactions.xml
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\bin\x86\Debug\Microsoft.Windows.Shell.pdb
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\bin\x86\Debug\Microsoft.Windows.Shell.xml
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\bin\x86\Debug\System.Windows.Interactivity.xml
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\bin\x86\Debug\de\Microsoft.Expression.Interactions.resources.dll
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\bin\x86\Debug\en\Microsoft.Expression.Interactions.resources.dll
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\bin\x86\Debug\es\Microsoft.Expression.Interactions.resources.dll
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\bin\x86\Debug\fr\Microsoft.Expression.Interactions.resources.dll
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\bin\x86\Debug\it\Microsoft.Expression.Interactions.resources.dll
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\bin\x86\Debug\ja\Microsoft.Expression.Interactions.resources.dll
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\bin\x86\Debug\ko\Microsoft.Expression.Interactions.resources.dll
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\bin\x86\Debug\zh-Hans\Microsoft.Expression.Interactions.resources.dll
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\bin\x86\Debug\zh-Hant\Microsoft.Expression.Interactions.resources.dll
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\bin\x86\Debug\de\System.Windows.Interactivity.resources.dll
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\bin\x86\Debug\en\System.Windows.Interactivity.resources.dll
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\bin\x86\Debug\es\System.Windows.Interactivity.resources.dll
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\bin\x86\Debug\fr\System.Windows.Interactivity.resources.dll
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\bin\x86\Debug\it\System.Windows.Interactivity.resources.dll
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\bin\x86\Debug\ja\System.Windows.Interactivity.resources.dll
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\bin\x86\Debug\ko\System.Windows.Interactivity.resources.dll
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\bin\x86\Debug\zh-Hans\System.Windows.Interactivity.resources.dll
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\bin\x86\Debug\zh-Hant\System.Windows.Interactivity.resources.dll
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\ParkingManagement.csprojResolveAssemblyReference.cache
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\Forms\DataUtility\wDataBackup.baml
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\Forms\DataUtility\wDataRestore.baml
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\Forms\File\ChangePassword.baml
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\Forms\File\PrinterSetting.baml
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\Forms\Reports\wTranLogReport.baml
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\Forms\Transaction\ucTouchParkingIn.baml
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\Forms\wExportFormat.baml
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\HelpViewer.baml
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\Library\Controls\ucNumPad.baml
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\Styles\GeneralStyles.baml
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\Styles\Styles.baml
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\Styles\TreeView.baml
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\App.baml
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\Forms\DataUtility\wDataBackup.g.cs
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\Forms\DataUtility\wDataRestore.g.cs
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\Forms\File\ChangePassword.g.cs
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\Forms\File\Login.g.cs
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\Forms\File\PrinterSetting.g.cs
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\Forms\Master\ucShift.g.cs
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\Forms\Master\ucRate.g.cs
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\Forms\Master\ucTerminal.g.cs
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\Forms\Master\usStaffRegistration.g.cs
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\Forms\Master\UserSetting.g.cs
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\Forms\Master\ucParkingArea.g.cs
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\Forms\Master\ucVehicleType.g.cs
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\Forms\Reports\ReportViewer.g.cs
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\Forms\Reports\RePrintLogReport.g.cs
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\Forms\Reports\ucDailySalesReport.g.cs
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\Forms\Reports\ucParkingReport.g.cs
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\Forms\Reports\wTranLogReport.g.cs
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\Forms\Transaction\CashSettlement.g.cs
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\Forms\Transaction\Denomination.g.cs
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\Forms\Transaction\ucCreditNote.g.cs
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\Forms\Transaction\ucParkingOutWithoutSlip.g.cs
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\Forms\Transaction\ucTouchParkingOut.g.cs
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\Forms\Transaction\ucTouchParkingIn.g.cs
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\Forms\Transaction\ucTouchCashReceipt.g.cs
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\Forms\Transaction\wStaffBarcode.g.cs
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\Forms\wExportFormat.g.cs
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\HelpViewer.g.cs
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\Library\Controls\ucNumPad.g.cs
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\MainWindow.g.cs
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\App.g.cs
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\GeneratedInternalTypeHelper.g.cs
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\ParkingManagement_MarkupCompile.cache
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\ParkingManagement_MarkupCompile.lref
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\Forms\File\Login.baml
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\Forms\Master\ucShift.baml
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\Forms\Master\ucRate.baml
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\Forms\Master\ucTerminal.baml
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\Forms\Master\usStaffRegistration.baml
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\Forms\Master\UserSetting.baml
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\Forms\Master\ucParkingArea.baml
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\Forms\Master\ucVehicleType.baml
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\Forms\Reports\ReportViewer.baml
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\Forms\Reports\RePrintLogReport.baml
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\Forms\Reports\ucDailySalesReport.baml
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\Forms\Reports\ucParkingReport.baml
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\Forms\Transaction\CashSettlement.baml
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\Forms\Transaction\Denomination.baml
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\Forms\Transaction\ucCreditNote.baml
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\Forms\Transaction\ucParkingOutWithoutSlip.baml
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\Forms\Transaction\ucTouchParkingOut.baml
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\Forms\Transaction\ucTouchCashReceipt.baml
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\Forms\Transaction\wStaffBarcode.baml
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\MainWindow.baml
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\Styles\ButtonStyle.baml
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\Styles\Templates.baml
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\Styles\ValueConverters.baml
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\ParkingManagement.g.resources
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\ParkingManagement.Properties.Resources.resources
+D:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\ParkingManagement.csproj.GenerateResource.Cache
+E:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\bin\x86\Debug\ParkingManagement.exe.config
+E:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\ParkingManagement.exe
+E:\Projects\Live Projects\ParkingManagement - New\ParkingManagement\obj\x86\Debug\ParkingManagement.pdb

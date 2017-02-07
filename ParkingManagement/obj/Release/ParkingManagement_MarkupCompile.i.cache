@@ -1,0 +1,20 @@
+﻿ParkingManagement
+
+
+winexe
+C#
+.cs
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\obj\Release\
+ParkingManagement
+none
+false
+TRACE
+D:\Projects\ParkingManagement - LaBiM\ParkingManagement\App.xaml
+29469088523
+
+92-574800331
+33-1898432437
+Forms\File\ChangePassword.xaml;Forms\File\Login.xaml;Forms\File\PrinterSetting.xaml;Forms\Master\AttendantShift\ucShift.xaml;Forms\Master\Rate\ucRate.xaml;Forms\Master\TerminalSetting\ucTerminal.xaml;Forms\Master\User Setting\UserSetting.xaml;Forms\Master\ucParkingArea.xaml;Forms\Master\Vehicle Type\ucVehicleType.xaml;Forms\Reports\Cash Collection Reports\CCVehicleWise.xaml;Forms\Reports\ucDailySalesReport.xaml;Forms\Reports\ucParkingReport.xaml;Forms\Reports\ucPartyLedger.xaml;Forms\Reports\ucReportViewer.xaml;Forms\Transaction\Cash Receipt\CashReceipt.xaml;Forms\Transaction\Cash Settlement\Denomination.xaml;Forms\Transaction\Cash Settlement\CashSettleMent.xaml;Forms\Transaction\Parking In\ucTouchParkingIn.xaml;Forms\Transaction\Parking Out\ucParkingOut.xaml;Forms\Transaction\Parking In\ucParkingIn.xaml;Forms\Transaction\Parking Out\ucTouchParkingOut.xaml;Library\Controls\ucNumPad.xaml;MainWindow.xaml;Styles\ButtonStyle.xaml;Styles\GeneralStyles.xaml;Styles\Styles.xaml;Styles\Templates.xaml;Styles\TreeView.xaml;Styles\ValueConverters.xaml;
+
+True
+
