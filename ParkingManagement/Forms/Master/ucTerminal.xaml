@@ -1,0 +1,60 @@
+﻿<UserControl x:Class="ParkingManagement.Forms.Master.ucTerminal"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"             
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:Behavior="clr-namespace:ParkingManagement.ACommandBehavior"
+             >
+    <UserControl.Resources>
+        <Style TargetType="Button" BasedOn="{StaticResource NewButton}">
+            <Setter Property="Width" Value="60" ></Setter>
+            <Setter Property="Height" Value="30"></Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="120" />
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Style="{StaticResource GradientBackground}">
+            <Grid  HorizontalAlignment="Right" >
+                <StackPanel Orientation="Horizontal" Margin="0">
+                    <Button Content="New" IsEnabled="{Binding NewEnabled}" Command="{Binding NewCommand}"  ></Button>
+                    <Button Content="Edit" IsEnabled="{Binding EditEnabled}" Command="{Binding EditCommand}" ></Button>
+                    <Button Content="Save" IsEnabled="{Binding SaveEnabled}" Command="{Binding SaveCommand}"  ></Button>
+                    <Button Content="Delete" IsEnabled="{Binding DeleteEnabled}" Command="{Binding DeleteCommand}"  ></Button>
+                    <Button Content="Undo" Command="{Binding UndoCommand}"  ></Button>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="1" Style="{StaticResource PlainBackground}">
+            <StackPanel >
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Terminal Code"></Label>
+                    <TextBox Width="70" Text="{Binding TheTerminal.TERMINAL_CODE}" IsEnabled="{Binding KeyFieldEnabled}">
+                        <TextBox.InputBindings>
+                            <KeyBinding Key="Enter" Command="{Binding LoadData}" CommandParameter="{Binding Path=Text, RelativeSource={RelativeSource AncestorType=TextBox}}"/>
+                        </TextBox.InputBindings>
+                    </TextBox>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal"  IsEnabled="{Binding EntryPanelEnabled}">
+                    <Label Content="Terminal Name"></Label>
+                    <TextBox Width="200" Text="{Binding TheTerminal.TERMINAL_NAME}"></TextBox>
+                    <CheckBox Content="Is Suspended" VerticalAlignment="Center" IsChecked="{Binding TheTerminal.STATUS, Converter={StaticResource ByteToBool}}"/>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+        <DataGrid Grid.Row="2" ItemsSource="{Binding TerminalList}" AutoGenerateColumns="False" SelectedItem="{Binding SelectedTerminal}" Behavior:CommandBehavior.Event="MouseDoubleClick" IsReadOnly="True"
+                                                 Behavior:CommandBehavior.Command="{Binding LoadData}">
+            <DataGrid.Columns>                
+                <DataGridTextColumn Binding="{Binding TERMINAL_CODE}" Header="Terminal Code" Width="100"/>
+                <DataGridTextColumn Binding="{Binding TERMINAL_NAME}" Header="Terminal_Name" Width="250"/>
+                <DataGridTextColumn Binding="{Binding STATUS}" Header="Status" Width="100"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>

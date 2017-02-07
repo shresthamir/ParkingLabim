@@ -1,0 +1,8 @@
+D:\Projects\ParkingManagement - LaBiM\LabimParking\bin\LabimParking.dll.config
+D:\Projects\ParkingManagement - LaBiM\LabimParking\bin\LabimParking.dll
+D:\Projects\ParkingManagement - LaBiM\LabimParking\bin\LabimParking.pdb
+D:\Projects\ParkingManagement - LaBiM\LabimParking\bin\Dapper.dll
+D:\Projects\ParkingManagement - LaBiM\LabimParking\bin\Newtonsoft.Json.dll
+D:\Projects\ParkingManagement - LaBiM\LabimParking\obj\Release\LabimParking.csprojResolveAssemblyReference.cache
+D:\Projects\ParkingManagement - LaBiM\LabimParking\obj\Release\LabimParking.dll
+D:\Projects\ParkingManagement - LaBiM\LabimParking\obj\Release\LabimParking.pdb

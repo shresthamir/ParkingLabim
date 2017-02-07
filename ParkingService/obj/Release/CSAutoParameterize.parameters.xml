@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<parameters>
+  <parameter name="DBSetting-Web.config Connection String" description="DBSetting Connection String used in web.config by the application to access the database." defaultValue="Data Source = IMS-D1\SQLR2; Initial Catalog = ParkingLaBim; UID = sa; PWD = tebahal" tags="SqlConnectionString">
+    <parameterEntry kind="XmlFile" scope="D:\\Projects\\ParkingManagement\ -\ LaBiM\\LabimParking\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='DBSetting']/@connectionString" />
+  </parameter>
+</parameters>
