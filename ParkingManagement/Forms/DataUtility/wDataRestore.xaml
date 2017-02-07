@@ -1,0 +1,26 @@
+﻿<Window x:Class="ParkingManagement.Forms.DataUtility.wDataRestore"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" ResizeMode="NoResize"
+        Title="Data Restore" Height="150" Width="400">
+    <Border Style="{StaticResource GradientBackground}">
+        <StackPanel>
+            <Border Style="{StaticResource PlainBackground}" Padding="10" Visibility="Collapsed">
+                <StackPanel Orientation="Horizontal">
+                    <RadioButton x:Name="rbFullBackup" Content="Restore Full Database"/>
+                    <RadioButton x:Name="rbTranLog" Content="Restore Transaction Log Only" Margin="50 0 0 0"/>
+                </StackPanel>
+            </Border>
+            <Border Style="{StaticResource PlainBackground}" Padding="10">
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="File Name" Width="80"/>
+                    <TextBox x:Name="txtFile" Width="250"  />
+                    <Button Content="..." Width="30" Height="26" Click="Button_Click"/>
+                </StackPanel>               
+            </Border>
+            <StackPanel  Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="Restore" Style="{StaticResource NewButton}" Height="35" Width="70" Click="Button_Click"/>
+                <Button Content="Cancel" Style="{StaticResource NewButton}" Height="35" Width="70" Click="Button_Click"/>
+            </StackPanel>
+        </StackPanel>
+    </Border>
+</Window>

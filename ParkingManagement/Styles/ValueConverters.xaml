@@ -1,0 +1,22 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+                    xmlns:vc="clr-namespace:ParkingManagement.Library.ValueConverter"
+                    >
+
+    <vc:TotalSumConverter x:Key="sumConverter" />
+    <vc:DateFromatConverter x:Key="DFConverter" />
+    <vc:DateToMitiConverter x:Key="DateToMiti" />
+    <vc:DrCrConverter x:Key="DrCr"></vc:DrCrConverter>
+    <vc:NoZeroConverter x:Key="NoZero"></vc:NoZeroConverter>
+    <vc:DayWiseRateConverter x:Key="DayWiseRate"></vc:DayWiseRateConverter>
+    <vc:RateTimeLineWidthConverter x:Key="RateWidth"/>
+    <vc:BooleanToVisiblityConverter x:Key="BoolToVisibility"/>
+    <vc:ReverseBooleanToVisiblityConverter x:Key="RevBoolToVisibility"/>
+    <vc:ShortToBoolConverter x:Key="ShortToBool"/>
+    <vc:ReverseBoolConverter x:Key="ReverseBool"/>
+    <vc:ByteToBoolConverter x:Key="ByteToBool"/>
+    <vc:BoolToContentConverter x:Key="ToText"/>
+    <vc:IsNotZeroConverter x:Key="IsNotZero"/>
+    <vc:NoteToAmountConverter x:Key="ToAmount"/>
+    <vc:RadioButtonTrueFalseConveter x:Key="ReportOption"/>
+</ResourceDictionary>
