@@ -108,7 +108,7 @@ namespace ParkingManagement.ViewModel
                     var pslip = new ParkingSlip { PIN = pin, CompanyName = GlobalClass.CompanyName, CompanyAddress = GlobalClass.CompanyAddress };
                     pslip.Print();
                     GlobalClass.SetUserActivityLog("Parking In", "Re-Print", WorkDetail: "PID : " + pin.PID);
-                }                
+                }
             }
             catch (Exception ex)
             {
@@ -152,8 +152,15 @@ namespace ParkingManagement.ViewModel
                     Conn.Open();
                     using (SqlTransaction tran = Conn.BeginTransaction())
                     {
+
                         Parking.PID = Conn.ExecuteScalar<int>("SELECT CurNo FROM tblSequence WHERE VNAME = 'PID' AND FYID = " + GlobalClass.FYID, transaction: tran);
-                        Parking.Barcode = BarCode(tran);
+
+                        while (Conn.ExecuteScalar<int>("SELECT COUNT (*) FROM ParkingInDetails WHERE PID = @PID AND FYID = @FYID",new { PID=Parking.PID, FYID = GlobalClass.FYID }, tran)>0)
+                        {
+                            Conn.Execute("UPDATE tblSequence SET CurNo = CurNo + 1 WHERE VNAME = 'PID' AND FYID = " + GlobalClass.FYID, transaction: tran);
+                            Parking.PID = Conn.ExecuteScalar<int>("SELECT CurNo FROM tblSequence WHERE VNAME = 'PID' AND FYID = " + GlobalClass.FYID, transaction: tran);
+                        }
+                            Parking.Barcode = BarCode(tran);
                         if (Parking.Save(tran))
                         {
                             Conn.Execute("UPDATE tblSequence SET CurNo = CurNo + 1 WHERE VNAME = 'PID' AND FYID = " + GlobalClass.FYID, transaction: tran);

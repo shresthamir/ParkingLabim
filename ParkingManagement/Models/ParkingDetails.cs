@@ -45,7 +45,7 @@ namespace ParkingManagement.Models
         {
             string strSQL = @"INSERT INTO ParkingInDetails(PID, FYID, VehicleType, InDate, InTime, PlateNo, Barcode, [UID], InMiti, SESSION_ID)
                           Values(@PID, @FYID, @VehicleType,@InDate,@InTime,@PlateNo,@Barcode,@UID,@InMiti, @SESSION_ID)";
-            return tran.Connection.Execute(strSQL, this, tran) == 1;
+            return tran.Connection.Execute(strSQL, this, tran) >0;
         }
     }
 

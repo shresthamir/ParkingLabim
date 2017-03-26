@@ -35,6 +35,7 @@ namespace ParkingManagement.Models
         public string FullName { get { return _FullName; } set { _FullName = value; OnPropertyChanged("FullName"); } }
         public char UserCat { get { return _UserCat; } set { _UserCat = value; OnPropertyChanged("UserCat"); } }
         public string Password { get { return _password; } set { _password = value; OnPropertyChanged("Password"); } }
+        public string DBPassword { get; set; }
 
         public byte STATUS { get { return _STATUS; } set { _STATUS = value; OnPropertyChanged("STATUS"); } }
         public byte MOBILE_ACCESS { get { return _MOBILE_ACCESS; } set { _MOBILE_ACCESS = value; OnPropertyChanged("MOBILE_ACCESS"); } }

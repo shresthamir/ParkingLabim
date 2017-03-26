@@ -188,6 +188,9 @@
     <Compile Include="Forms\Transaction\wStaffBarcode.xaml.cs">
       <DependentUpon>wStaffBarcode.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Forms\wDatePicker.xaml.cs">
+      <DependentUpon>wDatePicker.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Forms\wExportFormat.xaml.cs">
       <DependentUpon>wExportFormat.xaml</DependentUpon>
     </Compile>
@@ -300,6 +303,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Forms\Transaction\wStaffBarcode.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Forms\wDatePicker.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -271,7 +271,7 @@ namespace ParkingManagement.ViewModel
                                 cmd.CommandType = CommandType.StoredProcedure;
                                 cmd.CommandText = "SP_CREATE_USER";
                                 cmd.Parameters.AddWithValue("@UNAME", user.UserName);
-                                cmd.Parameters.AddWithValue("@PWD", user.Password);
+                                cmd.Parameters.AddWithValue("@PWD", user.DBPassword);
                                 cmd.ExecuteNonQuery();
                             }
 

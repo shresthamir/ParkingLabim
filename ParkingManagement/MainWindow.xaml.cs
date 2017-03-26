@@ -236,20 +236,15 @@ namespace ParkingManagement
                                 w.ShowDialog();
                                 return;
                             }
-                            //}
-                            //ProductMasterServiceSoapClient Prod_Operations = new ProductMasterServiceSoapClient(new System.ServiceModel.BasicHttpBinding() { MaxReceivedMessageSize = int.MaxValue }, new System.ServiceModel.EndpointAddress("http://" + GlobalClass.ServerUrl + "/ProductMasterService.asmx"));
-                            //ServiceResult sr = Prod_Operations.DataBackup();
-                            //if (sr.Result)
-                            //{
-                            //    Prod_Operations.SetUserActivityLog(GlobalClass.CurUser.UserName, GlobalClass.CurUser.Password, GlobalClass.CurUser.UserSessId, "Database Backup", "Backup", string.Empty, string.Empty, string.Empty);
-                            //}
-                            //MessageBox.Show(sr.Message, "Data Backup", MessageBoxButton.OK, MessageBoxImage.Information);
                             break;
                         case "DATA RECOVERY":
                             if (IsAppRunningInServer)
                             {
                                 new wDataRestore().ShowDialog();
                             }
+                            break;
+                        case "PRINT DAY SUMMARY":
+                            PrintDaySummary();
                             break;
                         default:
                             Reports(m.MENUNAME);
@@ -289,7 +284,159 @@ namespace ParkingManagement
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "IMS POS", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show(ex.Message, "IMS - Parking Management Software", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+
+        private void PrintDaySummary()
+        {
+            DateTime TDATE;
+            if (GlobalClass.User.UserName.ToLower() == "admin")
+                TDATE = new Forms.wDatePicker().GetDate();
+            else
+                TDATE = DateTime.Today;
+            string strPrint = string.Empty;
+            int PrintLen = 40;
+            string str =
+@"SELECT VT.[Description] VehicleType, COUNT(*) [Count] FROM ParkingInDetails PID 
+JOIN VehicleType VT ON PID.VehicleType = VT.VTypeID
+{0}
+GROUP BY [Description]";
+            string strBase = string.Format(str,
+@"LEFT JOIN ParkingOutDetails POD ON PID.PID = POD.PID
+{0}");
+            string strOpening = string.Format(strBase, "WHERE POD.PID IS NULL AND InDate < @TDATE");
+            string strMissed = string.Format(strBase, "WHERE POD.PID IS NULL AND InDate = @TDATE");
+            string strInCount = string.Format(str, "WHERE InDate = @TDATE");
+            string strOutCount = string.Format(strBase, "WHERE OutDate = @TDATE");
+            string strOutFromPrevDates = string.Format(strBase, "WHERE OutDate = @TDATE AND InDate < @TDATE");
+
+            string strScanLog =
+@"SELECT VT.[Description] VehicleType, COUNT(*) [Count], SUM(CL.ChargedAmount) Amount FROM ParkingInDetails PID 
+JOIN VehicleType VT ON PID.VehicleType = VT.VTypeID
+LEFT JOIN POUT_CLEARLOG CL ON PID.PID = CL.PID
+LEFT JOIN ParkingOutDetails POD ON PID.PID = POD.PID
+WHERE CL.PID IS NOT NULL AND CL.OutDate = @TDATE AND POD.PID IS NULL
+GROUP BY [Description]";
+
+
+            string strCollection =
+@"SELECT ENTERED_BY, SUM(TAXABLE_AMOUNT + TAX_AMOUNT) [Collection] FROM VIEW_Annex7 WHERE BILL_DATE = @TDATE AND LEFT(BILL_NO,2) IN ('SI', 'TI')
+GROUP BY ENTERED_BY";
+
+            string strSalesReturn =
+@"SELECT ENTERED_BY, SUM(TAXABLE_AMOUNT + TAX_AMOUNT) [Return] FROM VIEW_Annex7 WHERE BILL_DATE = @TDATE AND LEFT(BILL_NO,2) IN ('CN')
+GROUP BY ENTERED_BY";
+
+            try
+            {
+                strPrint += (GlobalClass.CompanyName.Length > PrintLen) ? GlobalClass.CompanyName.Substring(0, 45) : GlobalClass.CompanyName.PadLeft((PrintLen + GlobalClass.CompanyName.Length) / 2, ' ') + Environment.NewLine;
+                strPrint += (GlobalClass.CompanyAddress.Length > PrintLen) ? GlobalClass.CompanyAddress.Substring(0, 45) : GlobalClass.CompanyAddress.PadLeft((PrintLen + GlobalClass.CompanyAddress.Length) / 2, ' ') + Environment.NewLine;
+                strPrint += "DAY SUMMARY REPORT".PadLeft(30, ' ') + Environment.NewLine;
+
+                using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
+                {
+                    //---------------OPENING VEHICLE COUNT------------
+                    var OpeningList = conn.Query(strOpening, new { TDATE = TDATE });
+                    if (OpeningList != null && OpeningList.Count() > 0)
+                    {
+                        strPrint += Environment.NewLine + "Opening Vehilce Count" + Environment.NewLine;
+                        strPrint += "".PadRight(PrintLen - 4, '-') + Environment.NewLine;
+                        foreach (dynamic model in OpeningList)
+                        {
+                            strPrint += model.VehicleType.PadRight(PrintLen - 15, ' ') + ":" + model.Count.ToString().PadLeft(10, ' ') + Environment.NewLine;
+                        }
+                    }
+
+                    //--------------IN VEHICLE COUNT --------------------
+                    var EntryList = conn.Query(strInCount, new { TDATE = TDATE });
+                    if (EntryList != null && EntryList.Count() > 0)
+                    {
+                        strPrint += Environment.NewLine + "Vehilce Entry Count" + Environment.NewLine;
+                        strPrint += "".PadRight(PrintLen - 4, '-') + Environment.NewLine;
+                        foreach (dynamic model in EntryList)
+                        {
+                            strPrint += model.VehicleType.PadRight(PrintLen - 15, ' ') + ":" + model.Count.ToString().PadLeft(10, ' ') + Environment.NewLine;
+                        }
+                    }
+
+                    //--------------OUT VEHICLE COUNT --------------------
+                    var ExitList = conn.Query(strOutCount, new { TDATE = TDATE });
+                    if (ExitList != null && ExitList.Count() > 0)
+                    {
+                        strPrint += Environment.NewLine + "Vehilce Exit Count" + Environment.NewLine;
+                        strPrint += "".PadRight(PrintLen - 4, '-') + Environment.NewLine;
+                        foreach (dynamic model in ExitList)
+                        {
+                            strPrint += model.VehicleType.PadRight(PrintLen - 15, ' ') + ":" + model.Count.ToString().PadLeft(10, ' ') + Environment.NewLine;
+                        }
+                    }
+
+                    //-------------- VEHICLE EXIT COUNT THAT ENTERED PREVIOUS DATES--------------------
+                    var ExitList1 = conn.Query(strOutFromPrevDates, new { TDATE = TDATE });
+                    if (ExitList1 != null && ExitList1.Count() > 0)
+                    {
+                        strPrint += Environment.NewLine + "Vehilce Exit From Prev. Dates" + Environment.NewLine;
+                        strPrint += "".PadRight(PrintLen - 4, '-') + Environment.NewLine;
+                        foreach (dynamic model in ExitList1)
+                        {
+                            strPrint += model.VehicleType.PadRight(PrintLen - 15, ' ') + ":" + model.Count.ToString().PadLeft(10, ' ') + Environment.NewLine;
+                        }
+                    }
+
+                    //--------------MISSED SLIPS-------------------- 
+                    var MissedList = conn.Query(strMissed, new { TDATE = TDATE });
+                    if (MissedList != null && MissedList.Count() > 0)
+                    {
+                        strPrint += Environment.NewLine + "Missed Slip" + Environment.NewLine;
+                        strPrint += "".PadRight(PrintLen - 4, '-') + Environment.NewLine;
+                        foreach (dynamic model in MissedList)
+                        {
+                            strPrint += model.VehicleType.PadRight(PrintLen - 15, ' ') + ":" + model.Count.ToString().PadLeft(10, ' ') + Environment.NewLine;
+                        }
+                    }
+
+                    //--------------SCAN LOG-------------------- 
+                    var ScanList = conn.Query(strScanLog, new { TDATE = TDATE });
+                    if (ScanList != null && ScanList.Count() > 0)
+                    {
+                        strPrint += Environment.NewLine + "Scan Log" + Environment.NewLine;
+                        strPrint += "".PadRight(PrintLen - 4, '-') + Environment.NewLine;
+                        foreach (dynamic model in ScanList)
+                        {
+                            strPrint += model.VehicleType.PadRight(20, ' ') + ":" + model.Count.ToString().PadLeft(7, ' ') + ":" + model.Amount.ToString("#0.00").PadLeft(7, ' ') + Environment.NewLine;
+                        }
+                    }
+
+                    //--------------TOTAL COLLECTION-------------------- 
+                    var CollectionList = conn.Query(strCollection, new { TDATE = TDATE });
+                    if (CollectionList != null && CollectionList.Count() > 0)
+                    {
+                        strPrint += Environment.NewLine + "Total Collection" + Environment.NewLine;
+                        strPrint += "".PadRight(PrintLen - 4, '-') + Environment.NewLine;
+                        foreach (dynamic model in CollectionList)
+                        {
+                            strPrint += model.ENTERED_BY.PadRight(PrintLen - 15, ' ') + ":" + model.Collection.ToString("#0.00").PadLeft(10, ' ') + Environment.NewLine;
+                        }
+                    }
+
+                    //--------------TOTAL SALES RETURN--------------------
+                    var ReturnList = conn.Query(strSalesReturn, new { TDATE = TDATE });
+                    if (ReturnList != null && ReturnList.Count() > 0)
+                    {
+                        strPrint += Environment.NewLine + "Total Sales Return" + Environment.NewLine;
+                        strPrint += "".PadRight(PrintLen - 4, '-') + Environment.NewLine;
+                        foreach (dynamic model in ReturnList)
+                        {
+                            strPrint += model.ENTERED_BY.PadRight(PrintLen - 15, ' ') + ":" + model.Collection.ToString("#0.00").PadLeft(10, ' ') + Environment.NewLine;
+                        }
+                    }
+                    RawPrintFunctions.RawPrinterHelper.SendStringToPrinter(GlobalClass.PrinterName, strPrint, "Day Summary");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "IMS - Parking Management Software", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
 
@@ -307,19 +454,19 @@ namespace ParkingManagement
 
         private void Reports(string p)
         {
-            if(p=="TRANSACTION ACTIVITY LOG")
+            if (p == "TRANSACTION ACTIVITY LOG")
             {
                 new Forms.Reports.wTranLogReport().Show();
                 return;
             }
             LayoutAnchorable la = new LayoutAnchorable();
-            la.IsActive = true;            
-            switch(p)
+            la.IsActive = true;
+            switch (p)
             {
                 case "SUMMARY":
-                    la.Content = new Forms.Reports.RePrintLogReport(2);                    
-                    la.Title = "ABBREVIATED SALES REGISTER REPORT - SUMMARY";                   
-                    
+                    la.Content = new Forms.Reports.RePrintLogReport(2);
+                    la.Title = "ABBREVIATED SALES REGISTER REPORT - SUMMARY";
+
                     break;
                 case "DETAILS":
                     la.Content = new Forms.Reports.RePrintLogReport(3);
@@ -336,7 +483,7 @@ namespace ParkingManagement
                 case "PURCHASE REGISTER REPORT":
                     la.Content = new Forms.Reports.RePrintLogReport(6);
                     la.Title = "PURCHASE REGISTER REPORT";
-                    break;               
+                    break;
                 case "SALES INVOICE REPRINT LOG":
                     la.Content = new Forms.Reports.RePrintLogReport(0);
                     la.Title = "SALES INVOICE REPRINT LOG";

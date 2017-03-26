@@ -27,7 +27,7 @@ namespace ParkingManagement.Forms.File
         [DllImport("kernel32.dll", SetLastError = true)]
         static extern bool SetLocalTime(ref SYSTEMTIME st);
 
-        
+
         public Login()
         {
             try
@@ -54,23 +54,20 @@ namespace ParkingManagement.Forms.File
             {
                 using (SqlConnection cnSys = new SqlConnection(GlobalClass.DataConnectionString))
                 {
-                    if (cnSys.ExecuteScalar<int>("SELECT COUNT(*) FROM SYS.syslogins WHERE NAME = '" + txtUserName.Text + "'") <= 0)
+                    if (cnSys.ExecuteScalar<int>("SELECT COUNT(*) FROM Users WHERE UserName='" + txtUserName.Text + "' AND ISNULL(STATUS, 0) = 0") > 0)
                     {
-                        if (cnSys.ExecuteScalar<int>("SELECT * FROM Users WHERE UserName='" + txtUserName.Text + "' AND IsInactive = 0") > 0)
+                        using (SqlCommand cmd = cnSys.CreateCommand())
                         {
-                            using (SqlCommand cmd = cnSys.CreateCommand())
-                            {
-                                cnSys.Open();
-                                cmd.CommandText = "SP_CREATE_USER";
-                                cmd.CommandType = CommandType.StoredProcedure;
-                                cmd.Parameters.AddWithValue("@UNAME", txtUserName.Text);
-                                cmd.Parameters.AddWithValue("@PWD", txtPassword.Password);
-                                cmd.ExecuteNonQuery();
-                            }
+                            cnSys.Open();
+                            cmd.CommandText = "SP_CREATE_USER";
+                            cmd.CommandType = CommandType.StoredProcedure;
+                            cmd.Parameters.AddWithValue("@UNAME", txtUserName.Text);
+                            cmd.Parameters.AddWithValue("@PWD", txtPassword.Password);
+                            cmd.ExecuteNonQuery();
                         }
                     }
                 }
-                using (SqlConnection conn = new SqlConnection(GlobalClass.GetTConnectionString(txtUserName.Text,txtPassword.Password)))
+                using (SqlConnection conn = new SqlConnection(GlobalClass.GetTConnectionString(txtUserName.Text, txtPassword.Password)))
                 {
                     var user = conn.Query<User>(string.Format("SELECT UID, UserName, [Password], FullName, UserCat, [STATUS], DESKTOP_ACCESS, MOBILE_ACCESS, SALT  FROM USERS WHERE UserName = '{0}'", txtUserName.Text)).First();
                     if (user == null)
@@ -93,7 +90,7 @@ namespace ParkingManagement.Forms.File
                         MessageBox.Show("You no longer have privilage to access this application", "Insufficient Access", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                         return;
                     }
-                    user.Password = txtPassword.Password;
+                    user.DBPassword = txtPassword.Password;
                     GlobalClass.User = user;
                     if (!GlobalClass.StartSession())
                     {
@@ -101,7 +98,7 @@ namespace ParkingManagement.Forms.File
                         return;
                     }
                     var curDate = conn.ExecuteScalar<DateTime>("SELECT GETDATE()");
-                   // MessageBox.Show(curDate.ToString("MM/dd/yyyy hh:mm tt"));
+                    // MessageBox.Show(curDate.ToString("MM/dd/yyyy hh:mm tt"));
                     if (curDate.Subtract(DateTime.Now) > new TimeSpan(0, 0, 5) || DateTime.Now.Subtract(curDate) > new TimeSpan(0, 0, 5))
                         SetSystemTime(curDate);
                     new MainWindow().Show();

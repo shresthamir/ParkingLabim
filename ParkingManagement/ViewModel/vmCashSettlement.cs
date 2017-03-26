@@ -149,6 +149,7 @@ namespace ParkingManagement.ViewModel
                             PrintCashSettlement(Settlement.SETTLEMENT_ID, conn, tran);
 
                             tran.Commit();
+                            GlobalClass.StartSession();
                             MessageBox.Show("Transaction successfully saved", "Cash Settlement", MessageBoxButton.OK, MessageBoxImage.Information);
                             Settlement = new CashSettlement { TRNDATE = DateTime.Today, SETTLED_UID = GlobalClass.User.UID, TERMINAL_CODE = GlobalClass.Terminal };
                             Settlement.PropertyChanged += Settlement_PropertyChanged;
@@ -177,16 +178,16 @@ namespace ParkingManagement.ViewModel
             switch (GlobalClass.SettlementMode)
             {
                 case 0: // Userwise Settlement
-                    strSql = string.Format("UPDATE [SESSION] SET SESSION_SETTLED = {1} WHERE UID = {0}", Settlement.SETTLED_UID, Settlement.SETTLEMENT_ID);
+                    strSql = string.Format("UPDATE [SESSION] SET SESSION_SETTLED = {1} WHERE UID = {0} AND ISNULL(SESSION_SETTLED, 0) = 0", Settlement.SETTLED_UID, Settlement.SETTLEMENT_ID);
                     break;
                 case 1: // Terminal wise Settlement
-                    strSql = string.Format("UPDATE [SESSION] SET SESSION_SETTLED = {1} WHERE TERMINAL_CODE ='{0}'", Settlement.TERMINAL_CODE, Settlement.SETTLEMENT_ID);
+                    strSql = string.Format("UPDATE [SESSION] SET SESSION_SETTLED = {1} WHERE TERMINAL_CODE ='{0}' AND ISNULL(SESSION_SETTLED, 0) = 0", Settlement.TERMINAL_CODE, Settlement.SETTLEMENT_ID);
                     break;
                 case 2: // User And Terminal wise  Settlement
-                    strSql = string.Format("UPDATE [SESSION] SET SESSION_SETTLED = {2} WHERE TERMINAL_CODE ='{0}' AND UID = {1}", Settlement.TERMINAL_CODE, Settlement.SETTLED_UID, Settlement.SETTLEMENT_ID);
+                    strSql = string.Format("UPDATE [SESSION] SET SESSION_SETTLED = {2} WHERE TERMINAL_CODE ='{0}' AND UID = {1} AND ISNULL(SESSION_SETTLED, 0) = 0", Settlement.TERMINAL_CODE, Settlement.SETTLED_UID, Settlement.SETTLEMENT_ID);
                     break;
                 default:
-                    strSql = string.Format("UPDATE [SESSION] SET SESSION_SETTLED = {1} WHERE UID = {0}", Settlement.SETTLED_UID, Settlement.SETTLEMENT_ID);
+                    strSql = string.Format("UPDATE [SESSION] SET SESSION_SETTLED = {1} WHERE UID = {0} AND ISNULL(SESSION_SETTLED, 0) = 0", Settlement.SETTLED_UID, Settlement.SETTLEMENT_ID);
                     break;
             }
             tran.Connection.Execute(strSql, transaction: tran);
@@ -337,7 +338,7 @@ namespace ParkingManagement.ViewModel
                     }
                 }
             }
-            strPrint += "".PadRight(PrintLen, '-') + Environment.NewLine;
+                                                                                                          strPrint += "".PadRight(PrintLen, '-') + Environment.NewLine;
             strPrint += "Total :".PadLeft(15, ' ') + SettlementAmount.ToString("#0.00") + Environment.NewLine;
             strPrint += "".PadRight(PrintLen, '-') + Environment.NewLine;
             strPrint += string.Format("Print Time : {0}", dr["TRNTIME"]) + Environment.NewLine;

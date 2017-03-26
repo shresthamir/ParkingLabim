@@ -385,6 +385,7 @@ namespace ParkingManagement.ViewModel
                             PrintBill(BillNo.ToString(), conn, "INVOICE");
                         }
                     }
+                    SetAction(ButtonAction.Init);
                     ExecuteUndo(null);
                 }
             }

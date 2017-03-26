@@ -27,7 +27,7 @@ namespace ParkingManagement.Library
         public static string CompanyPan;
         public static decimal VAT = 13;
         public static User User;
-        public static string PrinterName;
+        public static string PrinterName = "POS80";
         public static PrintQueue printer;
         public static double RateTimeLinePeriodWidth = (System.Windows.Forms.Screen.PrimaryScreen.Bounds.Right - 150) / 13;
         public static Thickness FirstPeriodMargin = new Thickness(RateTimeLinePeriodWidth / 2, 0, 0, 0);
@@ -94,7 +94,7 @@ namespace ParkingManagement.Library
             {
                 SqlConnectionStringBuilder ConnBuilder = new SqlConnectionStringBuilder(DataConnectionString);
                 ConnBuilder.UserID = User.UserName;
-                ConnBuilder.Password = User.Password;
+                ConnBuilder.Password = User.DBPassword;
                 return ConnBuilder.ConnectionString;
             }
         }
