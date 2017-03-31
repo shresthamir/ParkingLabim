@@ -246,6 +246,7 @@ namespace ParkingManagement.ViewModel
                     using (SqlTransaction Tran = Conn.BeginTransaction())
                     {
                         user.UID = Conn.ExecuteScalar<int>("SELECT ISNULL(MAX(UID), 0) + 1 FROM USERS", transaction: Tran);
+                        user.DBPassword = string.Empty;
                         user.Password = GlobalClass.GetEncryptedPWD(string.Empty, ref user._Salt);
                         user.UserCat = 'A';
                         if (user.Save(Tran))

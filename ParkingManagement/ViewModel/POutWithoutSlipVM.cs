@@ -267,7 +267,7 @@ namespace ParkingManagement.ViewModel
         private void ExecuteSave(object obj)
         {
             string strSQL;
-            decimal Taxable, VAT, Amount, Discount, NonTaxable;
+            decimal Taxable, VAT, Amount, Discount, NonTaxable, Rate, Quantity;
             string BillNo = string.Empty;
             try
             {
@@ -284,7 +284,9 @@ namespace ParkingManagement.ViewModel
                         if (POUT.CashAmount > 0)
                         {
                             BillNo = InvoicePrefix + GetInvoiceNo(InvoicePrefix, tran);
+                            Quantity = POUT.ChargedHours;
                             Amount = POUT.CashAmount / (1 + (GlobalClass.VAT / 100));
+                            Rate = Amount / Quantity;
                             Discount = 0;
                             NonTaxable = 0;
                             Taxable = Amount - (NonTaxable + Discount);
@@ -315,6 +317,22 @@ namespace ParkingManagement.ViewModel
                                 FYID = GlobalClass.FYID,
                                 TaxInvoice = TaxInvoice
                             }, transaction: tran);
+                            strSQL = @"INSERT INTO ParkingSalesDetails(BillNo, FYID, [Description], PTYPE, ProdId, Quantity, Rate, Amount, Discount, Taxable, NonTaxable, Vat, NetAmount, Remarks)
+                                            VALUES(@BillNo, @FYID, 'Parking Charge','P', 1, @Quantity, @Rate, @Amount, @Discount, @Taxable, @NonTaxable, @Vat, @NetAmount, null )";
+                            conn.Execute(strSQL, new
+                            {
+                                BillNo = BillNo,
+                                FYID = GlobalClass.FYID,
+                                Quantity = Quantity,
+                                Rate = Rate,
+                                Amount = Amount,
+                                Discount = Discount,
+                                NonTaxable = NonTaxable,
+                                Taxable = Taxable,
+                                VAT = VAT,
+                                NetAmount = POUT.CashAmount,
+                            }, transaction: tran);
+
                             conn.Execute("UPDATE tblSequence SET CurNo = CurNo + 1 WHERE VNAME = 'PID' AND FYID = " + GlobalClass.FYID, transaction: tran);
                             conn.Execute("UPDATE tblSequence SET CurNo = CurNo + 1 WHERE VNAME = @VNAME AND FYID = @FYID", new { VNAME = InvoicePrefix, FYID = GlobalClass.FYID }, transaction: tran);
                             GlobalClass.SetUserActivityLog("Parking Out Withous Slip", "New", VCRHNO: BillNo, WorkDetail: "PID : " + PIN.PID);

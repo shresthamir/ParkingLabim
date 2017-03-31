@@ -155,12 +155,12 @@ namespace ParkingManagement.ViewModel
 
                         Parking.PID = Conn.ExecuteScalar<int>("SELECT CurNo FROM tblSequence WHERE VNAME = 'PID' AND FYID = " + GlobalClass.FYID, transaction: tran);
 
-                        while (Conn.ExecuteScalar<int>("SELECT COUNT (*) FROM ParkingInDetails WHERE PID = @PID AND FYID = @FYID",new { PID=Parking.PID, FYID = GlobalClass.FYID }, tran)>0)
+                        while (Conn.ExecuteScalar<int>("SELECT COUNT (*) FROM ParkingInDetails WHERE PID = @PID AND FYID = @FYID", new { PID = Parking.PID, FYID = GlobalClass.FYID }, tran) > 0)
                         {
                             Conn.Execute("UPDATE tblSequence SET CurNo = CurNo + 1 WHERE VNAME = 'PID' AND FYID = " + GlobalClass.FYID, transaction: tran);
                             Parking.PID = Conn.ExecuteScalar<int>("SELECT CurNo FROM tblSequence WHERE VNAME = 'PID' AND FYID = " + GlobalClass.FYID, transaction: tran);
                         }
-                            Parking.Barcode = BarCode(tran);
+                        Parking.Barcode = BarCode(tran);
                         if (Parking.Save(tran))
                         {
                             Conn.Execute("UPDATE tblSequence SET CurNo = CurNo + 1 WHERE VNAME = 'PID' AND FYID = " + GlobalClass.FYID, transaction: tran);

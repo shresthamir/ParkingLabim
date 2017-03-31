@@ -158,6 +158,9 @@
     <Compile Include="Forms\DataUtility\wDataRestore.xaml.cs">
       <DependentUpon>wDataRestore.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Master\ucVoucherTypes.xaml.cs">
+      <DependentUpon>ucVoucherTypes.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Master\usStaffRegistration.xaml.cs">
       <DependentUpon>usStaffRegistration.xaml</DependentUpon>
     </Compile>
@@ -185,6 +188,9 @@
     <Compile Include="Forms\Transaction\ucTouchParkingOut.xaml.cs">
       <DependentUpon>ucTouchParkingOut.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Transaction\ucVoucherSalesInvoice.xaml.cs">
+      <DependentUpon>ucVoucherSalesInvoice.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Transaction\wStaffBarcode.xaml.cs">
       <DependentUpon>wStaffBarcode.xaml</DependentUpon>
     </Compile>
@@ -194,6 +200,9 @@
     <Compile Include="Forms\wExportFormat.xaml.cs">
       <DependentUpon>wExportFormat.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Forms\wVoucherPrintProgress.xaml.cs">
+      <DependentUpon>wVoucherPrintProgress.xaml</DependentUpon>
+    </Compile>
     <Compile Include="HelpViewer.xaml.cs">
       <DependentUpon>HelpViewer.xaml</DependentUpon>
     </Compile>
@@ -201,10 +210,15 @@
     <Compile Include="Library\Helpers\ExportToPdfHelper.cs" />
     <Compile Include="Library\Helpers\StyleSelectors.cs" />
     <Compile Include="Library\ValueConverter\RadioButtonTrueFalseConveter.cs" />
+    <Compile Include="Models\ParkingSales.cs" />
     <Compile Include="Models\Staff.cs" />
+    <Compile Include="Models\VoucherType.cs" />
     <Compile Include="ViewModel\CreditNoteViewModel.cs" />
+    <Compile Include="ViewModel\VoucherSalesInvoiceVM.cs" />
     <Compile Include="ViewModel\POutWithoutSlipVM.cs" />
     <Compile Include="ViewModel\StaffViewModel.cs" />
+    <Compile Include="ViewModel\VoucherSalesViewModel.cs" />
+    <Compile Include="ViewModel\VoucherTypeViewModel.cs" />
     <Compile Include="ViewModel\vmCashSettlement.cs" />
     <Page Include="Forms\DataUtility\wDataBackup.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -237,6 +251,10 @@
     <Page Include="Forms\Master\ucTerminal.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Forms\Master\ucVoucherTypes.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Forms\Master\usStaffRegistration.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -302,6 +320,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Forms\Transaction\ucVoucherSalesInvoice.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Forms\Transaction\wStaffBarcode.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -313,6 +335,10 @@
     <Page Include="Forms\wExportFormat.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Forms\wVoucherPrintProgress.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="HelpViewer.xaml">
       <Generator>MSBuild:Compile</Generator>

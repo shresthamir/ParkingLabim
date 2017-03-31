@@ -177,15 +177,10 @@
 
                         <Label Grid.Row="4" Content="Remarks"/>
                         <TextBox Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="5" Height="60" TextWrapping="WrapWithOverflow" Text="{Binding POUT.Remarks, UpdateSourceTrigger=PropertyChanged}" GotFocus="TextBox_GotFocus" ></TextBox>
-
-
-
                     </Grid>
                 </Border>
             </Grid>
-
         </Border>
-
         <Border Style="{StaticResource PlainBackground}" Grid.Row="4">
             <Grid>
                 <Grid.Resources>

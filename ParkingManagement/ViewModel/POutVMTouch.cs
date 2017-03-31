@@ -266,11 +266,12 @@ namespace ParkingManagement.ViewModel
                     var POUTS = conn.Query<ParkingOut>(string.Format("SELECT * FROM ParkingOutDetails WHERE PID = {0} AND FYID = {1}", PIN.PID, GlobalClass.FYID));
                     if (POUTS.Count() > 0)
                     {
-                        POUT = POUTS.First();
+                        //POUT = POUTS.First();
                         MessageBox.Show("Vehicle already exited", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
                         PIN.Barcode = string.Empty;
                         return;
                     }
+                    
                     POUT.Rate_ID = (int)conn.ExecuteScalar("SELECT RATE_ID FROM RATEMASTER WHERE IsDefault = 1");
 
 
@@ -327,7 +328,7 @@ namespace ParkingManagement.ViewModel
         private void ExecuteSave(object obj)
         {
             string strSQL;
-            decimal Taxable, VAT, Amount, Discount, NonTaxable;
+            decimal Taxable, VAT, Amount, Discount, NonTaxable, Rate, Quantity;
             string BillNo = string.Empty;
             try
             {
@@ -340,7 +341,9 @@ namespace ParkingManagement.ViewModel
                         if (POUT.CashAmount > 0)
                         {
                             BillNo = InvoicePrefix + GlobalClass.GetInvoiceNo(InvoicePrefix, tran);
-                            Amount = POUT.CashAmount / (1 + (GlobalClass.VAT / 100));
+                            Quantity = POUT.ChargedHours;
+                            Amount = POUT.CashAmount / (1 + (GlobalClass.VAT / 100));                            
+                            Rate = Amount / Quantity;                            
                             Discount = 0;
                             NonTaxable = 0;
                             Taxable = Amount - (NonTaxable + Discount);
@@ -370,7 +373,24 @@ namespace ParkingManagement.ViewModel
                                 SESSION_ID = POUT.SESSION_ID,
                                 FYID = GlobalClass.FYID,
                                 TaxInvoice = TaxInvoice
+                            }, transaction: tran);                            
+                            strSQL = @"INSERT INTO ParkingSalesDetails(BillNo, FYID, [Description], PTYPE, ProdId, Quantity, Rate, Amount, Discount, Taxable, NonTaxable, Vat, NetAmount, Remarks)
+                                            VALUES(@BillNo, @FYID, 'Parking Charge','P', 1, @Quantity, @Rate, @Amount, @Discount, @Taxable, @NonTaxable, @Vat, @NetAmount, null )";
+                            conn.Execute(strSQL, new
+                            {
+                                BillNo = BillNo,
+                                FYID = GlobalClass.FYID,
+                                Quantity = Quantity,
+                                Rate = Rate,
+                                Amount = Amount,
+                                Discount = Discount,
+                                NonTaxable = NonTaxable,
+                                Taxable = Taxable,
+                                VAT = VAT,
+                                NetAmount = POUT.CashAmount,
                             }, transaction: tran);
+
+
                             conn.Execute("UPDATE tblSequence SET CurNo = CurNo + 1 WHERE VNAME = @VNAME AND FYID = @FYID", new { VNAME = InvoicePrefix, FYID = GlobalClass.FYID }, transaction: tran);
                             GlobalClass.SetUserActivityLog(tran, "Parking Out", "New", VCRHNO: BillNo, WorkDetail: "Bill No : " + BillNo);
                         }
