@@ -305,6 +305,7 @@ namespace ParkingManagement.ViewModel
                             v.Value = (POUT.ChargedAmount > v.Value) ? v.Value : POUT.ChargedAmount;
                             POUT.ChargedAmount = POUT.CashAmount = POUT.ChargedAmount - v.Value;
                             PIN.Barcode = string.Empty;
+                            Vouchers.Add(v);
                             return;
                         }
                     }
