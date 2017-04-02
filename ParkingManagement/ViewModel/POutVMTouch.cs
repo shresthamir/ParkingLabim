@@ -38,6 +38,9 @@ namespace ParkingManagement.ViewModel
         private string _InvoiceNo;
         private bool _TaxInvoice;
         private bool _MustIssueTaxInvoice;
+        List<Voucher> Vouchers;
+        List<VoucherType> VoucherTypes;
+
         public ParkingIn PIN { get { return _PIN; } set { _PIN = value; OnPropertyChanged("PIN"); } }
         public ParkingOut POUT { get { return _POUT; } set { _POUT = value; OnPropertyChanged("POUT"); } }
         public ObservableCollection<RateMaster> RSchemes
@@ -79,7 +82,7 @@ namespace ParkingManagement.ViewModel
             {
                 using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
                 {
-                    PID = conn.ExecuteScalar<int>("SELECT PID FROM ParkingSales WHERE BillNo = @BillNo AND FYID = @FYID", new {BillNo = BillNo, FYID = GlobalClass.FYID});
+                    PID = conn.ExecuteScalar<int>("SELECT PID FROM ParkingSales WHERE BillNo = @BillNo AND FYID = @FYID", new { BillNo = BillNo, FYID = GlobalClass.FYID });
                     //if(PID == 0)
                     //{
                     //    return;
@@ -92,7 +95,7 @@ namespace ParkingManagement.ViewModel
             }
             catch (Exception)
             {
-                                
+
             }
         }
 
@@ -106,7 +109,7 @@ namespace ParkingManagement.ViewModel
         }
 
         private void ExecuteRePrint(object obj)
-        {            
+        {
             SetAction(ButtonAction.RePrint);
             OnPropertyChanged("IsEntryMode");
         }
@@ -129,6 +132,7 @@ namespace ParkingManagement.ViewModel
                 timer.Tick += timer_Tick;
                 timer.Start();
                 LoadRateSchemes();
+                Vouchers = new List<Voucher>();
                 LoadData = new RelayCommand(ExecuteLoad);
                 SaveCommand = new RelayCommand(ExecuteSave, CanExecuteSave);
                 UndoCommand = new RelayCommand(ExecuteUndo);
@@ -206,7 +210,7 @@ namespace ParkingManagement.ViewModel
             try
             {
                 using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
-                {      
+                {
                     string BillNo = InvoicePrefix + InvoiceNo;
                     string DuplicateCaption = GlobalClass.GetReprintCaption(BillNo);
                     PrintBill(BillNo, conn, (TaxInvoice) ? "INVOICE" : "ABBREVIATED TAX INVOCE", DuplicateCaption);
@@ -251,7 +255,58 @@ namespace ParkingManagement.ViewModel
                 {
                     if (_action == ButtonAction.Selected)
                     {
-                        POUT.SaveLog(conn);
+                        if (!obj.ToString().StartsWith("#"))
+                            POUT.SaveLog(conn);
+                        else
+                        {
+                            if (Vouchers.Any(x => x.Barcode == obj.ToString()))
+                                return;
+                            Voucher v = conn.Query<Voucher>("SELECT VoucherNo, Barcode, VoucherId, Value, ExpDate, ValidStart, ValidEnd, ScannedTime FROM ParkingVouchers WHERE Barcode = @Barcode", new { Barcode = obj.ToString() }).FirstOrDefault();
+                            if (v == null)
+                            {
+                                MessageBox.Show("Invalid Voucher", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                                return;
+                            }
+                            else if (v.ScannedTime == null)
+                            {
+                                MessageBox.Show("Voucher already redeemed.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                                return;
+                            }
+                            else if (!VoucherTypes.Any(x => x.VoucherId == v.VoucherId && x.VehicleType == PIN.VehicleType))
+                            {
+                                MessageBox.Show("The Voucher is not valid for selected vehicle.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                                return;
+                            }
+                            else if (v.ExpDate < CurDate)
+                            {
+                                MessageBox.Show("Voucher has expired.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                                return;
+                            }
+                            else
+                            {
+                                TimeSpan outTime = Convert.ToDateTime(POUT.OutTime).TimeOfDay;
+                                if (v.ValidStart < v.ValidEnd)
+                                {
+                                    if (outTime < v.ValidStart || outTime > v.ValidEnd)
+                                    {
+                                        MessageBox.Show("Voucher is not valid for current Shift.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                                        return;
+                                    }
+                                }
+                                else
+                                {
+                                    if (outTime < v.ValidStart && outTime > v.ValidEnd)
+                                    {
+                                        MessageBox.Show("Voucher is not valid for current Shift.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                                        return;
+                                    }
+                                }
+                            }
+                            v.Value = (POUT.ChargedAmount > v.Value) ? v.Value : POUT.ChargedAmount;
+                            POUT.ChargedAmount = POUT.CashAmount = POUT.ChargedAmount - v.Value;
+                            PIN.Barcode = string.Empty;
+                            return;
+                        }
                     }
 
                     var PINS = conn.Query<ParkingIn>(string.Format("SELECT PID, VehicleType, InDate, InMiti, InTime, PlateNo, Barcode, UID FROM ParkingInDetails WHERE BARCODE = '{0}' AND FYID = {1}", obj, GlobalClass.FYID));
@@ -271,7 +326,7 @@ namespace ParkingManagement.ViewModel
                         PIN.Barcode = string.Empty;
                         return;
                     }
-                    
+
                     POUT.Rate_ID = (int)conn.ExecuteScalar("SELECT RATE_ID FROM RATEMASTER WHERE IsDefault = 1");
 
 
@@ -293,7 +348,8 @@ namespace ParkingManagement.ViewModel
                     {
                         CanChangeInvoiceType = true;
                     }
-                    FocusedElement = (short)Focusable.CashAmount;
+                    PIN.Barcode = string.Empty;
+                    //FocusedElement = (short)Focusable.CashAmount;
                 }
             }
             catch (Exception ex)
@@ -324,7 +380,7 @@ namespace ParkingManagement.ViewModel
             }
         }
 
-       
+
         private void ExecuteSave(object obj)
         {
             string strSQL;
@@ -342,9 +398,9 @@ namespace ParkingManagement.ViewModel
                         {
                             BillNo = InvoicePrefix + GlobalClass.GetInvoiceNo(InvoicePrefix, tran);
                             Quantity = POUT.ChargedHours;
-                            Amount = POUT.CashAmount / (1 + (GlobalClass.VAT / 100));                            
-                            Rate = Amount / Quantity;                            
-                            Discount = 0;
+                            Discount = Vouchers.Sum(x => x.Value);
+                            Amount = (POUT.CashAmount + Discount) / (1 + (GlobalClass.VAT / 100));
+                            Rate = Amount / Quantity;
                             NonTaxable = 0;
                             Taxable = Amount - (NonTaxable + Discount);
                             VAT = Taxable * GlobalClass.VAT / 100;
@@ -373,7 +429,7 @@ namespace ParkingManagement.ViewModel
                                 SESSION_ID = POUT.SESSION_ID,
                                 FYID = GlobalClass.FYID,
                                 TaxInvoice = TaxInvoice
-                            }, transaction: tran);                            
+                            }, transaction: tran);
                             strSQL = @"INSERT INTO ParkingSalesDetails(BillNo, FYID, [Description], PTYPE, ProdId, Quantity, Rate, Amount, Discount, Taxable, NonTaxable, Vat, NetAmount, Remarks)
                                             VALUES(@BillNo, @FYID, 'Parking Charge','P', 1, @Quantity, @Rate, @Amount, @Discount, @Taxable, @NonTaxable, @Vat, @NetAmount, null )";
                             conn.Execute(strSQL, new
@@ -389,6 +445,22 @@ namespace ParkingManagement.ViewModel
                                 VAT = VAT,
                                 NetAmount = POUT.CashAmount,
                             }, transaction: tran);
+
+                            if (Vouchers.Count > 0)
+                            {
+                                strSQL = "INSERT INTO VoucherDiscountDetail (BillNo, FYID, VoucherNo, DiscountAmount) VALUES (@BillNo, @FYID, @VoucherNo, @DiscountAmount)";
+                                foreach(Voucher v in Vouchers)
+                                {
+                                    conn.Execute(strSQL, new
+                                    {
+                                        BillNo = BillNo,
+                                        FYID = GlobalClass.FYID,
+                                        VoucherNo = v.VoucherNo,
+                                        DiscountAmount = v.Value
+                                    }, transaction:tran);
+                                    conn.Execute("UPDATE ParkingVouchers SET ScannedTime = GETDATE() WHERE VoucherNo = @VoucherNo", v, tran);
+                                }
+                            }
 
 
                             conn.Execute("UPDATE tblSequence SET CurNo = CurNo + 1 WHERE VNAME = @VNAME AND FYID = @FYID", new { VNAME = InvoicePrefix, FYID = GlobalClass.FYID }, transaction: tran);
@@ -431,7 +503,7 @@ namespace ParkingManagement.ViewModel
             CanChangeInvoiceType = true;
             PIN = new ParkingIn();
             POUT = new ParkingOut();
-            POUT.PropertyChanged += POUT_PropertyChanged;            
+            POUT.PropertyChanged += POUT_PropertyChanged;
             SetAction(ButtonAction.Init);
             OnPropertyChanged("IsEntryMode");
         }
@@ -492,6 +564,7 @@ namespace ParkingManagement.ViewModel
 
             using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
             {
+                VoucherTypes = conn.Query<VoucherType>("SELECT VoucherId, VehicleType FROM VoucherTypes").ToList();
                 RSchemes = new ObservableCollection<RateMaster>(conn.Query<RateMaster>("SELECT Rate_ID, RateDescription, IsDefault, [UID] FROM RATEMASTER"));
             }
             GlobalClass.DefaultRate = RSchemes.First(x => x.IsDefault);
@@ -501,7 +574,7 @@ namespace ParkingManagement.ViewModel
         public static void PrintBill(string BillNo, SqlConnection conn, string InvoiceName, string DuplicateCaption = "")
         {
             DataRow dr;
-            
+
             //// RawPrinterHelper printer = new RawPrinterHelper();
 
             using (DataAccess da = new DataAccess())

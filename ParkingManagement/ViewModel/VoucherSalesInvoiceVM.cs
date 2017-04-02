@@ -382,8 +382,13 @@ namespace ParkingManagement.ViewModel
                                 {
                                     new VoucherPrint(Barcodes.ToArray()).Print();
                                     Barcodes.Clear();
+                                    Barcodes.Add(v.Barcode);
                                 }                                
                             }
+                        }
+                        if(Barcodes.Count>0)
+                        {
+                            new VoucherPrint(Barcodes.ToArray()).Print();
                         }
                         tran.Commit();
                     }
