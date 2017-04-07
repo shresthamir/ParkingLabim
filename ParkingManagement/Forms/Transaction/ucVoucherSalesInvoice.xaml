@@ -115,22 +115,24 @@
                 <Border Style="{StaticResource PlainBackground}">
                     <Grid>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="35"/>
-                            <RowDefinition Height="60"/>
-                            <RowDefinition Height="35"/>
+                            <RowDefinition Height="25"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="50"/>
+                            <RowDefinition Height="30"/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="100"/>
                             <ColumnDefinition />
                             <ColumnDefinition Width="20"/>
                         </Grid.ColumnDefinitions>
-                        <Label Content="Received From"/>
-                        <TextBox Grid.Column="1" Text="{Binding VSales.BillTo}"  GotFocus="TextBox_GotFocus"></TextBox>
-                        <Label Content="Address" Grid.Row="1" Margin="2 5 0 0" VerticalAlignment="Top" />
-                        <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding VSales.BILLTOADD}" Height="50" GotFocus="TextBox_GotFocus" TextWrapping="WrapWithOverflow" ></TextBox>
-                        <Label Content="PAN" Grid.Row="2"/>
-                        <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding VSales.BILLTOPAN}" GotFocus="TextBox_GotFocus" PreviewTextInput="TextBox_PreviewTextInput" ></TextBox>
-
+                        <RadioButton IsChecked="{Binding VSales.TRNMODE}" Content="Cash" VerticalAlignment="Center"></RadioButton>
+                        <RadioButton Grid.Column="1" IsChecked="{Binding VSales.TRNMODE, Converter={StaticResource ReverseBool}}" Content="Credit" VerticalAlignment="Center"></RadioButton>
+                        <Label Grid.Row="1" Content="Received From"/>
+                        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding VSales.BillTo}"  GotFocus="TextBox_GotFocus"></TextBox>
+                        <Label Content="Address" Grid.Row="2" Margin="2 5 0 0" VerticalAlignment="Top" />
+                        <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding VSales.BILLTOADD}" Height="50" GotFocus="TextBox_GotFocus" TextWrapping="WrapWithOverflow" ></TextBox>
+                        <Label Content="PAN" Grid.Row="3"/>
+                        <TextBox Grid.Column="1" Grid.Row="3" Text="{Binding VSales.BILLTOPAN}" GotFocus="TextBox_GotFocus" PreviewTextInput="TextBox_PreviewTextInput" ></TextBox>
                     </Grid>
                 </Border>
                 <Border Style="{StaticResource PlainBackground}" Grid.Column="1">

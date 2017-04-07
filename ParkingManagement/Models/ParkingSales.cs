@@ -31,7 +31,7 @@ namespace ParkingManagement.Models
         private int _UID;
         private int _SESSION_ID;
         private int _PID;
-
+        private bool _TRNMODE = true;
         public string BillNo { get { return _BillNo; } set { _BillNo = value; } }
         public byte FYID { get { return _FYID; } set { _FYID = value; } }
         public DateTime TDate { get { return _TDate; } set { _TDate = value; } }
@@ -53,13 +53,14 @@ namespace ParkingManagement.Models
         public int UID { get { return _UID; } set { _UID = value; } }
         public int SESSION_ID { get { return _SESSION_ID; } set { _SESSION_ID = value; } }
         public int PID { get { return _PID; } set { _PID = value; } }
+        public bool TRNMODE { get { return _TRNMODE; } set { _TRNMODE = value; OnPropertyChanged("TRNMODE"); } }
 
         public override bool Save(SqlTransaction tran)
         {
             string strSQL = string.Format
                              (
-                                 @"INSERT INTO ParkingSales (BillNo, FYID, TDate, TMiti, TTime, [Description], BillTo, BILLTOADD, BILLTOPAN, Amount, Discount, NonTaxable, Taxable, VAT, GrossAmount, RefBillNo, TaxInvoice, Remarks, UID, SESSION_ID, PID) 
-                                    VALUES (@BillNo, @FYID, @TDate, @TMiti, @TTime, @Description, @BillTo, @BILLTOADD, @BILLTOPAN, @Amount, @Discount, @NonTaxable, @Taxable, @VAT, @GrossAmount, @RefBillNo, @TaxInvoice, @Remarks, @UID, @SESSION_ID, @PID)"
+                                 @"INSERT INTO ParkingSales (BillNo, FYID, TDate, TMiti, TTime, [Description], BillTo, BILLTOADD, BILLTOPAN, Amount, Discount, NonTaxable, Taxable, VAT, GrossAmount, RefBillNo, TaxInvoice, Remarks, UID, SESSION_ID, PID, TRNMODE) 
+                                    VALUES (@BillNo, @FYID, @TDate, @TMiti, @TTime, @Description, @BillTo, @BILLTOADD, @BILLTOPAN, @Amount, @Discount, @NonTaxable, @Taxable, @VAT, @GrossAmount, @RefBillNo, @TaxInvoice, @Remarks, @UID, @SESSION_ID, @PID, @TRNMODE)"
                              );
             return tran.Connection.Execute(strSQL, this, tran) == 1;
         }

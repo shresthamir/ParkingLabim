@@ -53,31 +53,28 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="BarcodeLib">
-      <HintPath>..\..\..\Library\BarcodeLib.dll</HintPath>
+      <HintPath>..\..\..\Library DLLs\BarcodeLib.dll</HintPath>
     </Reference>
     <Reference Include="Dapper">
-      <HintPath>..\..\..\Library\Dapper.dll</HintPath>
+      <HintPath>..\..\..\Library DLLs\Dapper.dll</HintPath>
     </Reference>
-    <Reference Include="DateFunction, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>D:\Library\DateFunction\DateFunction\BIN\X86\Release\DateFunction.dll</HintPath>
+    <Reference Include="DateFunction">
+      <HintPath>..\..\..\Library DLLs\DateFunction.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Expression.Interactions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>D:\Projects\RMS\RMS\bin\Debug\Microsoft.Expression.Interactions.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Windows.Shell">
-      <HintPath>D:\Projects\RMS\RMS\bin\Debug\Microsoft.Windows.Shell.dll</HintPath>
+      <HintPath>..\..\..\Library DLLs\Microsoft.Windows.Shell.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\IMS POS svn\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\..\Library DLLs\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="PresentationFramework.Aero" />
     <Reference Include="PresentationFramework.Aero2" />
-    <Reference Include="RawPrintFunctions, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Library\RawPrintFunctions.dll</HintPath>
+    <Reference Include="RawPrintFunctions">
+      <HintPath>..\..\..\Library DLLs\RawPrintFunctions.dll</HintPath>
     </Reference>
     <Reference Include="ReachFramework" />
     <Reference Include="Syncfusion.Core">
@@ -129,22 +126,20 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="WPFCustomToolKit, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Library\WpfToolKits\WPFCustomToolKit\bin\Debug\WPFCustomToolKit.dll</HintPath>
+    <Reference Include="WPFCustomToolKit">
+      <HintPath>..\..\..\Library DLLs\WPFCustomToolKit.dll</HintPath>
     </Reference>
     <Reference Include="Xceed.Wpf.AvalonDock">
-      <HintPath>D:\Projects\WareHouseManagement\WareHouseManagement\bin\Debug\Xceed.Wpf.AvalonDock.dll</HintPath>
+      <HintPath>..\..\..\Library DLLs\Xceed.Wpf.AvalonDock.dll</HintPath>
     </Reference>
     <Reference Include="Xceed.Wpf.AvalonDock.Themes.Metro">
-      <HintPath>D:\Projects\WareHouseManagement\WareHouseManagement\bin\Debug\Xceed.Wpf.AvalonDock.Themes.Metro.dll</HintPath>
+      <HintPath>..\..\..\Library DLLs\Xceed.Wpf.AvalonDock.Themes.Metro.dll</HintPath>
     </Reference>
-    <Reference Include="Xceed.Wpf.Toolkit, Version=2.2.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Users\Admin\Downloads\Compressed\Extended WPF Toolkit Binaries\Xceed.Wpf.Toolkit.dll</HintPath>
+    <Reference Include="Xceed.Wpf.Toolkit">
+      <HintPath>..\..\..\Library DLLs\Xceed.Wpf.Toolkit.dll</HintPath>
     </Reference>
     <Reference Include="Zen.Barcode">
-      <HintPath>..\..\WareHouseManagement\WareHouseManagement\bin\Debug\Zen.Barcode.dll</HintPath>
+      <HintPath>..\..\..\Library DLLs\Zen.Barcode.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

@@ -405,18 +405,14 @@ namespace ParkingManagement.ViewModel
                             NonTaxable = 0;
                             Taxable = Amount - (NonTaxable + Discount);
                             VAT = Taxable * GlobalClass.VAT / 100;
-                            strSQL = string.Format
-                                (
-                                    @"INSERT INTO ParkingSales (BillNo, TDate, TMiti, TTime, BILLTO, BILLTOADD, BILLTOPAN, Description, Amount, Discount, NonTaxable, Taxable, VAT, GrossAmount, PID, UID, SESSION_ID, FYID, TaxInvoice) 
-                                    VALUES (@BillNo, @TDATE, @TMITI, @TTIME, @BILLTO, @BILLTOADD, @BILLTOPAN, 'Parking Charge', @Amount, @Discount, @NonTaxable, @Taxable, @VAT, @GrossAmount, @PID, @UID, @SESSION_ID, @FYID, @TaxInvoice)"
-                                );
-                            conn.Execute(strSQL, new
+
+                            TParkingSales PSales = new TParkingSales
                             {
                                 BillNo = BillNo,
-                                TDATE = POUT.OutDate,
-                                TMITI = POUT.OutMiti,
-                                TTIME = POUT.OutTime,
-                                BILLTO = POUT.BILLTO,
+                                TDate = POUT.OutDate,
+                                TMiti = POUT.OutMiti,
+                                TTime = POUT.OutTime,
+                                BillTo = POUT.BILLTO,
                                 BILLTOADD = POUT.BILLTOADD,
                                 BILLTOPAN = POUT.BILLTOPAN,
                                 Amount = Amount,
@@ -430,10 +426,9 @@ namespace ParkingManagement.ViewModel
                                 SESSION_ID = POUT.SESSION_ID,
                                 FYID = GlobalClass.FYID,
                                 TaxInvoice = TaxInvoice
-                            }, transaction: tran);
-                            strSQL = @"INSERT INTO ParkingSalesDetails(BillNo, FYID, [Description], PTYPE, ProdId, Quantity, Rate, Amount, Discount, Taxable, NonTaxable, Vat, NetAmount, Remarks)
-                                            VALUES(@BillNo, @FYID, 'Parking Charge','P', 1, @Quantity, @Rate, @Amount, @Discount, @Taxable, @NonTaxable, @Vat, @NetAmount, null )";
-                            conn.Execute(strSQL, new
+                            };
+                            PSales.Save(tran);
+                            TParkingSalesDetails PSalesDetails = new TParkingSalesDetails
                             {
                                 BillNo = BillNo,
                                 FYID = GlobalClass.FYID,
@@ -445,7 +440,8 @@ namespace ParkingManagement.ViewModel
                                 Taxable = Taxable,
                                 VAT = VAT,
                                 NetAmount = POUT.CashAmount,
-                            }, transaction: tran);
+                            };
+                            PSalesDetails.Save(tran);
 
                             if (Vouchers.Count > 0)
                             {
@@ -462,8 +458,6 @@ namespace ParkingManagement.ViewModel
                                     conn.Execute("UPDATE ParkingVouchers SET ScannedTime = GETDATE() WHERE VoucherNo = @VoucherNo", v, tran);
                                 }
                             }
-
-
                             conn.Execute("UPDATE tblSequence SET CurNo = CurNo + 1 WHERE VNAME = @VNAME AND FYID = @FYID", new { VNAME = InvoicePrefix, FYID = GlobalClass.FYID }, transaction: tran);
                             GlobalClass.SetUserActivityLog(tran, "Parking Out", "New", VCRHNO: BillNo, WorkDetail: "Bill No : " + BillNo);
                         }

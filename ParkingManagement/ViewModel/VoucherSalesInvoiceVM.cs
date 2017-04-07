@@ -27,8 +27,6 @@ namespace ParkingManagement.ViewModel
         }
         DateConverter nepDate;
         DispatcherTimer timer;
-        ParkingIn _PIN;
-        ParkingOut _POUT;
         string _CurTime;
         DateTime _CurDate;
         private string _InvoicePrefix = "TI";
@@ -144,7 +142,7 @@ namespace ParkingManagement.ViewModel
                         return;
                     }
 
-                    VSales = conn.Query<TParkingSales>("SELECT BillNo, FYID, TDate, TMiti, TTime, [Description], BillTo, BILLTOADD, BILLTOPAN, Amount, Discount, NonTaxable, Taxable, VAT, GrossAmount, RefBillNo, TaxInvoice, Remarks, UID, SESSION_ID, PID FROM ParkingSales WHERE BillNo = @BillNo AND FYID = @FYID", new { BillNo = BillNo, FYID = GlobalClass.FYID }).FirstOrDefault();
+                    VSales = conn.Query<TParkingSales>("SELECT BillNo, FYID, TDate, TMiti, TTime, [Description], BillTo, BILLTOADD, BILLTOPAN, Amount, Discount, NonTaxable, Taxable, VAT, GrossAmount, RefBillNo, TaxInvoice, Remarks, UID, SESSION_ID, PID FROM ParkingSales WHERE BillNo = @BillNo AND FYID = @FYID", new { BillNo = BillNo, FYID = GlobalClass.FYID }).FirstOrDefault();                                        
                     VSDetailList = new ObservableCollection<TParkingSalesDetails>(
                                         conn.Query<TParkingSalesDetails>("SELECT BillNo, FYID, PTYPE, ProdId, [Description], Quantity, Rate, Amount, Discount, NonTaxable, Taxable, VAT, NetAmount, Remarks FROM ParkingSalesDetails WHERE BillNo = @BillNo AND FYID = @FYID", new { BillNo = BillNo, FYID = GlobalClass.FYID }));
                     SetAction(ButtonAction.InvoiceLoaded);
@@ -235,11 +233,12 @@ namespace ParkingManagement.ViewModel
             {
                 using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
                 {
-                    string BillNo = InvoicePrefix + InvoiceNo;
-                    string DuplicateCaption = GlobalClass.GetReprintCaption(BillNo);
-                    POutVMTouch.PrintBill(BillNo, conn, "INVOICE", DuplicateCaption);
-                    GlobalClass.SavePrintLog(BillNo, null, DuplicateCaption);
-                    GlobalClass.SetUserActivityLog("Voucher Sales Invoice", "Re-Print", WorkDetail: string.Empty, VCRHNO: BillNo, Remarks: "Reprinted : " + DuplicateCaption);
+                    PrintBill(VSales.BillNo);
+                    //string BillNo = InvoicePrefix + InvoiceNo;
+                    //string DuplicateCaption = GlobalClass.GetReprintCaption(BillNo);
+                    //POutVMTouch.PrintBill(BillNo, conn, "INVOICE", DuplicateCaption);
+                    //GlobalClass.SavePrintLog(BillNo, null, DuplicateCaption);
+                    //GlobalClass.SetUserActivityLog("Voucher Sales Invoice", "Re-Print", WorkDetail: string.Empty, VCRHNO: BillNo, Remarks: "Reprinted : " + DuplicateCaption);
 
                 }
                 ExecuteUndo(null);
@@ -317,7 +316,7 @@ namespace ParkingManagement.ViewModel
                     }
                     if (!string.IsNullOrEmpty(VSales.BillNo))
                     {
-                        //PrintBill(VSales.BillNo);
+                        PrintBill(VSales.BillNo);
 
                         //RawPrinterHelper.SendStringToPrinter(GlobalClass.PrinterName, ((char)27).ToString() + ((char)112).ToString() + ((char)0).ToString() + ((char)64).ToString() + ((char)240).ToString(), "Receipt");   //Open Cash Drawer
                         //POutVMTouch.PrintBill(VSales.BillNo.ToString(), conn, "TAX INVOICE");
@@ -401,7 +400,8 @@ namespace ParkingManagement.ViewModel
 
             VSales = new TParkingSales();
             VSDetail = new TParkingSalesDetails();
-            VSDetailList.Clear();
+            VSDetailList = new ObservableCollection<TParkingSalesDetails>();
+            VSDetailList.CollectionChanged += VSDetailList_CollectionChanged;
             VSDetail.PropertyChanged += VSDetail_PropertyChanged;
             FocusedElement = (short)Focusable.Barcode;
             InvoiceNo = string.Empty;
@@ -409,9 +409,43 @@ namespace ParkingManagement.ViewModel
             OnPropertyChanged("IsEntryMode");
         }
 
-        void PrintBill()
-        {
+        void PrintBill(string BillNo)
+        {            
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
+                {
+                    string PType = conn.ExecuteScalar<string>("SELECT PType From ParkingSales PS JOIN ParkingSalesDetails PSD ON PS.BillNo = PSD.BillNo AND PS.FYID = PSD.FYID WHERE PS.BillNo = @BillNo AND PS.FYID = @FYID", new { BillNo = BillNo, FYID = GlobalClass.FYID });
+                    if (string.IsNullOrEmpty(PType))
+                    {
+                        MessageBox.Show("Invalid Invoice No", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                        return;
+                    }
+                    else if (PType == "P")
+                    {
+                        MessageBox.Show("Parking Invoice cannot be loaded in this interface.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                        return;
+                    }
 
+                    var vSales = conn.Query<TParkingSales>("SELECT BillNo, FYID, TDate, TMiti, TTime, [Description], BillTo, BILLTOADD, BILLTOPAN, Amount, Discount, NonTaxable, Taxable, VAT, GrossAmount, RefBillNo, TaxInvoice, Remarks, UID, SESSION_ID, PID FROM ParkingSales WHERE BillNo = @BillNo AND FYID = @FYID", new { BillNo = BillNo, FYID = GlobalClass.FYID }).FirstOrDefault();
+                    var vSDetailList = new List<TParkingSalesDetails>(
+                                        conn.Query<TParkingSalesDetails>("SELECT BillNo, FYID, PTYPE, ProdId, [Description], Quantity, Rate, Amount, Discount, NonTaxable, Taxable, VAT, NetAmount, Remarks FROM ParkingSalesDetails WHERE BillNo = @BillNo AND FYID = @FYID", new { BillNo = BillNo, FYID = GlobalClass.FYID }));
+                    var pslip = new BillPrint {
+                        CompanyName = GlobalClass.CompanyName,
+                        CompanyAddress = GlobalClass.CompanyAddress,
+                        CompanyPan = GlobalClass.CompanyPan,
+                        PSales = vSales,
+                        PSDetails = vSDetailList ,
+                        InvoiceTitle = "TAX INVOICE"
+                    };
+                    pslip.Print();
+                }
+            }
+            catch (Exception Ex)
+            {
+
+            }
+            
         }
 
 
