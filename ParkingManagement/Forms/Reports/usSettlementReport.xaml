@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="ParkingManagement.Forms.Reports.RePrintLogReport"
+﻿<UserControl x:Class="ParkingManagement.Forms.Reports.ucSettlementReport"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -55,17 +55,10 @@
                                 </Style>
                             </DatePicker.Resources>
                         </DatePicker>
-                        <TextBox Text="{Binding TDate, Converter={StaticResource DateToMiti}}" />
+                        <TextBox Text="{Binding TDate, Converter={StaticResource DateToMiti}}" />                        
                         
-                        <CheckBox x:Name="chkVatSalesRegister" Content="Show Abbr. Sales Register In Summary" IsChecked="{Binding ShowSISummary}" VerticalAlignment="Center"/>
-                        <Label x:Name="lbSummary" Content="Summerize By"/>
-                        <ComboBox x:Name="cmbSummary" Width="120" SelectedValuePath="Tag" SelectedValue="{Binding SummaryType}">
-                            <ComboBox.Items>
-                                <ComboBoxItem Content="Voucher Type" Tag="REMARKS"/>
-                                <ComboBoxItem Content="Customer" Tag="CUSTOMER_NAME"/>
-                                <ComboBoxItem Content="User" Tag="PRINTED_BY"/>
-                            </ComboBox.Items>
-                        </ComboBox>
+                        <Label Content="User :"/>
+                        <ComboBox Width="120" ItemsSource="{Binding UserList}" DisplayMemberPath="UserName" SelectedValuePath="UID" SelectedValue="{Binding SelectedUser}"/>
                     </StackPanel>
                 </Border>
 

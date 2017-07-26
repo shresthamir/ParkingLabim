@@ -23,7 +23,8 @@ namespace ParkingManagement.ViewModel
     {
         enum Focusable
         {
-            Barcode = 0, CashAmount = 1
+            Barcode = 1,
+            Finish = 2
         }
         DateConverter nepDate;
         bool _PartyEnabled;
@@ -164,33 +165,37 @@ namespace ParkingManagement.ViewModel
                 POUT.STAFF_BARCODE = obj.ToString();
                 using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
                 {
-                    if (conn.ExecuteScalar<int>("SELECT COUNT(*) FROM tblStaff WHERE STATUS = 0 AND BARCODE = '" + POUT.STAFF_BARCODE + "'") == 0)
+                    if (POUT.STAFF_BARCODE != "STAMP")
                     {
-                        MessageBox.Show("Invalid Barcode. Please Try Again.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                        return;
-                    }
-                    if (GlobalClass.AllowMultiVehicleForStaff == 0)
-                    {
-                        if (conn.ExecuteScalar<int>
-                        (
-                            string.Format
+                        if (conn.ExecuteScalar<int>("SELECT COUNT(*) FROM tblStaff WHERE STATUS = 0 AND BARCODE = '" + POUT.STAFF_BARCODE + "'") == 0)
+                        {
+                            MessageBox.Show("Invalid Barcode. Please Try Again.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                            return;
+                        }
+                        if (GlobalClass.AllowMultiVehicleForStaff == 0)
+                        {
+                            if (conn.ExecuteScalar<int>
                             (
-                                @"SELECT COUNT(*) FROM
+                                string.Format
+                                (
+                                    @"SELECT COUNT(*) FROM
                             (
                                 SELECT  INDATE + CAST(INTIME AS TIME) INTIME, OUTDATE + CAST(OUTTIME AS TIME) OUTTIME FROM ParkingInDetails PID 
                                 JOIN ParkingOutDetails POD ON PID.PID =POD.PID AND PID.FYID = POD.FYID WHERE POD.STAFF_BARCODE = '{0}'
                             ) A WHERE (INTIME < '{1}' AND OUTTIME > '{1}') OR (INTIME > '{1}' AND OUTTIME > '{1}')", POUT.STAFF_BARCODE, PIN.InDate.Add(DateTime.Parse(PIN.InTime).TimeOfDay)
-                            )
-                        ) > 0)
-                        {
-                            MessageBox.Show("Staff already parked one vehicle during current vehile's parked period. Staff are not allowed to park multiple vehicle at a time", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                            return;
+                                )
+                            ) > 0)
+                            {
+                                MessageBox.Show("Staff already parked one vehicle during current vehile's parked period. Staff are not allowed to park multiple vehicle at a time", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                                return;
+                            }
                         }
                     }
                 }
                 POUT.CashAmount = 0;
                 ExecuteSave(null);
-                StaffBarcode.Close();
+                if (StaffBarcode != null)
+                    StaffBarcode.Close();
             }
             catch (Exception ex)
             {
@@ -350,7 +355,7 @@ namespace ParkingManagement.ViewModel
                         CanChangeInvoiceType = true;
                     }
                     PIN.Barcode = string.Empty;
-                    //FocusedElement = (short)Focusable.CashAmount;
+                    FocusedElement = (short)Focusable.Finish;
                 }
             }
             catch (Exception ex)
@@ -393,7 +398,7 @@ namespace ParkingManagement.ViewModel
                 {
                     conn.Open();
                     using (SqlTransaction tran = conn.BeginTransaction())
-                    {
+                    {                        
                         POUT.Save(tran);
                         if (POUT.CashAmount > 0)
                         {
@@ -431,6 +436,8 @@ namespace ParkingManagement.ViewModel
                             TParkingSalesDetails PSalesDetails = new TParkingSalesDetails
                             {
                                 BillNo = BillNo,
+                                PType = 'P',
+                                Description = "Parking Charge",
                                 FYID = GlobalClass.FYID,
                                 Quantity = Quantity,
                                 Rate = Rate,
@@ -443,23 +450,24 @@ namespace ParkingManagement.ViewModel
                             };
                             PSalesDetails.Save(tran);
 
-                            if (Vouchers.Count > 0)
-                            {
-                                strSQL = "INSERT INTO VoucherDiscountDetail (BillNo, FYID, VoucherNo, DiscountAmount) VALUES (@BillNo, @FYID, @VoucherNo, @DiscountAmount)";
-                                foreach(Voucher v in Vouchers)
-                                {
-                                    conn.Execute(strSQL, new
-                                    {
-                                        BillNo = BillNo,
-                                        FYID = GlobalClass.FYID,
-                                        VoucherNo = v.VoucherNo,
-                                        DiscountAmount = v.Value
-                                    }, transaction:tran);
-                                    conn.Execute("UPDATE ParkingVouchers SET ScannedTime = GETDATE() WHERE VoucherNo = @VoucherNo", v, tran);
-                                }
-                            }
                             conn.Execute("UPDATE tblSequence SET CurNo = CurNo + 1 WHERE VNAME = @VNAME AND FYID = @FYID", new { VNAME = InvoicePrefix, FYID = GlobalClass.FYID }, transaction: tran);
                             GlobalClass.SetUserActivityLog(tran, "Parking Out", "New", VCRHNO: BillNo, WorkDetail: "Bill No : " + BillNo);
+                        }
+                        if (Vouchers.Count > 0)
+                        {
+                            strSQL = "INSERT INTO VoucherDiscountDetail (BillNo, FYID, VoucherNo, DiscountAmount, UID) VALUES (@BillNo, @FYID, @VoucherNo, @DiscountAmount, @UID)";
+                            foreach (Voucher v in Vouchers)
+                            {
+                                conn.Execute(strSQL, new
+                                {
+                                    BillNo = string.IsNullOrEmpty(BillNo) ? "CS1" : BillNo,
+                                    FYID = GlobalClass.FYID,
+                                    VoucherNo = v.VoucherNo,
+                                    DiscountAmount = v.Value,
+                                    UID = POUT.UID
+                                }, transaction: tran);
+                                conn.Execute("UPDATE ParkingVouchers SET ScannedTime = GETDATE() WHERE VoucherNo = @VoucherNo", v, tran);
+                            }
                         }
                         tran.Commit();
                     }
@@ -500,6 +508,7 @@ namespace ParkingManagement.ViewModel
             POUT = new ParkingOut();
             POUT.PropertyChanged += POUT_PropertyChanged;
             SetAction(ButtonAction.Init);
+            Vouchers.Clear();
             OnPropertyChanged("IsEntryMode");
         }
 

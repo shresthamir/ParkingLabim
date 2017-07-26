@@ -37,7 +37,7 @@ namespace ParkingManagement
             using (Stream stream = assembly.GetManifestResourceStream(resourceName))            
             {
                 byte[] pdfByte = new byte[stream.Length];
-                stream.Read(pdfByte, 0, (int)stream.Length);
+                stream.Read(pdfByte, 0, (int)stream.Length);                
                 PdfLoadedDocument loadedDocument = new PdfLoadedDocument(pdfByte);
                 pdfviewer1.Load(loadedDocument);
             }

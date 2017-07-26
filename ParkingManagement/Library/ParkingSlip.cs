@@ -108,9 +108,9 @@ namespace ParkingManagement.Library
 
     public class VoucherPrint
     {
-        string[] Barcodes;
+        Voucher[] Barcodes;
         PrintDocument PD;
-        public VoucherPrint(string[] _Barcode)
+        public VoucherPrint(Voucher[] _Barcode)
         {
             PD = new PrintDocument();
             PD.PrinterSettings.PrinterName = GlobalClass.PrinterName;
@@ -140,15 +140,17 @@ namespace ParkingManagement.Library
                 ForeColor = Color.Black,
                 LabelFont = new Font(new FontFamily("Segoe UI"), 8)
             };
-            foreach (string Barcode in Barcodes)
+            foreach (Voucher Barcode in Barcodes)
             {
+
+                G.DrawString(Barcode.VoucherNo.ToString(), new Font(new FontFamily("Segoe UI"), 10), Brushes.Black, new RectangleF(70, i + 15, 100, 25), format);
                 i += 50;
-                Image img = barcode.Encode(TYPE.CODE128, Barcode);
-                G.DrawImage(img, new Point(400, i));
+                Image img = barcode.Encode(TYPE.CODE128, Barcode.Barcode);
+                G.DrawImage(img, new Point(450, i));
                 i += 50;
                 format.Alignment = StringAlignment.Center;
-                G.DrawString(Barcode, new Font(new FontFamily("Segoe UI"), 9), Brushes.Black, new RectangleF(400, i, 290, 24), format);
-                i += 150;
+                G.DrawString(string.Format("{0}-{1}",Barcode.Barcode, Barcode.VoucherName), new Font(new FontFamily("Segoe UI"), 9), Brushes.Black, new RectangleF(450, i, 290, 24), format);
+                i += 190;
             }
         }
 
@@ -175,6 +177,8 @@ namespace ParkingManagement.Library
         public IList<TParkingSalesDetails> PSDetails { get; set; }
         public string CompanyPan { get; set; }
         public string InvoiceTitle { get; set; }
+        public string InWords { get; set; }
+        public string DuplicateCaption { get; set; }
         public BillPrint()
         {
             PD = new PrintDocument();
@@ -200,22 +204,22 @@ namespace ParkingManagement.Library
         {
             int i = 40;
             Pen LinePen = new Pen(Brushes.Black);
-            StringFormat format = new StringFormat();
+            StringFormat format = new StringFormat();            
             format.Alignment = StringAlignment.Center;
             format.LineAlignment = StringAlignment.Center;
 
-            G.DrawRectangle(LinePen, new Rectangle(30, 30, PrintWidth - 60, PrintHeight - 60));
-            G.DrawLine(LinePen, new Point(30, 150), new Point(PrintWidth - 30, 150));
-            G.DrawLine(LinePen, new Point(30, 240), new Point(PrintWidth - 30, 240));
-            G.DrawLine(LinePen, new Point(30, 270), new Point(PrintWidth - 30, 270));
-            G.DrawLine(LinePen, new Point(30, 800), new Point(PrintWidth - 30, 800));
-            G.DrawLine(LinePen, new Point(30, 830), new Point(PrintWidth - 30, 830));
-            G.DrawLine(LinePen, new Point(30, 930), new Point(PrintWidth - 30, 930));
+            G.DrawRectangle(LinePen, new Rectangle(10, 30, PrintWidth - 60, PrintHeight - 90));
+            G.DrawLine(LinePen, new Point(10, 150), new Point(PrintWidth - 50, 150));
+            G.DrawLine(LinePen, new Point(10, 240), new Point(PrintWidth - 50, 240));
+            G.DrawLine(LinePen, new Point(10, 270), new Point(PrintWidth - 50, 270));
+            G.DrawLine(LinePen, new Point(10, 800), new Point(PrintWidth - 50, 800));
+            G.DrawLine(LinePen, new Point(10, 830), new Point(PrintWidth - 50, 830));
+            G.DrawLine(LinePen, new Point(10, 930), new Point(PrintWidth - 50, 930));
 
-            G.DrawLine(LinePen, new Point(80, 240), new Point(80, 830));
-            G.DrawLine(LinePen, new Point(470, 240), new Point(470, 830));
-            G.DrawLine(LinePen, new Point(570, 240), new Point(570, 930));
-            G.DrawLine(LinePen, new Point(670, 240), new Point(670, 800));
+            G.DrawLine(LinePen, new Point(60, 240), new Point(60, 830));
+            G.DrawLine(LinePen, new Point(450, 240), new Point(450, 830));
+            G.DrawLine(LinePen, new Point(550, 240), new Point(550, 930));
+            G.DrawLine(LinePen, new Point(650, 240), new Point(650, 800));
 
 
             G.DrawString(CompanyName, new Font(new FontFamily(Font), 14, FontStyle.Bold), Brushes.Black, new RectangleF(0, i, PrintWidth, 17), format);
@@ -230,66 +234,76 @@ namespace ParkingManagement.Library
             G.DrawString(InvoiceTitle, new Font(new FontFamily(Font), 10, FontStyle.Bold), Brushes.Black, new RectangleF(0, i, PrintWidth, 20), format);
             i += 20;
 
-            G.DrawString("Copy of Original", new Font(new FontFamily(Font), 10), Brushes.Black, new RectangleF(0, i, PrintWidth, 20), format);
+            G.DrawString(DuplicateCaption, new Font(new FontFamily(Font), 10), Brushes.Black, new RectangleF(0, i, PrintWidth, 20), format);
             i += 30;
 
-            G.DrawString("Bill No", new Font(new FontFamily(Font), 9), Brushes.Black, new RectangleF(35, i, 100, 20));
-            G.DrawString(string.Format(": {0}", PSales.BillNo), new Font(new FontFamily(Font), 9, FontStyle.Bold), Brushes.Black, new RectangleF(125, i, 200, 20));
-            G.DrawString("Date", new Font(new FontFamily(Font), 9), Brushes.Black, new RectangleF(PrintWidth - 180, i, 50, 20));
-            G.DrawString(": " + PSales.TMiti, new Font(new FontFamily(Font), 9, FontStyle.Bold), Brushes.Black, new RectangleF(PrintWidth - 120, i, 100, 20));
+            G.DrawString("Bill No", new Font(new FontFamily(Font), 9), Brushes.Black, new RectangleF(15, i, 100, 20));
+            G.DrawString(string.Format(": {0}", PSales.BillNo), new Font(new FontFamily(Font), 9, FontStyle.Bold), Brushes.Black, new RectangleF(105, i, 200, 20));
+            G.DrawString("Date", new Font(new FontFamily(Font), 9), Brushes.Black, new RectangleF(PrintWidth - 200, i, 50, 20));
+            G.DrawString(": " + PSales.TMiti, new Font(new FontFamily(Font), 9, FontStyle.Bold), Brushes.Black, new RectangleF(PrintWidth - 140, i, 100, 20));
             i += 20;
 
-            G.DrawString("Customer Name", new Font(new FontFamily(Font), 9), Brushes.Black, new RectangleF(35, i, 100, 20));
-            G.DrawString(": " + PSales.BillTo, new Font(new FontFamily(Font), 9, FontStyle.Bold), Brushes.Black, new RectangleF(125, i, PrintWidth - 125, 20));
+            G.DrawString("Customer Name", new Font(new FontFamily(Font), 9), Brushes.Black, new RectangleF(15, i, 100, 20));
+            G.DrawString(": " + PSales.BillTo, new Font(new FontFamily(Font), 9, FontStyle.Bold), Brushes.Black, new RectangleF(105, i, PrintWidth - 125, 20));
             i += 20;
 
-            G.DrawString("Address", new Font(new FontFamily(Font), 9), Brushes.Black, new RectangleF(35, i, 100, 20));
-            G.DrawString(": " + PSales.BILLTOADD, new Font(new FontFamily(Font), 9, FontStyle.Bold), Brushes.Black, new RectangleF(125, i, PrintWidth - 125, 20));
+            G.DrawString("Address", new Font(new FontFamily(Font), 9), Brushes.Black, new RectangleF(15, i, 100, 20));
+            G.DrawString(": " + PSales.BILLTOADD, new Font(new FontFamily(Font), 9, FontStyle.Bold), Brushes.Black, new RectangleF(105, i, PrintWidth - 125, 20));
             i += 20;
 
-            G.DrawString("PAN No", new Font(new FontFamily(Font), 9), Brushes.Black, new RectangleF(35, i, 100, 20));
-            G.DrawString(": " + PSales.BILLTOPAN, new Font(new FontFamily(Font), 9, FontStyle.Bold), Brushes.Black, new RectangleF(125, i, PrintWidth - 125, 20));
+            G.DrawString("PAN No", new Font(new FontFamily(Font), 9), Brushes.Black, new RectangleF(15, i, 100, 20));
+            G.DrawString(": " + PSales.BILLTOPAN, new Font(new FontFamily(Font), 9, FontStyle.Bold), Brushes.Black, new RectangleF(105, i, PrintWidth - 125, 20));
             i += 35;
 
 
-            G.DrawString("S.N. ", new Font(new FontFamily(Font), 9, FontStyle.Bold), Brushes.Black, new RectangleF(35, i, 50, 20), format);
-            G.DrawString("Particulars", new Font(new FontFamily(Font), 9, FontStyle.Bold), Brushes.Black, new RectangleF(80, i, 400, 20), format);
-            G.DrawString("Quantity", new Font(new FontFamily(Font), 9, FontStyle.Bold), Brushes.Black, new RectangleF(470, i, 100, 20), format);
-            G.DrawString("Rate", new Font(new FontFamily(Font), 9, FontStyle.Bold), Brushes.Black, new RectangleF(570, i, 100, 20), format);
-            G.DrawString("Amount", new Font(new FontFamily(Font), 9, FontStyle.Bold), Brushes.Black, new RectangleF(670, i, 120, 20), format);
+            G.DrawString("S.N. ", new Font(new FontFamily(Font), 9, FontStyle.Bold), Brushes.Black, new RectangleF(15, i, 50, 20), format);
+            G.DrawString("Particulars", new Font(new FontFamily(Font), 9, FontStyle.Bold), Brushes.Black, new RectangleF(60, i, 400, 20), format);
+            G.DrawString("Quantity", new Font(new FontFamily(Font), 9, FontStyle.Bold), Brushes.Black, new RectangleF(450, i, 100, 20), format);
+            G.DrawString("Rate", new Font(new FontFamily(Font), 9, FontStyle.Bold), Brushes.Black, new RectangleF(550, i, 100, 20), format);
+            G.DrawString("Amount", new Font(new FontFamily(Font), 9, FontStyle.Bold), Brushes.Black, new RectangleF(650, i, 120, 20), format);
 
             i += 25;
             format.Alignment = StringAlignment.Far;
             for (int j = 0; j < PSDetails.Count; j++)
             {
                 TParkingSalesDetails psd = PSDetails[j];
-                G.DrawString((j + 1).ToString(), new Font(new FontFamily(Font), 9), Brushes.Black, new RectangleF(30, i, 45, 20), format);
-                G.DrawString(psd.Description, new Font(new FontFamily(Font), 9), Brushes.Black, new RectangleF(85, i, 400, 20));
-                G.DrawString(psd.Quantity.ToString("#0.00"), new Font(new FontFamily(Font), 9), Brushes.Black, new RectangleF(470, i, 95, 20), format);
-                G.DrawString(psd.Rate.ToString("#0.00"), new Font(new FontFamily(Font), 9), Brushes.Black, new RectangleF(570, i, 95, 20), format);
-                G.DrawString(psd.Amount.ToString("#,##,##0.00"), new Font(new FontFamily(Font), 9), Brushes.Black, new RectangleF(670, i, 120, 20), format);
+                G.DrawString((j + 1).ToString(), new Font(new FontFamily(Font), 9), Brushes.Black, new RectangleF(10, i, 45, 20), format);
+                G.DrawString(psd.Description, new Font(new FontFamily(Font), 9), Brushes.Black, new RectangleF(65, i, 400, 20));
+                G.DrawString(psd.Quantity.ToString("#0.00"), new Font(new FontFamily(Font), 9), Brushes.Black, new RectangleF(450, i, 95, 20), format);
+                G.DrawString(psd.Rate.ToString("#0.00"), new Font(new FontFamily(Font), 9), Brushes.Black, new RectangleF(550, i, 95, 20), format);
+                G.DrawString(psd.Amount.ToString("#,##,##0.00"), new Font(new FontFamily(Font), 9), Brushes.Black, new RectangleF(650, i, 120, 20), format);
                 i += 18;
             }
             i = 810;
-            G.DrawString(PSDetails.Sum(x => x.Quantity).ToString("#0.00"), new Font(new FontFamily(Font), 9, FontStyle.Bold), Brushes.Black, new RectangleF(470, i, 95, 20), format);
-            G.DrawString(PSales.Amount.ToString("#,##,##0.00"), new Font(new FontFamily(Font), 9), Brushes.Black, new RectangleF(670, i, 120, 20), format);
+            G.DrawString(PSDetails.Sum(x => x.Quantity).ToString("#0.00"), new Font(new FontFamily(Font), 9, FontStyle.Bold), Brushes.Black, new RectangleF(450, i, 95, 20), format);
+            G.DrawString(PSales.Amount.ToString("#,##,##0.00"), new Font(new FontFamily(Font), 9), Brushes.Black, new RectangleF(650, i, 120, 20), format);
 
             i += 25;
-            G.DrawString("Taxable :", new Font(new FontFamily(Font), 9), Brushes.Black, new RectangleF(570, i, 95, 20));
-            G.DrawString(PSales.Taxable.ToString("#,##,##0.00"), new Font(new FontFamily(Font), 9, FontStyle.Bold), Brushes.Black, new RectangleF(670, i, 120, 20), format);
+            G.DrawString("In Words :", new Font(new FontFamily(Font), 9, FontStyle.Bold), Brushes.Black, new RectangleF(10, i, 95, 20));
+            G.DrawString(InWords, new Font(new FontFamily(Font), 9), Brushes.Black, new RectangleF(10, i + 20, 500, 60));
+
+            G.DrawString("Taxable :", new Font(new FontFamily(Font), 9), Brushes.Black, new RectangleF(550, i, 95, 20));
+            G.DrawString(PSales.Taxable.ToString("#,##,##0.00"), new Font(new FontFamily(Font), 9, FontStyle.Bold), Brushes.Black, new RectangleF(650, i, 120, 20), format);
             i += 18;
 
-            G.DrawString("Non Taxable :", new Font(new FontFamily(Font), 9), Brushes.Black, new RectangleF(570, i, 95, 20));
-            G.DrawString(PSales.NonTaxable.ToString("#,##,##0.00"), new Font(new FontFamily(Font), 9, FontStyle.Bold), Brushes.Black, new RectangleF(670, i, 120, 20), format);
+            G.DrawString("Non Taxable :", new Font(new FontFamily(Font), 9), Brushes.Black, new RectangleF(550, i, 95, 20));
+            G.DrawString(PSales.NonTaxable.ToString("#,##,##0.00"), new Font(new FontFamily(Font), 9, FontStyle.Bold), Brushes.Black, new RectangleF(650, i, 120, 20), format);
             i += 18;
 
-            G.DrawString("VAT :", new Font(new FontFamily(Font), 9), Brushes.Black, new RectangleF(570, i, 95, 20));
-            G.DrawString(PSales.VAT.ToString("#,##,##0.00"), new Font(new FontFamily(Font), 9, FontStyle.Bold), Brushes.Black, new RectangleF(670, i, 120, 20), format);
+            G.DrawString("VAT :", new Font(new FontFamily(Font), 9), Brushes.Black, new RectangleF(550, i, 95, 20));
+            G.DrawString(PSales.VAT.ToString("#,##,##0.00"), new Font(new FontFamily(Font), 9, FontStyle.Bold), Brushes.Black, new RectangleF(650, i, 120, 20), format);
             i += 18;
 
-            G.DrawString("Net Amount :", new Font(new FontFamily(Font), 9), Brushes.Black, new RectangleF(570, i, 95, 20));
-            G.DrawString(PSales.GrossAmount.ToString("#,##,##0.00"), new Font(new FontFamily(Font), 9, FontStyle.Bold), Brushes.Black, new RectangleF(670, i, 120, 20), format);
+            G.DrawString("Net Amount :", new Font(new FontFamily(Font), 9), Brushes.Black, new RectangleF(550, i, 95, 20));
+            G.DrawString(PSales.GrossAmount.ToString("#,##,##0.00"), new Font(new FontFamily(Font), 9, FontStyle.Bold), Brushes.Black, new RectangleF(650, i, 120, 20), format);
             i += 18;
+
+
+            G.DrawLine(LinePen, new Point(45, 1075), new Point(205, 1075));
+            G.DrawString("Prepared By : " + PSales.Description, new Font(new FontFamily(Font), 9), Brushes.Black, new RectangleF(50, 1080, 200, 20));
+
+            G.DrawLine(LinePen, new Point(PrintWidth - 225, 1075), new Point(PrintWidth - 65, 1075));
+            G.DrawString("Received By", new Font(new FontFamily(Font), 9), Brushes.Black, new RectangleF(PrintWidth - 220, 1080, 150, 20));
 
             //G.DrawString(PIN.VType.Description, new Font(new FontFamily("Segoe UI"), 11, FontStyle.Bold), Brushes.Black, new RectangleF(0, i, 300, 18), format);
             //i += 20;

@@ -77,23 +77,30 @@
       <HintPath>..\..\..\Library DLLs\RawPrintFunctions.dll</HintPath>
     </Reference>
     <Reference Include="ReachFramework" />
-    <Reference Include="Syncfusion.Core">
-      <HintPath>..\..\..\..\Library\Syncfusion\Syncfusion.Core.dll</HintPath>
+    <Reference Include="Syncfusion.Compression.Base">
+      <HintPath>..\..\..\..\Library\Syncfusion\Syncfusion 4.5\Syncfusion.Compression.Base.dll</HintPath>
+    </Reference>
+    <Reference Include="Syncfusion.Core, Version=13.3400.0.7, Culture=neutral, PublicKeyToken=632609b4d040f6b4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Library\Syncfusion\Syncfusion 4.5\Syncfusion.Core.dll</HintPath>
     </Reference>
     <Reference Include="Syncfusion.Data.WPF">
       <HintPath>..\..\..\..\Library\Syncfusion\Syncfusion.Data.WPF.dll</HintPath>
     </Reference>
-    <Reference Include="Syncfusion.Pdf.Base">
-      <HintPath>..\..\..\..\Library\Syncfusion\Syncfusion.Pdf.Base.dll</HintPath>
+    <Reference Include="Syncfusion.Pdf.Base, Version=13.3400.0.7, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Library\Syncfusion\Syncfusion 4.5\Syncfusion.Pdf.Base.dll</HintPath>
     </Reference>
-    <Reference Include="Syncfusion.PdfViewer.WPF">
-      <HintPath>..\..\..\..\Library\Syncfusion\Syncfusion.PdfViewer.WPF.dll</HintPath>
+    <Reference Include="Syncfusion.PdfViewer.WPF, Version=13.3400.0.7, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Library\Syncfusion\Syncfusion 4.5\Syncfusion.PdfViewer.WPF.dll</HintPath>
     </Reference>
     <Reference Include="Syncfusion.SfGrid.WPF">
       <HintPath>..\..\..\..\Library\Syncfusion\Syncfusion.SfGrid.WPF.dll</HintPath>
     </Reference>
-    <Reference Include="Syncfusion.SfGridConverter.WPF">
-      <HintPath>..\..\..\..\Library\Syncfusion\Syncfusion.SfGridConverter.WPF.dll</HintPath>
+    <Reference Include="Syncfusion.SfGridConverter.WPF, Version=13.3400.0.7, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Library\Syncfusion\Syncfusion 4.5\Syncfusion.SfGridConverter.WPF.dll</HintPath>
     </Reference>
     <Reference Include="Syncfusion.Shared.WPF">
       <HintPath>..\..\..\..\Library\Syncfusion\Syncfusion.Shared.WPF.dll</HintPath>
@@ -153,6 +160,9 @@
     <Compile Include="Forms\DataUtility\wDataRestore.xaml.cs">
       <DependentUpon>wDataRestore.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Forms\File\ResetPassword.xaml.cs">
+      <DependentUpon>ResetPassword.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Master\ucVoucherTypes.xaml.cs">
       <DependentUpon>ucVoucherTypes.xaml</DependentUpon>
     </Compile>
@@ -161,6 +171,9 @@
     </Compile>
     <Compile Include="Forms\Reports\ReportViewer.xaml.cs">
       <DependentUpon>ReportViewer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Reports\usSettlementReport.xaml.cs">
+      <DependentUpon>usSettlementReport.xaml</DependentUpon>
     </Compile>
     <Compile Include="Forms\Reports\RePrintLogReport.xaml.cs">
       <DependentUpon>RePrintLogReport.xaml</DependentUpon>
@@ -198,6 +211,9 @@
     <Compile Include="Forms\wVoucherPrintProgress.xaml.cs">
       <DependentUpon>wVoucherPrintProgress.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Forms\wVoucherSelect.xaml.cs">
+      <DependentUpon>wVoucherSelect.xaml</DependentUpon>
+    </Compile>
     <Compile Include="HelpViewer.xaml.cs">
       <DependentUpon>HelpViewer.xaml</DependentUpon>
     </Compile>
@@ -212,7 +228,6 @@
     <Compile Include="ViewModel\VoucherSalesInvoiceVM.cs" />
     <Compile Include="ViewModel\POutWithoutSlipVM.cs" />
     <Compile Include="ViewModel\StaffViewModel.cs" />
-    <Compile Include="ViewModel\VoucherSalesViewModel.cs" />
     <Compile Include="ViewModel\VoucherTypeViewModel.cs" />
     <Compile Include="ViewModel\vmCashSettlement.cs" />
     <Page Include="Forms\DataUtility\wDataBackup.xaml">
@@ -220,6 +235,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Forms\DataUtility\wDataRestore.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Forms\File\ResetPassword.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -268,6 +287,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Forms\Reports\ReportViewer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Forms\Reports\usSettlementReport.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -332,6 +355,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Forms\wVoucherPrintProgress.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Forms\wVoucherSelect.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

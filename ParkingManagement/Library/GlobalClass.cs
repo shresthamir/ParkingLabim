@@ -88,6 +88,16 @@ namespace ParkingManagement.Library
             }
         }
 
+        public static void CheckFiscalId(SqlConnection conn)
+        {
+            FYID = conn.ExecuteScalar<byte>("SELECT FYID FROM tblFiscalYear WHERE CONVERT(VARCHAR,GETDATE(),101) BETWEEN BEGIN_DATE AND END_DATE");
+        }
+
+        public static void CheckFiscalId(SqlTransaction tran)
+        {
+            FYID = tran.Connection.ExecuteScalar<byte>("SELECT FYID FROM tblFiscalYear WHERE CONVERT(VARCHAR,GETDATE(),101) BETWEEN BEGIN_DATE AND END_DATE");
+        }
+
         public static string TConnectionString
         {
             get

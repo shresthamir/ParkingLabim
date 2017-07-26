@@ -325,6 +325,9 @@ namespace ParkingManagement.ViewModel
                                 Taxable = Taxable,
                                 VAT = VAT,
                                 NetAmount = POUT.CashAmount,
+                                ProdId = 0, 
+                                Description = "Parking Charge",
+                                PType = 'P'
                             };
                             PSalesDetails.Save(tran);
 

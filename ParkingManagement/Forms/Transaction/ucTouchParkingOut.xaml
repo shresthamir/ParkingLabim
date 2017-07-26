@@ -108,7 +108,7 @@
                     <ColumnDefinition Width="100"/>
                 </Grid.ColumnDefinitions>
                 <Label Content="BARCODE " FontSize="18" FontWeight="SemiBold"/>
-                <Ctrl:ExtendedTextBox x:Name="txtBarCode" Text="{Binding PIN.Barcode}" Grid.Column="1" Height="40" FontSize="14" FontWeight="SemiBold" Style="{StaticResource InputTextBox}" helper:CustomFocusManager.IsFocused="{Binding FocusedElement, Converter={StaticResource ShortToBool}, ConverterParameter='0'}" PreviewLostKeyboardFocus="txtBarcode_PreviewLostKeyboardFocus" >
+                <Ctrl:ExtendedTextBox x:Name="txtBarCode" Text="{Binding PIN.Barcode}" Grid.Column="1" Height="40" FontSize="14" FontWeight="SemiBold" Style="{StaticResource InputTextBox}" helper:CustomFocusManager.IsFocused="{Binding FocusedElement, Converter={StaticResource ShortToBool}, ConverterParameter='1'}" PreviewLostKeyboardFocus="txtBarcode_PreviewLostKeyboardFocus" >
                     <Ctrl:ExtendedTextBox.InputBindings>
                         <KeyBinding Key="Enter" Command="{Binding LoadData}" CommandParameter="{Binding Path=Text,RelativeSource={RelativeSource AncestorType={x:Type TextBox}}}"/>
                     </Ctrl:ExtendedTextBox.InputBindings>
@@ -258,8 +258,9 @@
                         </GroupBox>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Right">
+                        <Button Content="Stamp" Style="{StaticResource NewButton}" Width="80" Height="45" Command="{Binding SaveWithStaffCommand}" CommandParameter="STAMP"/>
                         <Button Content="Staff" Style="{StaticResource NewButton}" Width="80" Height="45" Command="{Binding OpenStaffBarcodeCommand}"/>
-                        <Button Content="Finish" Style="{StaticResource NewButton}" Width="80" Height="45" Command="{Binding SaveCommand}"/>                        
+                        <Button Content="Finish" Style="{StaticResource NewButton}" Width="80" Height="45" Command="{Binding SaveCommand}"  helper:CustomFocusManager.IsFocused="{Binding FocusedElement, Converter={StaticResource ShortToBool}, ConverterParameter='1'}"/>                        
                     </StackPanel>
 
                 </Grid>

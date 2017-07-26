@@ -18,6 +18,8 @@ namespace ParkingManagement.Models
         private int _Validity;
         private TimeSpan _ValidStart;
         private TimeSpan _ValidEnd;
+        private string _VoucherInfo;
+        private bool _SkipVoucherGeneration;
 
         public int VoucherId { get { return _VoucherId; } set { _VoucherId = value; OnPropertyChanged("VoucherId"); } }
         public string VoucherName { get { return _VoucherName; } set { _VoucherName = value; OnPropertyChanged("VoucherName"); } }
@@ -29,7 +31,8 @@ namespace ParkingManagement.Models
         public TimeSpan ValidEnd { get { return _ValidEnd; } set { _ValidEnd = value; OnPropertyChanged("ValidEnd"); } }
         public DateTime Start { get { return new DateTime().Add(ValidStart); } set { ValidStart = value.TimeOfDay; OnPropertyChanged("Start"); } }
         public DateTime End { get { return new DateTime().Add(ValidEnd); } set { ValidEnd = value.TimeOfDay; OnPropertyChanged("End"); } }
-
+        public string VoucherInfo { get { return _VoucherInfo; } set { _VoucherInfo = value; OnPropertyChanged("VoucherInfo"); } }
+        public bool SkipVoucherGeneration { get { return _SkipVoucherGeneration; } set { _SkipVoucherGeneration = value; OnPropertyChanged("Skip Voucher Generation"); } }
         public VoucherType()
         {
             //ValidStart = new TimeSpan(0, 0, 0);
@@ -38,13 +41,13 @@ namespace ParkingManagement.Models
 
         public override bool Save(SqlTransaction tran)
         {
-            string strSaveSql = "INSERT INTO VoucherTypes(VoucherId, VoucherName, VehicleType, Rate, Value, ValidStart, ValidEnd, Validity) VALUES (@VoucherId, @VoucherName, @VehicleType, @Rate, @Value, @ValidStart, @ValidEnd, @Validity)";
+            string strSaveSql = "INSERT INTO VoucherTypes(VoucherId, VoucherName, VehicleType, Rate, Value, ValidStart, ValidEnd, Validity, VoucherInfo, SkipVoucherGeneration) VALUES (@VoucherId, @VoucherName, @VehicleType, @Rate, @Value, @ValidStart, @ValidEnd, @Validity, @VoucherInfo, @SkipVoucherGeneration)";
             return tran.Connection.Execute(strSaveSql, this, tran) == 1;
         }
 
         public override bool Update(SqlTransaction tran)
         {
-            string strUpdateSql = "UPDATE VoucherTypes SET VoucherName = @VoucherName, VehicleType = @VehicleType, Rate = @Rate, Value = @Value, ValidStart = @ValidStart, ValidEnd = @ValidEnd, Validity = @Validity WHERE VoucherId = @VoucherId";
+            string strUpdateSql = "UPDATE VoucherTypes SET VoucherName = @VoucherName, VehicleType = @VehicleType, Rate = @Rate, Value = @Value, ValidStart = @ValidStart, ValidEnd = @ValidEnd, Validity = @Validity, VoucherInfo = @VoucherInfo, SkipVoucherGeneration = @SkipVoucherGeneration WHERE VoucherId = @VoucherId";
             return tran.Connection.Execute(strUpdateSql, this, tran) == 1;
         }
 
@@ -55,9 +58,9 @@ namespace ParkingManagement.Models
         }
     }
 
-    class Voucher : BaseModel
+    public class Voucher : BaseModel
     {
-       
+
         public int VoucherNo { get; set; }
         public string BillNo { get; set; }
         public int Sno { get; set; }
@@ -69,16 +72,15 @@ namespace ParkingManagement.Models
         public TimeSpan ValidStart { get; set; }
         public TimeSpan ValidEnd { get; set; }
         public DateTime ScannedTime { get; set; }
+        public byte FYID { get; set; }
 
         public override bool Save(SqlTransaction tran)
         {
-            string strSave = @"INSERT INTO ParkingVouchers (VoucherNo, BillNo, Sno, VoucherName, Barcode, VoucherId, Value, ExpDate, ValidStart, ValidEnd) 
+            string strSave = @"INSERT INTO ParkingVouchers (VoucherNo, BillNo, Sno, VoucherName, Barcode, VoucherId, Value, ExpDate, ValidStart, ValidEnd, FYID) 
                                     OUTPUT Inserted.VoucherNo
-                                    VALUES ((SELECT ISNULL(MAX(VoucherNo),0) + 1 FROM ParkingVouchers), @BillNo, @Sno, @VoucherName, @Barcode, @VoucherId, @Value, @ExpDate, @ValidStart, @ValidEnd)";
+                                    VALUES ((SELECT ISNULL(MAX(VoucherNo),0) + 1 FROM ParkingVouchers), @BillNo, @Sno, @VoucherName, @Barcode, @VoucherId, @Value, @ExpDate, @ValidStart, @ValidEnd, @FYID)";
             VoucherNo = tran.Connection.ExecuteScalar<int>(strSave, this, tran);
             return VoucherNo > 0;
         }
     }
-
-
 }

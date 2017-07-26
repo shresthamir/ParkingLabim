@@ -35,7 +35,7 @@ namespace ParkingManagement.ViewModel
             {
                 using (SqlConnection Conn = new SqlConnection(GlobalClass.TConnectionString))
                 {
-                    string strSql = @"SELECT VoucherId, VoucherName, VehicleType, Rate, Value, Validity, ValidStart, ValidEnd FROM VoucherTypes";
+                    string strSql = @"SELECT VoucherId, VoucherName, VehicleType, Rate, Value, Validity, ValidStart, ValidEnd, VoucherInfo, SkipVoucherGeneration FROM VoucherTypes";
                     VTypeList = new ObservableCollection<VoucherType>(Conn.Query<VoucherType>(strSql));
                     strSql = @"SELECT VTypeID, [Description] FROM VehicleType";
                     VehicleTypeList = new ObservableCollection<VehicleType>(Conn.Query<VehicleType>(strSql));
@@ -100,7 +100,10 @@ namespace ParkingManagement.ViewModel
                 ValidStart = SelectedVType.ValidStart,
                 ValidEnd = SelectedVType.ValidEnd,
                 Validity = SelectedVType.Validity,
-                VehicleType = SelectedVType.VehicleType
+                VehicleType = SelectedVType.VehicleType,
+                VoucherInfo = SelectedVType.VoucherInfo,
+                SkipVoucherGeneration = SelectedVType.SkipVoucherGeneration
+
             };
             SetAction(ButtonAction.Selected);
         }
@@ -144,6 +147,8 @@ namespace ParkingManagement.ViewModel
                                 ValidStart = VType.ValidStart,
                                 ValidEnd = VType.ValidEnd,
                                 Validity = VType.Validity,
+                                VoucherInfo = VType.VoucherInfo,
+                                SkipVoucherGeneration = VType.SkipVoucherGeneration
                             });
                             ExecuteUndo(null);
                         }
@@ -181,7 +186,7 @@ namespace ParkingManagement.ViewModel
                     Conn.Open();
                     using (SqlTransaction tran = Conn.BeginTransaction())
                     {
-                        string Remarks = Newtonsoft.Json.JsonConvert.SerializeObject(Conn.Query<VoucherType>("SELECT VoucherId, VoucherName, VehicleType, Rate, Value, Validity, ValidStart, ValidEnd FROM VoucherTypes WHERE VoucherId = @VoucherId", VType, tran).First());                        
+                        string Remarks = Newtonsoft.Json.JsonConvert.SerializeObject(Conn.Query<VoucherType>("SELECT VoucherId, VoucherName, VehicleType, Rate, Value, Validity, ValidStart, ValidEnd, VoucherInfo, SkipVoucherGeneration FROM VoucherTypes WHERE VoucherId = @VoucherId", VType, tran).First());                        
                         if (VType.Update(tran))
                         {
                             GlobalClass.SetUserActivityLog(tran, "Voucher Type", "Edit", WorkDetail: "VoucherId : " + VType.VoucherId, Remarks: Remarks);
@@ -194,6 +199,8 @@ namespace ParkingManagement.ViewModel
                             Voucher.ValidStart = VType.ValidStart;
                             Voucher.ValidEnd = VType.ValidEnd;
                             Voucher.Validity = VType.Validity;
+                            Voucher.VoucherInfo = VType.VoucherInfo;
+                            Voucher.SkipVoucherGeneration = VType.SkipVoucherGeneration;
                             ExecuteUndo(null);
                         }
                         else
@@ -228,7 +235,7 @@ namespace ParkingManagement.ViewModel
                     Conn.Open();
                     using (SqlTransaction tran = Conn.BeginTransaction())
                     {
-                        string Remarks = Newtonsoft.Json.JsonConvert.SerializeObject(Conn.Query<VoucherType>("SELECT VoucherId, VoucherName, Rate, Value, Validity, ValidStart, ValidEnd FROM VoucherTypes WHERE VoucherId = @VoucherId", VType, tran).First());
+                        string Remarks = Newtonsoft.Json.JsonConvert.SerializeObject(Conn.Query<VoucherType>("SELECT VoucherId, VoucherName, Rate, Value, Validity, ValidStart, ValidEnd, VoucherInfo, SkipVoucherGeneration FROM VoucherTypes WHERE VoucherId = @VoucherId", VType, tran).First());
                         if (VType.Delete(tran))
                         {
                             GlobalClass.SetUserActivityLog(tran, "Voucher Type", "Delete", WorkDetail: "VoucherId : " + VType.VoucherId, Remarks: Remarks);

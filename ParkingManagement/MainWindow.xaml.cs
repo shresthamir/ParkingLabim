@@ -492,9 +492,30 @@ GROUP BY ENTERED_BY";
                     la.Content = new Forms.Reports.RePrintLogReport(1);
                     la.Title = "ANNEX 7 REPORT";
                     break;
+                case "VOUCHER DISCOUNT REPORTS - SUMMARY":
+                    la.Content = new Forms.Reports.RePrintLogReport(8);
+                    la.Title = p;
+                    break;
+                case "VOUCHER DISCOUNT REPORTS - DETAILS":
+                    la.Content = new Forms.Reports.RePrintLogReport(7);
+                    la.Title = p;
+                    break;
+                case "SETTLEMENT REPORT":
+                    la.Content = new Forms.Reports.ucSettlementReport();
+                    la.Title = p;
+                    break;
+                case "PARKING PASS REPORT - SUMMARY":
+                    la.Content = new Forms.Reports.RePrintLogReport(10);
+                    la.Title = p;
+                    break;
+                case "PARKING PASS REPORT - DETAILS":
+                    la.Content = new Forms.Reports.RePrintLogReport(9);
+                    la.Title = p;
+                    break;
                 default:
                     return;
             }
+
             LayDocPane.Children.Add(la);
         }
 

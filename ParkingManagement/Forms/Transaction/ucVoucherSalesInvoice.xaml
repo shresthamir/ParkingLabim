@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:ParkingManagement.Forms.Transaction"
              xmlns:Ctrl="clr-namespace:ParkingManagement.Library.Controls"
              xmlns:helper ="clr-namespace:ParkingManagement.Library.Helpers"
+             FocusManager.FocusedElement="{Binding ElementName=txtInvoice}"
              mc:Ignorable="d" 
             d:DesignHeight="468" d:DesignWidth="1024">   
     <UserControl.InputBindings>
@@ -52,7 +53,7 @@
                 </Grid.ColumnDefinitions>
                 <Label Content="Invoice No" FontSize="14" FontWeight="SemiBold"/>
                 <TextBox Text="{Binding InvoicePrefix}" Grid.Column="1" IsReadOnly="True" Background="GhostWhite" ></TextBox>
-                <Ctrl:ExtendedTextBox x:Name="txtInvoice" Text="{Binding InvoiceNo}" Grid.Column="2" Height="28" Style="{StaticResource InputTextBox}" helper:CustomFocusManager.IsFocused="{Binding FocusedElement, Converter={StaticResource ShortToBool}, ConverterParameter='5'}" IsEnabled="{Binding EntryPanelEnabled, Converter={StaticResource ReverseBool}}">
+                <Ctrl:ExtendedTextBox x:Name="txtInvoice" Text="{Binding InvoiceNo}" Grid.Column="2" Height="28" Style="{StaticResource InputTextBox}" helper:CustomFocusManager.IsFocused="{Binding FocusedElement, Converter={StaticResource ShortToBool}, ConverterParameter='0'}" IsEnabled="{Binding EntryPanelEnabled, Converter={StaticResource ReverseBool}}">
                     <Ctrl:ExtendedTextBox.InputBindings>
                         <KeyBinding Key="Enter" Command="{Binding LoadInvoice}" CommandParameter="{Binding Path=Text,RelativeSource={RelativeSource AncestorType={x:Type TextBox}}}"/>
                     </Ctrl:ExtendedTextBox.InputBindings>
@@ -127,8 +128,8 @@
                         </Grid.ColumnDefinitions>
                         <RadioButton IsChecked="{Binding VSales.TRNMODE}" Content="Cash" VerticalAlignment="Center"></RadioButton>
                         <RadioButton Grid.Column="1" IsChecked="{Binding VSales.TRNMODE, Converter={StaticResource ReverseBool}}" Content="Credit" VerticalAlignment="Center"></RadioButton>
-                        <Label Grid.Row="1" Content="Received From"/>
-                        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding VSales.BillTo}"  GotFocus="TextBox_GotFocus"></TextBox>
+                        <Label Grid.Row="1" Content="Customer Name"/>
+                        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding VSales.BillTo}"  GotFocus="TextBox_GotFocus" helper:CustomFocusManager.IsFocused="{Binding FocusedElement, Converter={StaticResource ShortToBool}, ConverterParameter='2'}"></TextBox>
                         <Label Content="Address" Grid.Row="2" Margin="2 5 0 0" VerticalAlignment="Top" />
                         <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding VSales.BILLTOADD}" Height="50" GotFocus="TextBox_GotFocus" TextWrapping="WrapWithOverflow" ></TextBox>
                         <Label Content="PAN" Grid.Row="3"/>
@@ -153,7 +154,8 @@
                             <RowDefinition Height="35"/>
                         </Grid.RowDefinitions>
                         <Label Content="Voucher Type" />
-                        <ComboBox Grid.ColumnSpan="4" ItemsSource="{Binding VTypeList}" DisplayMemberPath="VoucherName" SelectedValuePath="VoucherId" SelectedValue="{Binding VSDetail.ProdId}" SelectedItem="{Binding SelectedVoucherType}"  Grid.Column="1" FontSize="14"></ComboBox>
+                        <ComboBox Grid.ColumnSpan="4" ItemsSource="{Binding VTypeList}" DisplayMemberPath="VoucherName" SelectedValuePath="VoucherId" SelectedValue="{Binding VSDetail.ProdId}" SelectedItem="{Binding SelectedVoucherType}"  Grid.Column="1" FontSize="14"
+                                  helper:CustomFocusManager.IsFocused="{Binding FocusedElement, Converter={StaticResource ShortToBool}, ConverterParameter='1'}"></ComboBox>
 
 
                         <Label Grid.Row="1" Content="Rate"/>

@@ -221,16 +221,16 @@ namespace ParkingManagement.ViewModel
                         switch(GlobalClass.SettlementMode)
                         {
                             case 0: // Userwise Settlement
-                                strSql = string.Format("SELECT ISNULL(SUM(GROSSAMOUNT),0) FROM ParkingSales PS JOIN [SESSION] S ON PS.SESSION_ID = S.SESSION_ID WHERE S.[UID] = {0} AND SESSION_SETTLED = 0", Settlement.SETTLED_UID);
+                                strSql = string.Format("SELECT ISNULL(SUM(GROSSAMOUNT),0) FROM ParkingSales PS JOIN [SESSION] S ON PS.SESSION_ID = S.SESSION_ID WHERE S.[UID] = {0} AND SESSION_SETTLED = 0 AND LEFT(BillNo,2) IN ('SI', 'TI')", Settlement.SETTLED_UID);
                                 break;
                             case 1: // Terminal wise Settlement
-                                strSql = string.Format("SELECT ISNULL(SUM(GROSSAMOUNT),0) FROM ParkingSales PS JOIN [SESSION] S ON PS.SESSION_ID = S.SESSION_ID WHERE SESSION_SETTLED = 0 AND TERMINAL_CODE = '{1}'", Settlement.TERMINAL_CODE);
+                                strSql = string.Format("SELECT ISNULL(SUM(GROSSAMOUNT),0) FROM ParkingSales PS JOIN [SESSION] S ON PS.SESSION_ID = S.SESSION_ID WHERE SESSION_SETTLED = 0 AND TERMINAL_CODE = '{1}' AND LEFT(BillNo,2) IN ('SI', 'TI')", Settlement.TERMINAL_CODE);
                                 break;
                             case 2: // User And Terminal wise  Settlement
-                                strSql = string.Format("SELECT ISNULL(SUM(GROSSAMOUNT),0) FROM ParkingSales PS JOIN [SESSION] S ON PS.SESSION_ID = S.SESSION_ID WHERE S.[UID] = {0} AND SESSION_SETTLED = 0 AND TERMINAL_CODE = '{1}'", Settlement.SETTLED_UID, Settlement.TERMINAL_CODE);
+                                strSql = string.Format("SELECT ISNULL(SUM(GROSSAMOUNT),0) FROM ParkingSales PS JOIN [SESSION] S ON PS.SESSION_ID = S.SESSION_ID WHERE S.[UID] = {0} AND SESSION_SETTLED = 0 AND TERMINAL_CODE = '{1}' AND LEFT(BillNo,2) IN ('SI', 'TI')", Settlement.SETTLED_UID, Settlement.TERMINAL_CODE);
                                 break;
                             default:
-                                strSql = string.Format("SELECT ISNULL(SUM(GROSSAMOUNT),0) FROM ParkingSales PS JOIN [SESSION] S ON PS.SESSION_ID = S.SESSION_ID WHERE S.[UID] = {0} AND SESSION_SETTLED = 0", Settlement.SETTLED_UID);
+                                strSql = string.Format("SELECT ISNULL(SUM(GROSSAMOUNT),0) FROM ParkingSales PS JOIN [SESSION] S ON PS.SESSION_ID = S.SESSION_ID WHERE S.[UID] = {0} AND SESSION_SETTLED = 0 AND LEFT(BillNo,2) IN ('SI', 'TI')", Settlement.SETTLED_UID);
                                 break;
                         }
                       

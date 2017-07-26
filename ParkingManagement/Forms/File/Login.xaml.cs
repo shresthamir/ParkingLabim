@@ -52,22 +52,7 @@ namespace ParkingManagement.Forms.File
             }
             try
             {
-                using (SqlConnection cnSys = new SqlConnection(GlobalClass.DataConnectionString))
-                {
-                    if (cnSys.ExecuteScalar<int>("SELECT COUNT(*) FROM Users WHERE UserName='" + txtUserName.Text + "' AND ISNULL(STATUS, 0) = 0") > 0)
-                    {
-                        using (SqlCommand cmd = cnSys.CreateCommand())
-                        {
-                            cnSys.Open();
-                            cmd.CommandText = "SP_CREATE_USER";
-                            cmd.CommandType = CommandType.StoredProcedure;
-                            cmd.Parameters.AddWithValue("@UNAME", txtUserName.Text);
-                            cmd.Parameters.AddWithValue("@PWD", txtPassword.Password);
-                            cmd.ExecuteNonQuery();
-                        }
-                    }
-                }
-                using (SqlConnection conn = new SqlConnection(GlobalClass.GetTConnectionString(txtUserName.Text, txtPassword.Password)))
+                using (SqlConnection conn = new SqlConnection(GlobalClass.DataConnectionString))
                 {
                     var user = conn.Query<User>(string.Format("SELECT UID, UserName, [Password], FullName, UserCat, [STATUS], DESKTOP_ACCESS, MOBILE_ACCESS, SALT  FROM USERS WHERE UserName = '{0}'", txtUserName.Text)).First();
                     if (user == null)
@@ -89,6 +74,15 @@ namespace ParkingManagement.Forms.File
                     {
                         MessageBox.Show("You no longer have privilage to access this application", "Insufficient Access", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                         return;
+                    }
+                    using (SqlCommand cmd = conn.CreateCommand())
+                    {
+                        conn.Open();
+                        cmd.CommandText = "SP_CREATE_USER";
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@UNAME", txtUserName.Text);
+                        cmd.Parameters.AddWithValue("@PWD", txtPassword.Password);
+                        cmd.ExecuteNonQuery();
                     }
                     user.DBPassword = txtPassword.Password;
                     GlobalClass.User = user;
