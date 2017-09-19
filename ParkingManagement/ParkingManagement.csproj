@@ -1,0 +1,626 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{10E373A7-B7BD-46F1-8C90-5B98164DE490}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ParkingManagement</RootNamespace>
+    <AssemblyName>ParkingManagement</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <ExpressionBlendVersion>12.0.41002.1</ExpressionBlendVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Parking.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="BarcodeLib">
+      <HintPath>..\..\..\Library DLLs\BarcodeLib.dll</HintPath>
+    </Reference>
+    <Reference Include="Dapper">
+      <HintPath>..\..\..\Library DLLs\Dapper.dll</HintPath>
+    </Reference>
+    <Reference Include="DateFunction">
+      <HintPath>..\..\..\Library DLLs\DateFunction.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Expression.Interactions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>D:\Projects\RMS\RMS\bin\Debug\Microsoft.Expression.Interactions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Windows.Shell">
+      <HintPath>..\..\..\Library DLLs\Microsoft.Windows.Shell.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\..\Library DLLs\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationFramework.Aero" />
+    <Reference Include="PresentationFramework.Aero2" />
+    <Reference Include="RawPrintFunctions">
+      <HintPath>..\..\..\Library DLLs\RawPrintFunctions.dll</HintPath>
+    </Reference>
+    <Reference Include="ReachFramework" />
+    <Reference Include="Syncfusion.Compression.Base">
+      <HintPath>..\..\..\..\Library\Syncfusion\Syncfusion 4.5\Syncfusion.Compression.Base.dll</HintPath>
+    </Reference>
+    <Reference Include="Syncfusion.Core, Version=13.3400.0.7, Culture=neutral, PublicKeyToken=632609b4d040f6b4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Library\Syncfusion\Syncfusion 4.5\Syncfusion.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Syncfusion.Data.WPF">
+      <HintPath>..\..\..\..\Library\Syncfusion\Syncfusion.Data.WPF.dll</HintPath>
+    </Reference>
+    <Reference Include="Syncfusion.Pdf.Base, Version=13.3400.0.7, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Library\Syncfusion\Syncfusion 4.5\Syncfusion.Pdf.Base.dll</HintPath>
+    </Reference>
+    <Reference Include="Syncfusion.PdfViewer.WPF, Version=13.3400.0.7, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Library\Syncfusion\Syncfusion 4.5\Syncfusion.PdfViewer.WPF.dll</HintPath>
+    </Reference>
+    <Reference Include="Syncfusion.SfGrid.WPF">
+      <HintPath>..\..\..\..\Library\Syncfusion\Syncfusion.SfGrid.WPF.dll</HintPath>
+    </Reference>
+    <Reference Include="Syncfusion.SfGridConverter.WPF, Version=13.3400.0.7, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Library\Syncfusion\Syncfusion 4.5\Syncfusion.SfGridConverter.WPF.dll</HintPath>
+    </Reference>
+    <Reference Include="Syncfusion.Shared.WPF">
+      <HintPath>..\..\..\..\Library\Syncfusion\Syncfusion.Shared.WPF.dll</HintPath>
+    </Reference>
+    <Reference Include="Syncfusion.XlsIO.Base">
+      <HintPath>..\..\..\..\Library\Syncfusion\Syncfusion.XlsIO.Base.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Printing" />
+    <Reference Include="System.Windows.Controls.Ribbon, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\System.Windows.Controls.Ribbon.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>D:\Projects\RMS\RMS\bin\Debug\System.Windows.Interactivity.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="WPFCustomToolKit">
+      <HintPath>..\..\..\Library DLLs\WPFCustomToolKit.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock">
+      <HintPath>..\..\..\Library DLLs\Xceed.Wpf.AvalonDock.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Metro">
+      <HintPath>..\..\..\Library DLLs\Xceed.Wpf.AvalonDock.Themes.Metro.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.Toolkit">
+      <HintPath>..\..\..\Library DLLs\Xceed.Wpf.Toolkit.dll</HintPath>
+    </Reference>
+    <Reference Include="Zen.Barcode">
+      <HintPath>..\..\..\Library DLLs\Zen.Barcode.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Compile Include="Forms\DataUtility\wDataBackup.xaml.cs">
+      <DependentUpon>wDataBackup.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\DataUtility\wDataRestore.xaml.cs">
+      <DependentUpon>wDataRestore.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\File\ResetPassword.xaml.cs">
+      <DependentUpon>ResetPassword.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\GenerateComplementaryVouchers.xaml.cs">
+      <DependentUpon>GenerateComplementaryVouchers.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Master\ucVoucherTypes.xaml.cs">
+      <DependentUpon>ucVoucherTypes.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Master\usStaffRegistration.xaml.cs">
+      <DependentUpon>usStaffRegistration.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Reports\ReportViewer.xaml.cs">
+      <DependentUpon>ReportViewer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Reports\usSettlementReport.xaml.cs">
+      <DependentUpon>usSettlementReport.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Reports\RePrintLogReport.xaml.cs">
+      <DependentUpon>RePrintLogReport.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Reports\wTranLogReport.xaml.cs">
+      <DependentUpon>wTranLogReport.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Transaction\CashSettlement.xaml.cs">
+      <DependentUpon>CashSettlement.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Transaction\Denomination.xaml.cs">
+      <DependentUpon>Denomination.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Transaction\ucCreditNote.xaml.cs">
+      <DependentUpon>ucCreditNote.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Transaction\ucParkingOutWithoutSlip.xaml.cs">
+      <DependentUpon>ucParkingOutWithoutSlip.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Transaction\ucTouchParkingOut.xaml.cs">
+      <DependentUpon>ucTouchParkingOut.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Transaction\ucVoucherSalesInvoice.xaml.cs">
+      <DependentUpon>ucVoucherSalesInvoice.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Transaction\wStaffBarcode.xaml.cs">
+      <DependentUpon>wStaffBarcode.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\wExportFormat.xaml.cs">
+      <DependentUpon>wExportFormat.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\wVoucherPrintProgress.xaml.cs">
+      <DependentUpon>wVoucherPrintProgress.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\wVoucherSelect.xaml.cs">
+      <DependentUpon>wVoucherSelect.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="HelpViewer.xaml.cs">
+      <DependentUpon>HelpViewer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Library\Helpers\ExportToExcelHelper.cs" />
+    <Compile Include="Library\Helpers\ExportToPdfHelper.cs" />
+    <Compile Include="Library\Helpers\StyleSelectors.cs" />
+    <Compile Include="Library\ValueConverter\RadioButtonTrueFalseConveter.cs" />
+    <Compile Include="Models\ParkingSales.cs" />
+    <Compile Include="Models\Staff.cs" />
+    <Compile Include="Models\VoucherType.cs" />
+    <Compile Include="ViewModel\ComplementaryVoucherGeneratorViewModel.cs" />
+    <Compile Include="ViewModel\CreditNoteViewModel.cs" />
+    <Compile Include="ViewModel\VoucherSalesInvoiceVM.cs" />
+    <Compile Include="ViewModel\POutWithoutSlipVM.cs" />
+    <Compile Include="ViewModel\StaffViewModel.cs" />
+    <Compile Include="ViewModel\VoucherTypeViewModel.cs" />
+    <Compile Include="ViewModel\vmCashSettlement.cs" />
+    <Page Include="Forms\DataUtility\wDataBackup.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Forms\DataUtility\wDataRestore.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Forms\File\ResetPassword.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Forms\File\ChangePassword.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Forms\File\Login.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Forms\File\PrinterSetting.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Forms\GenerateComplementaryVouchers.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Forms\Master\ucShift.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Forms\Master\ucRate.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Forms\Master\ucTerminal.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Forms\Master\ucVoucherTypes.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Forms\Master\usStaffRegistration.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Forms\Master\UserSetting.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Forms\Master\ucParkingArea.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Forms\Master\ucVehicleType.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Forms\Reports\ReportViewer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Forms\Reports\usSettlementReport.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Forms\Reports\RePrintLogReport.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Forms\Reports\ucDailySalesReport.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Forms\Reports\ucParkingReport.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Forms\Reports\wTranLogReport.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Forms\Transaction\CashSettlement.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Forms\Transaction\Denomination.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Forms\Transaction\ucCreditNote.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Forms\Transaction\ucParkingOutWithoutSlip.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Forms\Transaction\ucTouchParkingOut.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Forms\Transaction\ucTouchParkingIn.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Forms\Transaction\ucTouchCashReceipt.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Forms\Transaction\ucVoucherSalesInvoice.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Forms\Transaction\wStaffBarcode.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Forms\wExportFormat.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Forms\wVoucherPrintProgress.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Forms\wVoucherSelect.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="HelpViewer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Library\Controls\ucNumPad.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="ACommandBehavior\BehaviorBinding.cs" />
+    <Compile Include="ACommandBehavior\Command.cs" />
+    <Compile Include="ACommandBehavior\CommandAndMessage.cs" />
+    <Compile Include="ACommandBehavior\CommandBehavior.cs" />
+    <Compile Include="ACommandBehavior\CommandBehaviorBinding.cs" />
+    <Compile Include="ACommandBehavior\CommandBehaviorCollection.cs" />
+    <Compile Include="ACommandBehavior\EventCommand.cs" />
+    <Compile Include="ACommandBehavior\EventHandlerGenerator.cs" />
+    <Compile Include="ACommandBehavior\ExecutionStrategy.cs" />
+    <Compile Include="ACommandBehavior\SimpleCommand.cs" />
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Forms\File\ChangePassword.xaml.cs">
+      <DependentUpon>ChangePassword.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\File\Login.xaml.cs">
+      <DependentUpon>Login.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\File\PrinterSetting.xaml.cs">
+      <DependentUpon>PrinterSetting.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Master\ucShift.xaml.cs">
+      <DependentUpon>ucShift.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModel\ShiftViewModel.cs" />
+    <Compile Include="ViewModel\RateViewModel.cs" />
+    <Compile Include="Forms\Master\ucRate.xaml.cs">
+      <DependentUpon>ucRate.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModel\TerminalViewModel.cs" />
+    <Compile Include="Forms\Master\ucTerminal.xaml.cs">
+      <DependentUpon>ucTerminal.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Master\UserSetting.xaml.cs">
+      <DependentUpon>UserSetting.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModel\UserViewModel.cs" />
+    <Compile Include="Forms\Master\ucParkingArea.xaml.cs">
+      <DependentUpon>ucParkingArea.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModel\ParkingAreaViewModel.cs" />
+    <Compile Include="Forms\Master\ucVehicleType.xaml.cs">
+      <DependentUpon>ucVehicleType.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModel\VehicleTypeViewModel.cs" />
+    <Compile Include="Forms\Reports\ucDailySalesReport.xaml.cs">
+      <DependentUpon>ucDailySalesReport.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Reports\ucParkingReport.xaml.cs">
+      <DependentUpon>ucParkingReport.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModel\CashReceiptViewModel.cs" />
+    <Compile Include="Forms\Transaction\ucTouchParkingIn.xaml.cs">
+      <DependentUpon>ucTouchParkingIn.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModel\POutVMTouch.cs" />
+    <Compile Include="ViewModel\ParkingInViewModel.cs" />
+    <Compile Include="Forms\Transaction\ucTouchCashReceipt.xaml.cs">
+      <DependentUpon>ucTouchCashReceipt.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Library\Controls\ucNumPad.xaml.cs" />
+    <Compile Include="Library\DataAccess.cs" />
+    <Compile Include="Library\DataGridExport.cs" />
+    <Compile Include="Library\GlobalClass.cs" />
+    <Compile Include="Library\GParse.cs" />
+    <Compile Include="Library\Controls\ExtendedTextBox.cs" />
+    <Compile Include="Library\Helpers\BaseModel.cs" />
+    <Compile Include="Library\Helpers\BaseViewModel.cs" />
+    <Compile Include="Library\Helpers\BindingProxy.cs" />
+    <Compile Include="Library\Helpers\ControlFinder.cs" />
+    <Compile Include="Library\Helpers\CustomFocusManager.cs" />
+    <Compile Include="Library\Helpers\Ean128BarcodeControl.cs" />
+    <Compile Include="Library\Helpers\IMSException.cs" />
+    <Compile Include="Library\Helpers\MenuItemIcon.cs" />
+    <Compile Include="Library\Helpers\RelayCommand.cs" />
+    <Compile Include="Library\Helpers\SelectionBehavior.cs" />
+    <Compile Include="Library\Imaging.cs" />
+    <Compile Include="Library\Interfaces\ITreeNode.cs" />
+    <Compile Include="Library\ParkingSlip.cs" />
+    <Compile Include="Library\TogleButton.cs" />
+    <Compile Include="Library\ValueConverter\BoolToVisibilityConverter.cs" />
+    <Compile Include="Library\ValueConverter\DateFormatConverter.cs" />
+    <Compile Include="Library\ValueConverter\DayWiseRateConverter.cs" />
+    <Compile Include="Library\ValueConverter\DrCrConverter.cs" />
+    <Compile Include="Library\ValueConverter\NoZeroConverter.cs" />
+    <Compile Include="Library\ValueConverter\RateTimeLineWidthConverter.cs" />
+    <Compile Include="Library\ValueConverter\ReverseBoolConverter.cs" />
+    <Compile Include="Library\ValueConverter\ByteToBoolConverter.cs" />
+    <Compile Include="Library\ValueConverter\ShortToBoolConverter.cs" />
+    <Compile Include="Library\ValueConverter\TotalSumConverter.cs" />
+    <Compile Include="Library\ValueConverter\MinToHHMMConverter.cs" />
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+    </Compile>
+    <Page Include="Styles\ButtonStyle.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\GeneralStyles.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\Styles.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\Templates.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\TreeView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\ValueConverters.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Models\CashSettlement.cs" />
+    <Compile Include="Models\DataItem.cs" />
+    <Compile Include="Models\ParkingArea.cs" />
+    <Compile Include="Models\ParkingDetails.cs" />
+    <Compile Include="Models\Party.cs" />
+    <Compile Include="Models\RateMaster.cs" />
+    <Compile Include="Models\Shift.cs" />
+    <Compile Include="Models\Terminal.cs" />
+    <Compile Include="Models\User.cs" />
+    <Compile Include="Models\VehicleType.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="app.config" />
+    <EmbeddedResource Include="Help.pdf" />
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <AppDesigner Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\help.png" />
+    <Resource Include="Images\personal.png" />
+    <Resource Include="Images\quit.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Vehicle.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\clients.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Cash.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\ParkingOut.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\ParkingIn.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\options.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\key.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\printer.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\copy32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\User.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Parking.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Keyboard.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Logout.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Terminal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\IMS Logo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="Microsoft.Office.Core">
+      <Guid>{2DF8D04C-5BFA-101B-BDE5-00AA0044DE52}</Guid>
+      <VersionMajor>2</VersionMajor>
+      <VersionMinor>4</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="Microsoft.Office.Interop.Excel">
+      <Guid>{00020813-0000-0000-C000-000000000046}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>6</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="VBIDE">
+      <Guid>{0002E157-0000-0000-C000-000000000046}</Guid>
+      <VersionMajor>5</VersionMajor>
+      <VersionMinor>3</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

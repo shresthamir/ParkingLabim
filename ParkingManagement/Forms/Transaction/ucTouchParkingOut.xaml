@@ -1,0 +1,303 @@
+﻿<UserControl x:Class="ParkingManagement.Forms.Transaction.ucTouchParkingOut"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ParkingManagement.Library"
+             xmlns:Ctrl="clr-namespace:ParkingManagement.Library.Controls"
+             xmlns:helper ="clr-namespace:ParkingManagement.Library.Helpers"
+             xmlns:Lib ="clr-namespace:ParkingManagement.Library"
+             mc:Ignorable="d" 
+             d:DesignHeight="768" d:DesignWidth="1024">
+    <UserControl.InputBindings>
+        <KeyBinding Key="S" Modifiers="Control" Command="{Binding SaveCommand}"/>
+        <KeyBinding Key="Z" Modifiers="Control" Command="{Binding UndoCommand}"/>
+    </UserControl.InputBindings>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="60"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="60"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Border Style="{StaticResource PlainBackground}" Grid.Row="0">
+            <Border.Resources>
+                <Style TargetType="Label">
+                    <Setter Property="FontSize" Value="28"/>
+                    <Setter Property="Width" Value="150"/>
+                    <Setter Property="FontWeight" Value="SemiBold"/>
+                    <Setter Property="VerticalAlignment" Value="Center"/>
+                </Style>
+            </Border.Resources>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="120"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel  Orientation="Horizontal" VerticalAlignment="Center">
+                    <Label Content="Date : "></Label>
+                    <Label Content="{Binding CurDate,StringFormat={}{0:MM/dd/yyyy}}"/>
+
+                    <Label Content="Time : " Margin="200,0,0,0"></Label>
+                    <Label Content="{Binding CurTime}"/>
+                </StackPanel>
+
+            </Grid>
+        </Border>
+        <Border Style="{StaticResource PlainBackground}" Grid.Row="1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="120"/>
+                    <ColumnDefinition Width="25"/>
+                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="200"/>
+                    <ColumnDefinition Width="70"/>
+                    <ColumnDefinition Width="70"/>
+                    <ColumnDefinition Width="70"/>
+                </Grid.ColumnDefinitions>
+                <Label Content="Invoice No" FontSize="14" FontWeight="SemiBold"/>
+                <TextBox Text="{Binding InvoicePrefix}" Grid.Column="1" IsReadOnly="True" Background="GhostWhite" ></TextBox>
+                <Ctrl:ExtendedTextBox x:Name="txtInvoice" Text="{Binding InvoiceNo}" Grid.Column="2" Height="28" Style="{StaticResource InputTextBox}" helper:CustomFocusManager.IsFocused="{Binding FocusedElement, Converter={StaticResource ShortToBool}, ConverterParameter='5'}">
+                    <Ctrl:ExtendedTextBox.InputBindings>
+                        <KeyBinding Key="Enter" Command="{Binding LoadInvoice}" CommandParameter="{Binding Path=Text,RelativeSource={RelativeSource AncestorType={x:Type TextBox}}}"/>
+                    </Ctrl:ExtendedTextBox.InputBindings>
+                </Ctrl:ExtendedTextBox>
+                <ToggleButton Grid.Column="4" Margin="5" IsChecked="{Binding TaxInvoice}" IsEnabled="{Binding CanChangeInvoiceType}">
+                    <ToggleButton.Template>
+                        <ControlTemplate TargetType="ToggleButton">
+                            <Border BorderBrush="Blue" BorderThickness="2" CornerRadius="2" Background="White" >
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Border BorderBrush="Blue"  Background="Blue" x:Name="ATI">
+                                        <TextBlock x:Name="txtATI" Text="Abb. Tax Invoice" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="SemiBold"/>
+                                    </Border>
+                                    <Border BorderBrush="Blue" Grid.Column="1" Background="White" x:Name="TI">
+                                        <TextBlock x:Name="txtTI" Text="Tax Invoice" Foreground="Blue" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="SemiBold"/>
+                                    </Border>
+                                </Grid>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsChecked" Value="True">
+                                    <Setter Property="Background" TargetName="ATI" Value="White"/>
+                                    <Setter Property="Background" TargetName="TI" Value="Blue"/>
+                                    <Setter Property="Foreground" TargetName="txtATI" Value="Blue"/>
+                                    <Setter Property="Foreground" TargetName="txtTI" Value="White"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </ToggleButton.Template>
+                    <ToggleButton.Triggers>
+
+                    </ToggleButton.Triggers>
+                </ToggleButton>
+                <Button Style="{StaticResource NewButton}" Width="65" Content="Re-Print" Grid.Column="5" Command="{Binding RePrintCommand}"/>
+                <Button Style="{StaticResource NewButton}" Width="65" Content="Print" Grid.Column="6" Command="{Binding PrintCommand}"/>
+                <Button Content="Clear" Style="{StaticResource NewButton}" Width="65" Grid.Column="7" Command="{Binding UndoCommand}"/>
+            </Grid>
+
+        </Border>
+        <Border Style="{StaticResource PlainBackground}" Grid.Row="2" IsEnabled="{Binding IsEntryMode}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="120"/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="100"/>
+                </Grid.ColumnDefinitions>
+                <Label Content="BARCODE " FontSize="18" FontWeight="SemiBold"/>
+                <Ctrl:ExtendedTextBox x:Name="txtBarCode" Text="{Binding PIN.Barcode}" Grid.Column="1" Height="40" FontSize="14" FontWeight="SemiBold" Style="{StaticResource InputTextBox}" helper:CustomFocusManager.IsFocused="{Binding FocusedElement, Converter={StaticResource ShortToBool}, ConverterParameter='1'}" PreviewLostKeyboardFocus="txtBarcode_PreviewLostKeyboardFocus" >
+                    <Ctrl:ExtendedTextBox.InputBindings>
+                        <KeyBinding Key="Enter" Command="{Binding LoadData}" CommandParameter="{Binding Path=Text,RelativeSource={RelativeSource AncestorType={x:Type TextBox}}}"/>
+                    </Ctrl:ExtendedTextBox.InputBindings>
+                </Ctrl:ExtendedTextBox>
+            </Grid>
+        </Border>
+
+        <Border Style="{StaticResource PlainBackground}" Grid.Row="3" x:Name="border" IsEnabled="{Binding IsEntryMode}">
+            <Grid>
+                <Grid.Resources>
+                    <Style TargetType="Label">
+                        <Setter Property="Width" Value="120"/>
+                        <Setter Property="FontSize" Value="14"/>
+                        <Setter Property="FontWeight" Value="SemiBold"/>
+                    </Style>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="FontSize" Value="14"/>
+                        <Setter Property="FontWeight" Value="SemiBold"/>
+                        <Setter Property="VerticalAlignment" Value="Center"/>
+                    </Style>
+                </Grid.Resources>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <!--<ColumnDefinition/>-->
+                </Grid.ColumnDefinitions>
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="50"/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Text="In Details " FontSize="18" FontWeight="SemiBold" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        <StackPanel Grid.Row="1">
+                            <StackPanel Orientation="Horizontal">
+                                <Label Content="Vehicle Type"></Label>
+                                <TextBlock Text=":"/>
+                                <Label Content="{Binding PIN.VType.Description}" Width="200"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <Label Content="Plate No"></Label>
+                                <TextBlock Text=":"/>
+                                <Label Content="{Binding PIN.PlateNo}" Width="200"/>
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal">
+                                <Label Content="In Date"></Label>
+                                <TextBlock Text=":"/>
+                                <TextBlock Text="{Binding PIN.InDate, StringFormat={}{0:MM/dd/yyyy}}" Margin="5 0 0 0"/>
+                                <TextBlock Text="{Binding PIN.InMiti, StringFormat=({0:})}" Margin="5 0 0 0"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <Label Content="In Time" ></Label>
+                                <TextBlock Text=":"/>
+                                <Label Content="{Binding PIN.InTime}"/>
+                            </StackPanel>
+                            <!--<StackPanel Orientation="Horizontal">
+                            <Label Content="Interval"></Label>
+                            <TextBlock VerticalAlignment="Center" FontWeight="Bold" Text="{Binding POUT.Interval}"/>
+                        </StackPanel>-->
+                        </StackPanel>
+                    </Grid>
+
+                    <Line Grid.Row="1" X1="10" Y1="0" X2="1000" Y2="0" Stroke="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" />
+                    <Grid Grid.Row="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="50"/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Text="Out Details " FontSize="18" FontWeight="SemiBold" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        <StackPanel Grid.Row="1">
+                            <StackPanel Orientation="Horizontal">
+                                <Label Content="Out Date"></Label>
+                                <TextBlock Text=":"/>
+                                <TextBlock Text="{Binding POUT.OutDate, StringFormat={}{0:MM/dd/yyyy}}" Margin="5 0 0 0"/>
+                                <TextBlock Text="{Binding POUT.OutMiti, StringFormat= ({0:})}" Margin="5 0 0 0"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <Label Content="Out Time" ></Label>
+                                <TextBlock Text=":"/>
+                                <Label Content="{Binding POUT.OutTime}"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <Label Content="Interval"></Label>
+                                <TextBlock Text=":"/>
+                                <Label Content="{Binding POUT.Interval}"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+
+                <Grid Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="50"/>
+                        <RowDefinition/>
+                        <RowDefinition Height="60"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Payment Details " FontSize="18" FontWeight="SemiBold" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    <StackPanel Grid.Row="1">
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="Charged Hours"></Label>
+                            <TextBlock Text=":"/>
+                            <Label Content="{Binding POUT.ChargedHours}"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="Charged Amount"></Label>
+                            <TextBox Width="150" IsReadOnly="True" IsTabStop="False" FontSize="14" Text="{Binding POUT.ChargedAmount, StringFormat={}{0:#0.00}}" HorizontalContentAlignment="Right"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Visibility="{x:Static Lib:GlobalClass.DisableCashAmountChange}" >
+                            <Label VerticalAlignment="Center" Content="Cash Amount" ></Label>
+                            <!--IsReadOnly="{x:Static Lib:GlobalClass.DisableCashAmountChange}"-->
+                            <Ctrl:ExtendedTextBox FontSize="14"  HorizontalContentAlignment="Right" Text="{Binding POUT.CashAmount, StringFormat={}{0:#0.00}}" 
+                                                  helper:CustomFocusManager.IsFocused="{Binding Path = FocusedElement, Converter={StaticResource ShortToBool}, ConverterParameter='1'}"
+                                                  Width="190" Style="{StaticResource InputTextBox}"/>
+                        </StackPanel>
+                        <!--<StackPanel Orientation="Horizontal">
+                            <Label Content="Royalty Amount"></Label>
+                            <TextBox IsReadOnly="True" IsTabStop="False" FontSize="14"  HorizontalContentAlignment="Right" Text="{Binding POUT.RoyaltyAmount, StringFormat={}{0:#0.00}}" Width="150"/>
+                        </StackPanel>-->
+
+                        <!--<GroupBox Header="Payment Option" Margin="10" Height="100">
+                            <StackPanel Orientation="Horizontal">
+                                <Button Content="Cash" Style="{StaticResource NewButton}" Width="80" Height="55" IsEnabled="False"/>
+                                <Button Content="Member" Style="{StaticResource NewButton}" Width="80" Height="55" IsEnabled="False"/>
+                            </StackPanel>
+                        </GroupBox>-->
+                        <GroupBox Header="Customer Info" Margin="10" Height="130">
+                            <StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Content="Customer Name" Style="{x:Null}" Width="120"/>
+                                    <TextBox Width="300" Text="{Binding POUT.BILLTO}"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Content="Address" Style="{x:Null}" Width="120"/>
+                                    <TextBox Width="300" Text="{Binding POUT.BILLTOADD}"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Content="PAN" Style="{x:Null}" Width="120"/>
+                                    <TextBox Width="150" Text="{Binding POUT.BILLTOPAN}" PreviewTextInput="TextBox_PreviewTextInput"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </GroupBox>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Right">
+                        <Button Content="Stamp" Style="{StaticResource NewButton}" Width="80" Height="45" Command="{Binding SaveWithStaffCommand}" CommandParameter="STAMP"/>
+                        <Button Content="Staff" Style="{StaticResource NewButton}" Width="80" Height="45" Command="{Binding OpenStaffBarcodeCommand}"/>
+                        <Button Content="Finish" Style="{StaticResource NewButton}" Width="80" Height="45" Command="{Binding SaveCommand}"  helper:CustomFocusManager.IsFocused="{Binding FocusedElement, Converter={StaticResource ShortToBool}, ConverterParameter='1'}"/>                        
+                    </StackPanel>
+
+                </Grid>
+
+                <Grid Grid.Column="2" Visibility="Collapsed">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="50"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Member Info" FontSize="18" FontWeight="SemiBold" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    <StackPanel Grid.Row="1">
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="Member Id"></Label>
+                            <TextBlock Text=":"/>
+                            <Label Content="{Binding POUT.MemDetails.MemberId}"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="Member Name"></Label>
+                            <TextBlock Text=":"/>
+                            <Label Content="{Binding POUT.MemDetails.MemberName}"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label VerticalAlignment="Center" Content="Rate Name" ></Label>
+                            <TextBlock Text=":"/>
+                            <Label Content="{Binding POUT.Rate.RateDescription}"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label VerticalAlignment="Center" Content="Payment Voucher" ></Label>
+                            <TextBlock Text=":"/>
+                            <Label Content="{Binding POUT.MemDetails.VCHRNO}"/>
+                        </StackPanel>
+                    </StackPanel>
+
+                </Grid>
+                <Line Grid.Column="1" X1="0" Y1="10" X2="0" Y2="1000" Stroke="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" />
+                <Line  Grid.Column="1" X1="0" Y1="10" X2="0" Y2="1000" Stroke="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" />
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

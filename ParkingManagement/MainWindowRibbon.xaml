@@ -1,0 +1,96 @@
+﻿<Window x:Class="ParkingManagement.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:Primitives="clr-namespace:System.Windows.Controls.Ribbon.Primitives;assembly=System.Windows.Controls.Ribbon"
+         xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
+        Title="Parking Management System" KeyUp="Window_KeyUp" >
+    <Grid>
+        <Grid.Background>
+            <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
+                <GradientStop Color="White" Offset="1"/>
+                <GradientStop Color="#FF56629C"/>
+            </LinearGradientBrush>
+        </Grid.Background>
+        <DockPanel LastChildFill="True">
+            <Ribbon DockPanel.Dock="Top" x:Name="MenuRibbon" SelectionChanged="Ribbon_SelectionChanged" VerticalAlignment="Top"     >
+                <Ribbon.HelpPaneContent>
+                    <RibbonButton Name="HelpBtn"
+                SmallImageSource="Images\help.png">
+                    </RibbonButton>
+                </Ribbon.HelpPaneContent>
+                <Ribbon.QuickAccessToolBar>
+                    <RibbonQuickAccessToolBar>
+                        <RibbonButton Name="File" Content="File" Label="File" SmallImageSource="Images\help.png"/>
+                        
+                    </RibbonQuickAccessToolBar>
+                </Ribbon.QuickAccessToolBar>
+                <Ribbon.ApplicationMenu>
+                    <RibbonApplicationMenu Name="Home" >
+                        <RibbonApplicationMenuItem Name="ChangePassword" ImageSource="Images\Key.png" Click="ChangePassword_Click" Header="Change Password"></RibbonApplicationMenuItem>
+                        <RibbonApplicationMenuItem Name="PrinterSetting" Click="PrinterSetting_Click" Header="Printer Setting" ImageSource="Images\printer.png"></RibbonApplicationMenuItem>
+                        <RibbonApplicationMenuItem Name="LogOut" Click="LogOut_Click" Header="LogOut"></RibbonApplicationMenuItem>
+                        <RibbonApplicationMenuItem Name="Exit" Click="Exit_Click" Header="Exit" ImageSource="Images\Quit.png" >
+                        </RibbonApplicationMenuItem>
+                    </RibbonApplicationMenu>
+                </Ribbon.ApplicationMenu>
+                <RibbonTab Name="Master"  Header="Master"  KeyTip="M" HorizontalAlignment="Stretch"   >
+                    <RibbonGroup Name="RVehicleType" Height="70" Width="100" Header="Vehicle Type">
+                        <RibbonMenuButton Name="VehicleType" PreviewMouseDown="VehicleType_PreviewMouseDown" ToolTip="Vehicle Type" Height="50" Width="80" LargeImageSource="images\Vehicle.png"   >
+                        </RibbonMenuButton>
+                    </RibbonGroup>
+                    <RibbonGroup Name="RRate" Height="70" Width="100" Header="Rate">
+                        <RibbonMenuButton Name="Rate" PreviewMouseDown="Rate_PreviewMouseDown"   ToolTip="Rate" Height="50" Width="80" LargeImageSource="images\Options.png"   >
+                        </RibbonMenuButton>
+                    </RibbonGroup>
+                    <RibbonGroup Name="RParty" Height="70" Width="100" Header="Party">
+                        <RibbonMenuButton Name="Party"  PreviewMouseDown="Party_PreviewMouseDown" ToolTip="Party" Height="50" Width="80" LargeImageSource="images\Clients.png"   >
+                        </RibbonMenuButton>
+                    </RibbonGroup>
+                    <RibbonGroup Name="RUserSetting" Height="70" Width="100" Header="User">
+                        <RibbonMenuButton Name="UserSetting" PreviewMouseDown="UserSetting_PreviewMouseDown" ToolTip="User Setting" Height="50" Width="80" LargeImageSource="images\User.png"   >
+                        </RibbonMenuButton>
+                    </RibbonGroup>
+                </RibbonTab>
+                <RibbonTab Name="Transaction" Header="Transaction" KeyTip="T"    >
+                    <RibbonGroup Name="RParkingIn" Height="70" Width="100" Header="Parking In">
+                        <RibbonMenuButton Name="ParkingIn" PreviewMouseDown="ParkingIn_PreviewMouseDown" ToolTip="Parking In" Height="50" Width="80" LargeImageSource="images\ParkinIn.png"   >
+                        </RibbonMenuButton>
+                    </RibbonGroup>
+                    <RibbonGroup Name="RParkingOut" Height="70" Width="100" Header="Parking Out">
+                        <RibbonMenuButton Name="ParkingOut" PreviewMouseDown="ParkingOut_PreviewMouseDown"  ToolTip="Parking Out" Height="50" Width="80" LargeImageSource="images\ParkingOut.png"   >
+                        </RibbonMenuButton>
+                    </RibbonGroup>
+                    <RibbonGroup Name="RCashReceipt" Height="70" Width="100" Header="Cash Receipt">
+                        <RibbonMenuButton Name="CashReceipt" PreviewMouseDown="CashReceipt_PreviewMouseDown"  ToolTip="Cash Receipt" Height="50" Width="80" LargeImageSource="images\Cash.png"   >
+                        </RibbonMenuButton>
+                    </RibbonGroup>
+                </RibbonTab>
+                <RibbonTab Name="Reports"  Header="Reports" KeyTip="R">
+                    <RibbonGroup Name="RSalesReports" Height="70" Width="100" Header="Sales Reports">
+                        <RibbonMenuButton Name="SalesReports" PreviewMouseDown="SalesReports_PreviewMouseDown"  ToolTip="Sales Reports" Height="50" Width="80" LargeImageSource="images\Copy32.png"   >
+                        </RibbonMenuButton>
+                    </RibbonGroup>
+                    <RibbonGroup Name="RPartyLedger" Height="70" Width="100" Header="Party Ledger">
+                        <RibbonMenuButton Name="PartyLedger" PreviewMouseDown="PartyLedger_PreviewMouseDown"  ToolTip="Party Ledger" Height="50" Width="80" LargeImageSource="images\Copy32.png"   >
+                        </RibbonMenuButton>
+                    </RibbonGroup>
+                    <RibbonGroup Name="RParkingReport" Height="70" Width="100" Header="Parking Report">
+                        <RibbonMenuButton Name="ParkingReport" PreviewMouseDown="ParkingReport_PreviewMouseDown"  ToolTip="ParkingReport" Height="50" Width="80" LargeImageSource="images\Copy32.png"   >
+                        </RibbonMenuButton>
+                    </RibbonGroup>
+                </RibbonTab>
+            </Ribbon>
+
+            <xcad:DockingManager DockPanel.Dock="Bottom" x:Name="Window_Docking_Billing" Grid.Row="1" Margin="0,0,0,0" ActiveContentChanged="Window_Docking_Billing_ActiveContentChanged"   >
+                <xcad:LayoutRoot x:Name="LayRoot">
+                    <xcad:LayoutPanel  x:Name="LayPanel"  Orientation="Horizontal"  >
+                        <xcad:LayoutDocumentPaneGroup x:Name="LayDocPaneGroup" >
+                            <xcad:LayoutDocumentPane ChildrenCollectionChanged="LayDocPane_ChildrenCollectionChanged" x:Name="LayDocPane"   />
+                        </xcad:LayoutDocumentPaneGroup>
+                    </xcad:LayoutPanel>
+                </xcad:LayoutRoot>
+
+            </xcad:DockingManager>
+        </DockPanel>
+    </Grid>
+</Window>

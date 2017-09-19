@@ -1,0 +1,89 @@
+﻿<UserControl x:Class="ParkingManagement.Forms.Master.ucVoucherTypes"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ParkingManagement.Forms.Master"
+             xmlns:toolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
+             mc:Ignorable="d" 
+             xmlns:Behavior="clr-namespace:ParkingManagement.ACommandBehavior"
+             d:DesignHeight="500" d:DesignWidth="800">
+    <UserControl.Resources>
+        <Style TargetType="Button" BasedOn="{StaticResource NewButton}">
+            <Setter Property="Width" Value="60" ></Setter>
+            <Setter Property="Height" Value="30"></Setter>
+        </Style>       
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="210" />
+            <RowDefinition ></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Style="{StaticResource GradientBackground}">
+            <Grid  HorizontalAlignment="Right" >
+                <StackPanel Orientation="Horizontal" Margin="0">
+                    <Button Content="New" IsEnabled="{Binding NewEnabled}" Command="{Binding NewCommand}"  ></Button>
+                    <Button Content="Edit" IsEnabled="{Binding EditEnabled}" Command="{Binding EditCommand}" ></Button>
+                    <Button Content="Save" IsEnabled="{Binding SaveEnabled}" Command="{Binding SaveCommand}"  ></Button>
+                    <Button Content="Delete" IsEnabled="{Binding DeleteEnabled}" Command="{Binding DeleteCommand}"  ></Button>
+                    <Button Content="Undo" Command="{Binding UndoCommand}"  ></Button>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="1" Style="{StaticResource PlainBackground}" IsEnabled="{Binding EntryPanelEnabled}">
+            <StackPanel >
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="ID"></Label>
+                    <TextBox Width="70" Text="{Binding VType.VoucherId}" IsEnabled="{Binding KeyFieldEnabled}" HorizontalContentAlignment="Right"></TextBox>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Voucher Name"></Label>
+                    <TextBox Width="400" Text="{Binding VType.VoucherName}"></TextBox>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Vehicle Type"/>
+                    <ComboBox Width="200" ItemsSource="{Binding VehicleTypeList}" DisplayMemberPath="Description" SelectedValuePath="VTypeID" SelectedValue="{Binding VType.VehicleType}"/>
+
+                    <Label Content="Voucher Text" Margin="10 0 0 0"/>
+                    <TextBox Width="100" Text="{Binding VType.VoucherInfo}"></TextBox>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Rate"></Label>
+                    <TextBox Width="100" Text="{Binding VType.Rate, Converter={StaticResource NoZero}}" HorizontalContentAlignment="Right"></TextBox>
+
+                    <Label Content="Value" Margin="110 0 0 0" ></Label>
+                    <TextBox Width="100" Text="{Binding VType.Value, Converter={StaticResource NoZero}}" HorizontalAlignment="Right"></TextBox>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Begin Time"></Label>
+                    <toolkit:TimePicker Width="100"  Value="{Binding VType.Start,UpdateSourceTrigger=PropertyChanged}"  />
+
+                    <Label Content="End Time" Margin="110 0 0 0"></Label>
+                    <toolkit:TimePicker Width="100"  Value="{Binding VType.End, UpdateSourceTrigger=PropertyChanged}" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Validity"/>
+                    <TextBox Text="{Binding VType.Validity, Converter={StaticResource NoZero}}" Width="100" HorizontalContentAlignment="Right"/>
+                    <Label Content="Days"/>
+                    <CheckBox Margin="15 0 0 0" IsChecked="{Binding VType.SkipVoucherGeneration}" Content="Skip Voucher Generation" VerticalAlignment="Center"/>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+        <DataGrid Grid.Row="2" ItemsSource="{Binding VTypeList}" AutoGenerateColumns="False" SelectedItem="{Binding SelectedVType}" Behavior:CommandBehavior.Event="MouseDoubleClick" IsReadOnly="True"
+                                                 Behavior:CommandBehavior.Command="{Binding LoadData}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding VoucherId}" Header="ID" Width="100"/>
+                <DataGridTextColumn Binding="{Binding VoucherName}" Header="Voucher Name" Width="250"/>
+                <DataGridTextColumn Binding="{Binding Rate}" Header="Rate" Width="100"/>
+                <DataGridTextColumn Binding="{Binding Value}" Header="Value" Width="100"/>
+                <DataGridTextColumn Binding="{Binding ValidStart}" Header="Begin Time" Width="100"/>
+                <DataGridTextColumn Binding="{Binding ValidEnd}" Header="End Time" Width="100"/>
+                <DataGridTextColumn Binding="{Binding Validity}" Header="Validity" Width="100"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>
