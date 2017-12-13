@@ -170,7 +170,7 @@ namespace ParkingManagement.Forms.Reports
                     strSql = string.Format(@"SELECT VSD.BillNo BILL_NO, CAST(CONVERT(VARCHAR(10),PV.ScannedTime, 101) AS DATETIME) BILL_DATE, RIGHT( CONVERT(VARCHAR, ScannedTime, 0),7) PRINTED_TIME, VSD.VoucherNo REF_NO, PV.VoucherName REMARKS, VSD.DiscountAmount DISCOUNT, PSV.BillTo CUSTOMER_NAME, U.UserName PRINTED_BY 
                                             FROM VoucherDiscountDetail VSD 
                                             JOIN ParkingVouchers PV ON VSD.VoucherNo = PV.VoucherNo --AND PV.FYID = VSD.FYID
-                                            JOIN ParkingSales PSV ON PV.BillNo = PSV.BillNo AND PSV.FYID = PV.FYID 
+                                            LEFT JOIN ParkingSales PSV ON PV.BillNo = PSV.BillNo AND PSV.FYID = PV.FYID 
                                             JOIN USERS U ON U.UID = VSD.UID WHERE ScannedTime BETWEEN '{0}' AND '{1}'", FDate.ToString("MM/dd/yyyy"), TDate.ToString("MM/dd/yyyy") + " 23:59:59");
                 //VOUCHER DISCOUNT REPORT - SUMMARY
                 else if (ReportFlag == 8)
@@ -181,7 +181,7 @@ namespace ParkingManagement.Forms.Reports
                                                 SELECT CAST(CONVERT(VARCHAR(10),PV.ScannedTime, 101) AS DATETIME) BILL_DATE, PV.VoucherName REMARKS, VSD.DiscountAmount DISCOUNT, PSV.BillTo CUSTOMER_NAME, U.UserName PRINTED_BY 
                                                 FROM VoucherDiscountDetail VSD 
                                                 JOIN ParkingVouchers PV ON VSD.VoucherNo = PV.VoucherNo -- AND PV.FYID = VSD.FYID
-                                                JOIN ParkingSales PSV ON PV.BillNo = PSV.BillNo AND PSV.FYID = PV.FYID 
+                                                LEFT JOIN ParkingSales PSV ON PV.BillNo = PSV.BillNo AND PSV.FYID = PV.FYID 
                                                 JOIN USERS U ON U.UID = VSD.UID WHERE ScannedTime BETWEEN '{1}' AND '{2}'
                                                 ) a GROUP BY BILL_DATE, {0} ORDER BY BILL_DATE", SummaryType, FDate.ToString("MM/dd/yyyy"), TDate.ToString("MM/dd/yyyy") + " 23:59:59");
                 }

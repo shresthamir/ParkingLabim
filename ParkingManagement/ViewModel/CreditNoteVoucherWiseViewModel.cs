@@ -19,7 +19,7 @@ using System.Drawing.Drawing2D;
 using ParkingManagement.Forms.Transaction;
 namespace ParkingManagement.ViewModel
 {
-    public class CreditNoteViewModel : BaseViewModel
+    class CreditNoteVoucherWiseViewModel : BaseViewModel
     {
         enum Focusable
         {
@@ -28,35 +28,19 @@ namespace ParkingManagement.ViewModel
         DateConverter nepDate;
         bool _PartyEnabled;
         DispatcherTimer timer;
-        wStaffBarcode StaffBarcode;
-        ParkingIn _PIN;
-        ParkingOut _POUT;
-        ObservableCollection<RateMaster> _RSchemes;
         string _CurTime;
         DateTime _CurDate;
-        private string _InvoicePrefix;
+        private string _InvoicePrefix = "TI";
         private string _InvoiceNo;
-        private bool _TaxInvoice;
         private bool _MustIssueTaxInvoice;
         private string _RefBillNo;
         private string _Remarks;
-        public ParkingIn PIN { get { return _PIN; } set { _PIN = value; OnPropertyChanged("PIN"); } }
-        public ParkingOut POUT { get { return _POUT; } set { _POUT = value; OnPropertyChanged("POUT"); } }
-        public ObservableCollection<RateMaster> RSchemes
-        {
-            get { return _RSchemes; }
-            set { _RSchemes = value; OnPropertyChanged("RSchemes"); }
-        }
-        public bool TaxInvoice
-        {
-            get { return _TaxInvoice; }
-            set
-            {
-                _TaxInvoice = value;
-                OnPropertyChanged("TaxInvoice");
-                InvoicePrefix = (value) ? "TI" : "SI";
-            }
-        }
+        private ObservableCollection<TParkingSalesDetails> _VSDetailList;
+        private TParkingSales _VSales;
+
+        public TParkingSales VSales { get { return _VSales; } set { _VSales = value; OnPropertyChanged("VSales"); } }
+        public ObservableCollection<TParkingSalesDetails> VSDetailList { get { return _VSDetailList; } set { _VSDetailList = value; OnPropertyChanged("VSDetailList"); } }
+       
         public bool IsEntryMode { get { return _action == ButtonAction.Init || _action == ButtonAction.Selected; } }
         public bool CanChangeInvoiceType { get { return _MustIssueTaxInvoice; } set { _MustIssueTaxInvoice = value; OnPropertyChanged("CanChangeInvoiceType"); } }
         public string InvoiceNo { get { return _InvoiceNo; } set { _InvoiceNo = value; OnPropertyChanged("InvoiceNo"); } }
@@ -66,8 +50,7 @@ namespace ParkingManagement.ViewModel
         public string Remarks { get { return _Remarks; } set { _Remarks = value; OnPropertyChanged("Remarks"); } }
         public DateTime CurDate { get { return _CurDate; } set { _CurDate = value; OnPropertyChanged("CurDate"); } }
         public bool PartyEnabled { get { return _PartyEnabled; } set { _PartyEnabled = value; OnPropertyChanged("PartyEnabled"); } }
-
-        public RelayCommand PrintCommand { get; set; }
+                
         public RelayCommand LoadInvoice { get { return new RelayCommand(ExecuteLoadInvoice, CanLoadInvoice); } }
 
         private void ExecuteLoadInvoice(object obj)
@@ -78,17 +61,19 @@ namespace ParkingManagement.ViewModel
             {
                 using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
                 {
-                    if (conn.ExecuteScalar<int>("SELECT COUNT(*) FROM ParkingSales WHERE RefBillNo = @BillNo AND FYID = @FYID", new { BillNo = BillNo, FYID = GlobalClass.FYID }) > 0)
+                    if(conn.ExecuteScalar<int>("SELECT COUNT(*) FROM ParkingSales WHERE RefBillNo = @BillNo AND FYID = @FYID", new { BillNo = BillNo, FYID = GlobalClass.FYID }) > 0)
                     {
                         MessageBox.Show("Credit Note has already been issued to selected Bill.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
                         return;
                     }
+
                     PID = conn.ExecuteScalar<int>("SELECT PID FROM ParkingSales WHERE BillNo = @BillNo AND FYID = @FYID", new { BillNo = BillNo, FYID = GlobalClass.FYID });
-                    if (PID == 0)
+                    if (PID > 0)
                         return;
-                    PIN = conn.Query<ParkingIn>("SELECT PID, VehicleType, InDate, InMiti, InTime, PlateNo, Barcode FROM ParkingInDetails WHERE PID = @PID AND FYID = @FYID", new { PID = PID, FYID = GlobalClass.FYID }).First();
-                    PIN.VType = conn.Query<VehicleType>(string.Format("SELECT VTypeId, Description FROM VehicleType WHERE VTypeId = {0}", PIN.VehicleType)).First();
-                    POUT = conn.Query<ParkingOut>(string.Format("SELECT * FROM ParkingOutDetails WHERE PID = {0} AND FYID = {1}", PIN.PID, GlobalClass.FYID)).First();
+
+                    VSales = conn.Query<TParkingSales>("SELECT BillNo, FYID, TDate, TMiti, TTime, [Description], BillTo, BILLTOADD, BILLTOPAN, Amount, Discount, NonTaxable, Taxable, VAT, GrossAmount, RefBillNo, TaxInvoice, Remarks, UID, SESSION_ID, PID FROM ParkingSales WHERE BillNo = @BillNo AND FYID = @FYID", new { BillNo = BillNo, FYID = GlobalClass.FYID }).FirstOrDefault();
+                    VSDetailList = new ObservableCollection<TParkingSalesDetails>(
+                                        conn.Query<TParkingSalesDetails>("SELECT BillNo, FYID, PTYPE, ProdId, [Description], Quantity, Rate, Amount, Discount, NonTaxable, Taxable, VAT, NetAmount, Remarks FROM ParkingSalesDetails WHERE BillNo = @BillNo AND FYID = @FYID", new { BillNo = BillNo, FYID = GlobalClass.FYID }));
                     
                 }
             }
@@ -102,15 +87,12 @@ namespace ParkingManagement.ViewModel
         {
             return true;
         }
-        public CreditNoteViewModel()
+        public CreditNoteVoucherWiseViewModel()
         {
             try
             {
-                MessageBoxCaption = "Credit Note";
-                TaxInvoice = false;
+                MessageBoxCaption = "Credit Note";                
                 nepDate = new DateConverter(GlobalClass.TConnectionString);
-                PIN = new ParkingIn();
-                POUT = new ParkingOut();
                 CurDate = DateTime.Today;
                 CurTime = DateTime.Now.ToString("hh:mm tt");
                 timer = new DispatcherTimer();
@@ -122,6 +104,7 @@ namespace ParkingManagement.ViewModel
                 SaveCommand = new RelayCommand(ExecuteSave, CanExecuteSave);
                 UndoCommand = new RelayCommand(ExecuteUndo);
                 PrintCommand = new RelayCommand(ExecutePrint, CanExecutePrint);
+                VSDetailList = new ObservableCollection<TParkingSalesDetails>();
                 SetAction(ButtonAction.Init);
                 this.PropertyChanged += CreditNoteViewModel_PropertyChanged;
             }
@@ -137,8 +120,8 @@ namespace ParkingManagement.ViewModel
             {
                 if (e.PropertyName == "RefBillNo" || e.PropertyName == "TaxInvoice")
                 {
-                    PIN = new ParkingIn();
-                    POUT = new ParkingOut();
+                    VSales = new TParkingSales();
+                    VSDetailList = new ObservableCollection<TParkingSalesDetails>();
                 }
             }
         }
@@ -164,7 +147,7 @@ namespace ParkingManagement.ViewModel
                 {
                     string CNO = "CN" + InvoiceNo;
                     string DuplicateCaption = GlobalClass.GetReprintCaption(CNO);
-                    PrintBill(CNO, conn, "CREDIT NOTE");
+                    PrintBill(CNO);
                     GlobalClass.SavePrintLog(CNO, null, DuplicateCaption);
                     GlobalClass.SetUserActivityLog("Credit Note", "Re-Print", WorkDetail: string.Empty, VCRHNO: CNO, Remarks: "Reprinted : " + DuplicateCaption);
                 }
@@ -188,24 +171,19 @@ namespace ParkingManagement.ViewModel
             {
                 using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
                 {
-                    var CNote = conn.Query("SELECT * FROM ParkingSales WHERE BillNo = @BillNo AND FYID = @FYID", new { BillNo = CreditNoteNo, FYID = GlobalClass.FYID });
+                    var CNote = conn.Query<TParkingSales>("SELECT * FROM ParkingSales WHERE BillNo = @BillNo AND FYID = @FYID", new { BillNo = CreditNoteNo, FYID = GlobalClass.FYID });
                     if (CNote.Count() > 0)
                     {
                         string BillNo = CNote.First().RefBillNo;
                         Remarks = CNote.First().Remarks;
-                        if (BillNo.Contains("TI"))
-                        {
-                            TaxInvoice = true;
-                        }
+                        
                         RefBillNo = BillNo.Substring(2, BillNo.Length - 2);
                         PID = conn.ExecuteScalar<int>("SELECT PID FROM ParkingSales WHERE BillNo = @BillNo AND FYID = @FYID", new { BillNo = BillNo, FYID = GlobalClass.FYID });
-                        if (PID == 0)
-                        {
+                        if (PID > 0)
                             return;
-                        }
-                        PIN = conn.Query<ParkingIn>("SELECT PID, VehicleType, InDate, InMiti, InTime, PlateNo, Barcode FROM ParkingInDetails WHERE PID = @PID AND FYID = @FYID", new { PID = PID, FYID = GlobalClass.FYID }).First();
-                        PIN.VType = conn.Query<VehicleType>(string.Format("SELECT VTypeId, Description FROM VehicleType WHERE VTypeId = {0}", PIN.VehicleType)).First();
-                        POUT = conn.Query<ParkingOut>(string.Format("SELECT * FROM ParkingOutDetails WHERE PID = {0} AND FYID = {1}", PIN.PID, GlobalClass.FYID)).First();
+                        VSales = conn.Query<TParkingSales>("SELECT BillNo, FYID, TDate, TMiti, TTime, [Description], BillTo, BILLTOADD, BILLTOPAN, Amount, Discount, NonTaxable, Taxable, VAT, GrossAmount, RefBillNo, TaxInvoice, Remarks, UID, SESSION_ID, PID FROM ParkingSales WHERE BillNo = @BillNo AND FYID = @FYID", new { BillNo = BillNo, FYID = GlobalClass.FYID }).FirstOrDefault();
+                        VSDetailList = new ObservableCollection<TParkingSalesDetails>(
+                                            conn.Query<TParkingSalesDetails>("SELECT BillNo, FYID, PTYPE, ProdId, [Description], Quantity, Rate, Amount, Discount, NonTaxable, Taxable, VAT, NetAmount, Remarks FROM ParkingSalesDetails WHERE BillNo = @BillNo AND FYID = @FYID", new { BillNo = BillNo, FYID = GlobalClass.FYID }));
                         SetAction(ButtonAction.InvoiceLoaded);
                     }
                     else
@@ -280,8 +258,8 @@ namespace ParkingManagement.ViewModel
                     }
                     if (!string.IsNullOrEmpty(BillNo))
                     {
-                        RawPrinterHelper.SendStringToPrinter(GlobalClass.PrinterName, ((char)27).ToString() + ((char)112).ToString() + ((char)0).ToString() + ((char)64).ToString() + ((char)240).ToString(), "Receipt");   //Open Cash Drawer
-                        PrintBill(BillNo.ToString(), conn, "CREDIT NOTE");
+                        
+                        PrintBill(BillNo.ToString());
                     }
                     ExecuteUndo(null);
                 }
@@ -296,95 +274,58 @@ namespace ParkingManagement.ViewModel
             InvoiceNo = string.Empty;
             RefBillNo = string.Empty;
             Remarks = string.Empty;
-            TaxInvoice = false;
-            PIN = new ParkingIn();
-            POUT = new ParkingOut();
+            VSales = new TParkingSales();
+            VSDetailList = new ObservableCollection<TParkingSalesDetails>();
             SetAction(ButtonAction.Init);
             OnPropertyChanged("IsEntryMode");
         }
 
-        string GetInterval(DateTime In, DateTime Out, string InTime, string OutTime)
+       
+
+
+
+
+        void PrintBill(string BillNo, bool IsNew = false)
         {
-            var InDate = In.Add(DateTime.Parse(InTime).TimeOfDay);
-            var OutDate = Out.Add(DateTime.Parse(OutTime).TimeOfDay);
-            var interval = OutDate - InDate;
-            return (interval.Days * 24 + interval.Hours).ToString() + " Hrs " + (interval.Minutes).ToString() + " Mins";
-        }
-
-
-
-
-        void PrintBill(string BillNo, SqlConnection conn, string InvoiceName)
-        {
-            DataRow dr;
-            string DuplicateCaption = GlobalClass.GetReprintCaption(BillNo);
-            //// RawPrinterHelper printer = new RawPrinterHelper();
-
-            using (DataAccess da = new DataAccess())
+            try
             {
-                dr = da.getData(string.Format(@"SELECT PS.*,VT.Description VType,ISNULL(PIN.PlateNo,'') PlateNo,PIN.InTime,PIN.InMiti,POUT.OutTime,POUT.OutMiti,U.UserName, POUT.Interval, POUT.ChargedHours FROM ParkingSales PS 
-                                    INNER JOIN Users U ON U.UID=PS.UID
-                                    LEFT JOIN ParkingOutDetails POUT  ON PS.PID = POUT.PID AND PS.FYID = POUT.FYID
-                                    LEFT JOIN (ParkingInDetails PIN   
-                                    LEFT JOIN VehicleType VT ON VT.VTypeID=PIN.VehicleType) ON PS.PID = PIN.PID AND PS.FYID = PIN.FYID
-                                    WHERE BillNo = '{0}' AND PS.FYID = {1}", BillNo, GlobalClass.FYID), conn).Rows[0];
+                using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
+                {
+                    string PType = conn.ExecuteScalar<string>("SELECT PType From ParkingSales PS JOIN ParkingSalesDetails PSD ON PS.BillNo = PSD.BillNo AND PS.FYID = PSD.FYID WHERE PS.BillNo = @BillNo AND PS.FYID = @FYID", new { BillNo = BillNo, FYID = GlobalClass.FYID });
+                    if (string.IsNullOrEmpty(PType))
+                    {
+                        MessageBox.Show("Invalid Invoice No", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                        return;
+                    }
+                    else if (PType == "P")
+                    {
+                        MessageBox.Show("Parking Invoice cannot be loaded in this interface.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                        return;
+                    }
 
+                    var vSales = conn.Query<TParkingSales>("SELECT BillNo, FYID, TDate, TMiti, TTime, UserName [Description], BillTo, BILLTOADD, BILLTOPAN, Amount, Discount, NonTaxable, Taxable, VAT, GrossAmount, RefBillNo, TaxInvoice, Remarks, PS.UID, SESSION_ID, PID FROM ParkingSales PS JOIN Users U ON PS.UID = U.UID WHERE BillNo = @BillNo AND FYID = @FYID", new { BillNo = BillNo, FYID = GlobalClass.FYID }).FirstOrDefault();
+                    var vSDetailList = new List<TParkingSalesDetails>(
+                                        conn.Query<TParkingSalesDetails>("SELECT BillNo, FYID, PTYPE, ProdId, [Description], Quantity, Rate, Amount, Discount, NonTaxable, Taxable, VAT, NetAmount, Remarks FROM ParkingSalesDetails WHERE BillNo = @BillNo AND FYID = @FYID", new { BillNo = BillNo, FYID = GlobalClass.FYID }));
+                    string InWords = "Rs. " + conn.ExecuteScalar<string>("SELECT DBO.Num_ToWordsArabic(" + vSales.GrossAmount + ")");
+                    string DuplicateCaption = (IsNew) ? String.Empty : GlobalClass.GetReprintCaption(BillNo);
+                    var pslip = new CreditNote
+                    {
+                        CompanyName = GlobalClass.CompanyName,
+                        CompanyAddress = GlobalClass.CompanyAddress,
+                        CompanyPan = GlobalClass.CompanyPan,
+                        PSales = vSales,
+                        PSDetails = vSDetailList,
+                        InWords = InWords,
+                        DuplicateCaption = DuplicateCaption,
+                        InvoiceTitle = "CREDIT NOTE"
+                    };
+                    pslip.Print();                   
+                }
             }
-
-            string InWords = "Rs. " + conn.ExecuteScalar<string>("SELECT DBO.Num_ToWordsArabic(" + dr["GrossAmount"] + ")");
-            string strPrint = string.Empty;
-            int PrintLen = 40;
-            string Description = dr["Description"].ToString();
-            string Particulars = "Particulars";
-            Description = (Description.Length > PrintLen - 17) ? Description.Substring(0, PrintLen - 17) : Description.PadRight(PrintLen - 17, ' ');
-            Particulars = (Particulars.Length > PrintLen - 17) ? Particulars.Substring(0, PrintLen - 17) : Particulars.PadLeft((PrintLen + Particulars.Length - 17) / 2, ' ').PadRight(PrintLen - 17, ' ');
-
-            strPrint += (GlobalClass.CompanyName.Length > PrintLen) ? GlobalClass.CompanyName.Substring(0, PrintLen) : GlobalClass.CompanyName.PadLeft((PrintLen + GlobalClass.CompanyName.Length) / 2, ' ') + Environment.NewLine;
-            strPrint += (GlobalClass.CompanyAddress.Length > PrintLen) ? GlobalClass.CompanyAddress.Substring(0, PrintLen) : GlobalClass.CompanyAddress.PadLeft((PrintLen + GlobalClass.CompanyAddress.Length) / 2, ' ') + Environment.NewLine;
-            strPrint += GlobalClass.CompanyPan.PadLeft((PrintLen + GlobalClass.CompanyPan.Length) / 2, ' ') + Environment.NewLine;
-            strPrint += InvoiceName.PadLeft((PrintLen + InvoiceName.Length) / 2, ' ') + Environment.NewLine;
-            if (!string.IsNullOrEmpty(DuplicateCaption))
-                strPrint += DuplicateCaption.PadLeft((PrintLen + DuplicateCaption.Length) / 2, ' ') + Environment.NewLine;
-            strPrint += string.Format("Bill No : {0}    Date : {1}", BillNo.PadRight(7, ' '), dr["TMiti"]) + Environment.NewLine;
-            strPrint += string.Format("Name    : {0}", dr["BillTo"]) + Environment.NewLine;
-            strPrint += string.Format("Address : {0}", dr["BillToAdd"]) + Environment.NewLine;
-            strPrint += string.Format("PAN     : {0}", dr["BillToPan"]) + Environment.NewLine;
-            strPrint += string.Format("Ref No  : {0}", dr["RefBillNo"]) + Environment.NewLine;
-            strPrint += string.Format("C/N Remarks: {0}", dr["Remarks"]) + Environment.NewLine;
-            strPrint += string.Format("Vehicle Type : {0} {1}", dr["VType"], string.IsNullOrEmpty(dr["PlateNo"].ToString()) ? string.Empty : "(" + dr["PlateNo"] + ")") + Environment.NewLine;
-            strPrint += "".PadRight(PrintLen, '-') + Environment.NewLine;
-            strPrint += string.Format("Sn.|{0}|  Amount  |", Particulars) + Environment.NewLine;
-            strPrint += string.Format("1.  {0}  {1}", Description, GParse.ToDecimal(((bool)dr["TaxInvoice"]) ? dr["Amount"] : dr["GrossAmount"]).ToString("#0.00").PadLeft(8, ' ')) + Environment.NewLine;
-            strPrint += string.Format("    IN  : {0} {1}", dr["InTime"], dr["InMiti"]) + Environment.NewLine;
-            strPrint += string.Format("    OUT : {0} {1}", dr["OutTime"], dr["OutMiti"]) + Environment.NewLine;
-            strPrint += string.Format("    Interval : {0} ", dr["Interval"]) + Environment.NewLine;
-            strPrint += string.Format("    Charged Hours : {0} ", dr["ChargedHours"]) + Environment.NewLine;
-
-            strPrint += Environment.NewLine;
-            strPrint += "------------------------".PadLeft(PrintLen, ' ') + Environment.NewLine;
-            if ((bool)dr["TaxInvoice"])
+            catch (Exception Ex)
             {
-                strPrint += ("Gross Amount : " + GParse.ToDecimal(dr["Amount"]).ToString("#0.00").PadLeft(8, ' ')).PadLeft(PrintLen, ' ') + Environment.NewLine;
-                if (GParse.ToDecimal(dr["Discount"]) > 0)
-                    strPrint += ("Discount : " + GParse.ToDecimal(dr["Discount"]).ToString("#0.00").PadLeft(8, ' ')).PadLeft(PrintLen, ' ') + Environment.NewLine;
-                strPrint += ("Taxable : " + GParse.ToDecimal(dr["Taxable"]).ToString("#0.00").PadLeft(8, ' ')).PadLeft(PrintLen, ' ') + Environment.NewLine;
-                strPrint += ("Non Taxable : " + GParse.ToDecimal(dr["NonTaxable"]).ToString("#0.00").PadLeft(8, ' ')).PadLeft(PrintLen, ' ') + Environment.NewLine;
-                strPrint += ("VAT 13% : " + GParse.ToDecimal(dr["VAT"]).ToString("#0.00").PadLeft(8, ' ')).PadLeft(PrintLen, ' ') + Environment.NewLine;
+                MessageBox.Show(GlobalClass.GetRootException(Ex).Message, MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Error);
             }
-            strPrint += ("Net Amount : " + GParse.ToDecimal(dr["GrossAmount"]).ToString("#0.00").PadLeft(8, ' ')).PadLeft(PrintLen, ' ');
-            strPrint += Environment.NewLine;
-            strPrint += "".PadRight(PrintLen, '-') + Environment.NewLine;
-            strPrint += InWords + Environment.NewLine;
-            strPrint += "".PadRight(PrintLen, '-') + Environment.NewLine;
-            strPrint += string.Format("Cashier : {0} ({1})", dr["UserName"], dr["TTime"]) + Environment.NewLine;
-            strPrint += Environment.NewLine;
-            strPrint += Environment.NewLine;
-            strPrint += Environment.NewLine;
-            strPrint += Environment.NewLine;
-            strPrint += "".PadRight(PrintLen, '-') + Environment.NewLine;
-            strPrint += ((char)29).ToString() + ((char)86).ToString() + ((char)1).ToString();
-
-            RawPrinterHelper.SendStringToPrinter(GlobalClass.PrinterName, strPrint, "Receipt");
         }
         void timer_Tick(object sender, EventArgs e)
         {

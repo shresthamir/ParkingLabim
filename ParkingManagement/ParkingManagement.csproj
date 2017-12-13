@@ -175,6 +175,9 @@
     <Compile Include="Forms\Reports\ReportViewer.xaml.cs">
       <DependentUpon>ReportViewer.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Reports\ucVoucherDiscountReport.xaml.cs">
+      <DependentUpon>ucVoucherDiscountReport.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Reports\usSettlementReport.xaml.cs">
       <DependentUpon>usSettlementReport.xaml</DependentUpon>
     </Compile>
@@ -198,6 +201,9 @@
     </Compile>
     <Compile Include="Forms\Transaction\ucTouchParkingOut.xaml.cs">
       <DependentUpon>ucTouchParkingOut.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Transaction\ucCreditNoteVoucherWise.xaml.cs">
+      <DependentUpon>ucCreditNoteVoucherWise.xaml</DependentUpon>
     </Compile>
     <Compile Include="Forms\Transaction\ucVoucherSalesInvoice.xaml.cs">
       <DependentUpon>ucVoucherSalesInvoice.xaml</DependentUpon>
@@ -225,6 +231,7 @@
     <Compile Include="Models\Staff.cs" />
     <Compile Include="Models\VoucherType.cs" />
     <Compile Include="ViewModel\ComplementaryVoucherGeneratorViewModel.cs" />
+    <Compile Include="ViewModel\CreditNoteVoucherWiseViewModel.cs" />
     <Compile Include="ViewModel\CreditNoteViewModel.cs" />
     <Compile Include="ViewModel\VoucherSalesInvoiceVM.cs" />
     <Compile Include="ViewModel\POutWithoutSlipVM.cs" />
@@ -295,6 +302,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Forms\Reports\ucVoucherDiscountReport.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Forms\Reports\usSettlementReport.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -342,6 +353,10 @@
     <Page Include="Forms\Transaction\ucTouchCashReceipt.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Forms\Transaction\ucCreditNoteVoucherWise.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Forms\Transaction\ucVoucherSalesInvoice.xaml">
       <SubType>Designer</SubType>

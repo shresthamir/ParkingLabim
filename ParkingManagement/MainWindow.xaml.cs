@@ -496,11 +496,11 @@ GROUP BY ENTERED_BY";
                     la.Title = "ANNEX 7 REPORT";
                     break;
                 case "VOUCHER DISCOUNT REPORTS - SUMMARY":
-                    la.Content = new Forms.Reports.RePrintLogReport(8);
+                    la.Content = new Forms.Reports.ucVoucherDiscountReport(1);
                     la.Title = p;
                     break;
                 case "VOUCHER DISCOUNT REPORTS - DETAILS":
-                    la.Content = new Forms.Reports.RePrintLogReport(7);
+                    la.Content = new Forms.Reports.ucVoucherDiscountReport(0);
                     la.Title = p;
                     break;
                 case "SETTLEMENT REPORT":
