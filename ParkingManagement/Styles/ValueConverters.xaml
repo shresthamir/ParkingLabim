@@ -19,4 +19,5 @@
     <vc:IsNotZeroConverter x:Key="IsNotZero"/>
     <vc:NoteToAmountConverter x:Key="ToAmount"/>
     <vc:RadioButtonTrueFalseConveter x:Key="ReportOption"/>
+    <vc:TimeSpanToStringConverter x:Key="TimeSpanToString"/>
 </ResourceDictionary>

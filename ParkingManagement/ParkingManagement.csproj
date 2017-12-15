@@ -166,6 +166,12 @@
     <Compile Include="Forms\GenerateComplementaryVouchers.xaml.cs">
       <DependentUpon>GenerateComplementaryVouchers.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Master\ucHoliday.xaml.cs">
+      <DependentUpon>ucHoliday.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Master\ucMembershipScheme.xaml.cs">
+      <DependentUpon>ucMembershipScheme.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Master\ucVoucherTypes.xaml.cs">
       <DependentUpon>ucVoucherTypes.xaml</DependentUpon>
     </Compile>
@@ -214,6 +220,9 @@
     <Compile Include="Forms\wExportFormat.xaml.cs">
       <DependentUpon>wExportFormat.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Forms\wImportHolidays.xaml.cs">
+      <DependentUpon>wImportHolidays.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Forms\wVoucherPrintProgress.xaml.cs">
       <DependentUpon>wVoucherPrintProgress.xaml</DependentUpon>
     </Compile>
@@ -227,12 +236,16 @@
     <Compile Include="Library\Helpers\ExportToPdfHelper.cs" />
     <Compile Include="Library\Helpers\StyleSelectors.cs" />
     <Compile Include="Library\ValueConverter\RadioButtonTrueFalseConveter.cs" />
+    <Compile Include="Models\Holiday.cs" />
+    <Compile Include="Models\MembershipScheme.cs" />
     <Compile Include="Models\ParkingSales.cs" />
     <Compile Include="Models\Staff.cs" />
     <Compile Include="Models\VoucherType.cs" />
     <Compile Include="ViewModel\ComplementaryVoucherGeneratorViewModel.cs" />
     <Compile Include="ViewModel\CreditNoteVoucherWiseViewModel.cs" />
     <Compile Include="ViewModel\CreditNoteViewModel.cs" />
+    <Compile Include="ViewModel\HolidayViewModel.cs" />
+    <Compile Include="ViewModel\MembershipSchemeViewModel.cs" />
     <Compile Include="ViewModel\VoucherSalesInvoiceVM.cs" />
     <Compile Include="ViewModel\POutWithoutSlipVM.cs" />
     <Compile Include="ViewModel\StaffViewModel.cs" />
@@ -263,6 +276,14 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Forms\GenerateComplementaryVouchers.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Forms\Master\ucHoliday.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Forms\Master\ucMembershipScheme.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -369,6 +390,10 @@
     <Page Include="Forms\wExportFormat.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Forms\wImportHolidays.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Forms\wVoucherPrintProgress.xaml">
       <SubType>Designer</SubType>
