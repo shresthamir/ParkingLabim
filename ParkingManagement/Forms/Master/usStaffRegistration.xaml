@@ -15,7 +15,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="50"/>
-            <RowDefinition Height="200" />
+            <RowDefinition Height="230" />
             <RowDefinition/>
         </Grid.RowDefinitions>
 
@@ -45,25 +45,28 @@
                         <RowDefinition Height="35"/>
                         <RowDefinition Height="35"/>
                         <RowDefinition Height="35"/>
+                        <RowDefinition Height="35"/>
                         
                     </Grid.RowDefinitions>
-                    <Label Content="Barcode"></Label>                    
+                    <Label Content="Staff Id"></Label>                    
                     <TextBox Grid.Column="1"  Text="{Binding staff.BARCODE}" IsEnabled="{Binding BarcodeEnabled}" ></TextBox>
                     <CheckBox Grid.Column="2" Content="Is Inactive" IsChecked="{Binding staff.STATUS, Converter= {StaticResource ByteToBool}}" IsEnabled="{Binding EntryPanelEnabled}" VerticalAlignment="Center"/>
 
+                    <Label Grid.Row="1" Content="Barcode"></Label>
+                    <TextBox Grid.Row="1"  Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding staff.BCODE, ValidatesOnDataErrors=True}" IsEnabled="{Binding EntryPanelEnabled}" Margin="0 0 50 0"></TextBox>
 
 
-                    <Label Grid.Row="1" Content="Full Name"></Label>
-                    <TextBox Grid.Row="1"  Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding staff.FULLNAME, ValidatesOnDataErrors=True}" IsEnabled="{Binding EntryPanelEnabled}" Margin="0 0 50 0"></TextBox>
+                    <Label Grid.Row="2" Content="Full Name"></Label>
+                    <TextBox Grid.Row="2"  Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding staff.FULLNAME, ValidatesOnDataErrors=True}" IsEnabled="{Binding EntryPanelEnabled}" Margin="0 0 50 0"></TextBox>
 
-                    <Label Grid.Row="2" Content="Address"></Label>
-                    <TextBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2"  Text="{Binding staff.ADDRESS}" IsEnabled="{Binding EntryPanelEnabled}" Margin="0 0 50 0"></TextBox>
+                    <Label Grid.Row="3" Content="Address"></Label>
+                    <TextBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2"  Text="{Binding staff.ADDRESS}" IsEnabled="{Binding EntryPanelEnabled}" Margin="0 0 50 0"></TextBox>
 
-                    <Label Grid.Row="3" Content="Designation"></Label>
-                    <ComboBox IsEditable="True" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" ItemsSource="{Binding DesignationList}" IsEnabled="{Binding EntryPanelEnabled}"  Text="{Binding staff.DESIGNATION, ValidatesOnDataErrors=True}" Margin="0 0 50 0"></ComboBox>
+                    <Label Grid.Row="4" Content="Designation"></Label>
+                    <ComboBox IsEditable="True" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" ItemsSource="{Binding DesignationList}" IsEnabled="{Binding EntryPanelEnabled}"  Text="{Binding staff.DESIGNATION, ValidatesOnDataErrors=True}" Margin="0 0 50 0"></ComboBox>
 
-                    <Label Grid.Row="4" Content="Remarks"></Label>
-                    <TextBox Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding staff.REARKS}" IsEnabled="{Binding EntryPanelEnabled}" Margin="0 0 50 0"></TextBox>
+                    <Label Grid.Row="5" Content="Remarks"></Label>
+                    <TextBox Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding staff.REARKS}" IsEnabled="{Binding EntryPanelEnabled}" Margin="0 0 50 0"></TextBox>
                 </Grid>
             </StackPanel>
         </Border>

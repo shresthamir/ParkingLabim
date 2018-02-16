@@ -37,7 +37,14 @@ namespace ParkingManagement.Library.ValueConverter
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return System.Convert.ToDateTime(value.ToString()).TimeOfDay;
+            try
+            {
+                return System.Convert.ToDateTime(value.ToString()).TimeOfDay;
+            }
+            catch
+            {
+                return new TimeSpan();
+            }
         }
     }
 }

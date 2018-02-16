@@ -179,7 +179,7 @@ namespace ParkingManagement.ViewModel
         {
             try
             {
-                SelectedHoliday = new Holiday();
+                SelectedHoliday = null;
                 Holiday = new Holiday();
                 SingleDate = true;
                 TDate = DateTime.Today;

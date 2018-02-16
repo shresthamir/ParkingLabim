@@ -17,6 +17,8 @@ using System.Drawing.Printing;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using ParkingManagement.Forms.Transaction;
+using Newtonsoft.Json;
+
 namespace ParkingManagement.ViewModel
 {
     public class POutVMTouch : BaseViewModel
@@ -41,6 +43,8 @@ namespace ParkingManagement.ViewModel
         private bool _MustIssueTaxInvoice;
         List<Voucher> Vouchers;
         List<VoucherType> VoucherTypes;
+        MemberDiscount mDiscount;
+        private bool _SaveWithStaffEnabled;
 
         public ParkingIn PIN { get { return _PIN; } set { _PIN = value; OnPropertyChanged("PIN"); } }
         public ParkingOut POUT { get { return _POUT; } set { _POUT = value; OnPropertyChanged("POUT"); } }
@@ -61,6 +65,7 @@ namespace ParkingManagement.ViewModel
                     InvoiceNo = GlobalClass.GetInvoiceNo(InvoicePrefix);
             }
         }
+        public bool SaveWithStaffEnabled { get { return _SaveWithStaffEnabled; } set { _SaveWithStaffEnabled = value; OnPropertyChanged("SaveWithStaffEnabled"); } }
         public bool IsEntryMode { get { return _action == ButtonAction.Init || _action == ButtonAction.Selected; } }
         public bool CanChangeInvoiceType { get { return _MustIssueTaxInvoice; } set { _MustIssueTaxInvoice = value; OnPropertyChanged("CanChangeInvoiceType"); } }
         public string InvoiceNo { get { return _InvoiceNo; } set { _InvoiceNo = value; OnPropertyChanged("InvoiceNo"); } }
@@ -162,12 +167,14 @@ namespace ParkingManagement.ViewModel
                 {
                     MessageBox.Show("Invalid Barcode");
                 }
+                POUT.SESSION_ID = GlobalClass.Session;
                 POUT.STAFF_BARCODE = obj.ToString();
                 using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
                 {
                     if (POUT.STAFF_BARCODE != "STAMP")
                     {
-                        if (conn.ExecuteScalar<int>("SELECT COUNT(*) FROM tblStaff WHERE STATUS = 0 AND BARCODE = '" + POUT.STAFF_BARCODE + "'") == 0)
+                        POUT.STAFF_BARCODE = conn.ExecuteScalar<string>("SELECT BARCODE FROM tblStaff WHERE STATUS = 0 AND BCODE = '" + POUT.STAFF_BARCODE + "'");
+                        if (string.IsNullOrEmpty(POUT.STAFF_BARCODE))
                         {
                             MessageBox.Show("Invalid Barcode. Please Try Again.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
                             return;
@@ -256,63 +263,24 @@ namespace ParkingManagement.ViewModel
         {
             try
             {
+                decimal ChargedHours = 0;
+                decimal ChargedAmount = 0;
                 using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
                 {
                     if (_action == ButtonAction.Selected)
                     {
-                        if (!obj.ToString().StartsWith("#"))
-                            POUT.SaveLog(conn);
-                        else
+                        if (obj.ToString().StartsWith("#"))
                         {
-                            if (Vouchers.Any(x => x.Barcode == obj.ToString()))
-                                return;
-                            Voucher v = conn.Query<Voucher>("SELECT VoucherNo, Barcode, VoucherId, Value, ExpDate, ValidStart, ValidEnd, ScannedTime FROM ParkingVouchers WHERE Barcode = @Barcode", new { Barcode = obj.ToString() }).FirstOrDefault();
-                            if (v == null)
-                            {
-                                MessageBox.Show("Invalid Voucher", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                                return;
-                            }
-                            else if (v.ScannedTime == null)
-                            {
-                                MessageBox.Show("Voucher already redeemed.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                                return;
-                            }
-                            else if (!VoucherTypes.Any(x => x.VoucherId == v.VoucherId && x.VehicleType == PIN.VehicleType))
-                            {
-                                MessageBox.Show("The Voucher is not valid for selected vehicle.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                                return;
-                            }
-                            else if (v.ExpDate < CurDate)
-                            {
-                                MessageBox.Show("Voucher has expired.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                                return;
-                            }
-                            else
-                            {
-                                TimeSpan outTime = Convert.ToDateTime(POUT.OutTime).TimeOfDay;
-                                if (v.ValidStart < v.ValidEnd)
-                                {
-                                    if (outTime < v.ValidStart || outTime > v.ValidEnd)
-                                    {
-                                        MessageBox.Show("Voucher is not valid for current Shift.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                                        return;
-                                    }
-                                }
-                                else
-                                {
-                                    if (outTime < v.ValidStart && outTime > v.ValidEnd)
-                                    {
-                                        MessageBox.Show("Voucher is not valid for current Shift.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                                        return;
-                                    }
-                                }
-                            }
-                            v.Value = (POUT.ChargedAmount > v.Value) ? v.Value : POUT.ChargedAmount;
-                            POUT.ChargedAmount = POUT.CashAmount = POUT.ChargedAmount - v.Value;
-                            PIN.Barcode = string.Empty;
-                            Vouchers.Add(v);
+                            ValidateVoucher(obj, conn);
                             return;
                         }
+                        else if (obj.ToString().StartsWith("@"))
+                        {
+                            ValidateMember(obj, conn);
+                            return;
+                        }
+                        else
+                            POUT.SaveLog(conn);
                     }
 
                     var PINS = conn.Query<ParkingIn>(string.Format("SELECT PID, VehicleType, InDate, InMiti, InTime, PlateNo, Barcode, UID FROM ParkingInDetails WHERE BARCODE = '{0}' AND FYID = {1}", obj, GlobalClass.FYID));
@@ -342,7 +310,9 @@ namespace ParkingManagement.ViewModel
                     POUT.Interval = GetInterval(PIN.InDate, POUT.OutDate, PIN.InTime, POUT.OutTime);
                     POUT.PID = PIN.PID;
 
-                    CalculateParkingCharge(conn, PIN.InDate.Add(DateTime.Parse(PIN.InTime).TimeOfDay), POUT.OutDate.Add(DateTime.Parse(POUT.OutTime).TimeOfDay), POUT.Rate_ID, PIN.VehicleType);
+                    CalculateParkingCharge(conn, PIN.InDate.Add(DateTime.Parse(PIN.InTime).TimeOfDay), POUT.OutDate.Add(DateTime.Parse(POUT.OutTime).TimeOfDay), POUT.Rate_ID, PIN.VehicleType, ref ChargedAmount, ref ChargedHours);
+                    POUT.ChargedHours = ChargedHours;
+                    POUT.ChargedAmount = ChargedAmount;
                     POUT.CashAmount = POUT.ChargedAmount;
                     SetAction(ButtonAction.Selected);
                     if (POUT.CashAmount > GlobalClass.AbbTaxInvoiceLimit)
@@ -356,6 +326,7 @@ namespace ParkingManagement.ViewModel
                     }
                     PIN.Barcode = string.Empty;
                     FocusedElement = (short)Focusable.Finish;
+                    SaveWithStaffEnabled = true;
                 }
             }
             catch (Exception ex)
@@ -364,7 +335,136 @@ namespace ParkingManagement.ViewModel
             }
         }
 
-        void CalculateParkingCharge(SqlConnection conn, DateTime InTime, DateTime OutTime, int RateId, int VehicleID)
+        private void ValidateMember(object obj, SqlConnection conn)
+        {
+            if (mDiscount != null)
+                return;
+            TimeSpan outTime = Convert.ToDateTime(POUT.OutTime).TimeOfDay;
+            decimal DiscountAmount = 0;
+            decimal DiscountHour = 0;
+            int Interval;
+
+            Member m = conn.Query<Member>("SELECT MemberId, MemberName, SchemeId, ExpiryDate, ActivationDate, Barcode, Address FROM Members WHERE Barcode = @MemberId ", new { MemberId = obj.ToString() }).FirstOrDefault();
+            if (m == null)
+            {
+                MessageBox.Show("The member does not exists.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                return;
+            }
+            else if (m.ActivationDate > POUT.OutDate || m.ExpiryDate < POUT.OutDate)
+            {
+                MessageBox.Show("The membership is expired or not yet activated.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                return;
+            }
+            MembershipScheme scheme = conn.Query<MembershipScheme>("SELECT * FROM MembershipScheme WHERE SchemeId = @SchemeId", m).FirstOrDefault();
+            if (scheme == null)
+            {
+                MessageBox.Show("Membership scheme does not exists.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                return;
+            }
+            else if (!scheme.ValidOnWeekends && (POUT.OutDate.DayOfWeek == DayOfWeek.Friday || POUT.OutDate.DayOfWeek == DayOfWeek.Saturday))
+            {
+                MessageBox.Show("The Membership is not valid on Weekends", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                return;
+            }
+            else if (!scheme.ValidOnHolidays && conn.ExecuteScalar<int>("SELECT COUNT(*) FROM Holiday WHERE HolidayDate = @HolidayDate", new { HolidayDate = POUT.OutDate }) > 0)
+            {
+                MessageBox.Show("The Membership is not valid on Public Holidays", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                return;
+            }
+            else if (!scheme.ValidHoursList.Any(x => x.Start < outTime && x.End > outTime))
+            {
+                MessageBox.Show("Membership is not valid for current Shift.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                return;
+            }
+            else
+            {
+                Interval = conn.ExecuteScalar<int>("SELECT ISNULL(SUM(MDD.Interval),0) Interval FROM MemberDiscountDetail MDD JOIN ParkingOutDetails POD ON MDD.PID = POD.PID WHERE MemberId = @MemberId AND POD.OutDate = @OutDate", new { MemberId = m.MemberId, OutDate = POUT.OutDate });
+                if (Interval >= scheme.Limit)
+                {
+                    MessageBox.Show("Free parking for the Member has exceeded for day.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    return;
+                }
+            }
+
+            SaveWithStaffEnabled = false;
+            mDiscount = new MemberDiscount
+            {
+                MemberId = m.MemberId,
+                SchemeId = m.SchemeId,
+                FYID = POUT.FYID,
+                PID = PIN.PID,
+            };
+            POUT.BILLTO = m.MemberName;
+            POUT.BILLTOADD = m.Address;
+            int DiscountInterval = scheme.Limit - Interval;
+            int TotalInterval = Convert.ToInt32(POUT.ChargedHours * 60);
+            DiscountInterval = (TotalInterval <= DiscountInterval) ? TotalInterval : DiscountInterval;
+            CalculateParkingCharge(conn, PIN.InDate.Add(DateTime.Parse(PIN.InTime).TimeOfDay), PIN.InDate.Add(DateTime.Parse(PIN.InTime).TimeOfDay).AddMinutes(DiscountInterval), POUT.Rate_ID, PIN.VehicleType, ref DiscountAmount, ref DiscountHour);
+            mDiscount.Interval = DiscountHour * 60;
+            mDiscount.DiscountAmount = DiscountAmount * scheme.Discount / 100;
+
+            POUT.ChargedAmount = POUT.CashAmount = POUT.ChargedAmount - mDiscount.DiscountAmount;
+            PIN.Barcode = string.Empty;
+            if (POUT.ChargedAmount == 0)
+                ExecuteSave(null);
+
+        }
+
+        private void ValidateVoucher(object obj, SqlConnection conn)
+        {
+            if (Vouchers.Any(x => x.Barcode == obj.ToString()))
+                return;
+            Voucher v = conn.Query<Voucher>("SELECT VoucherNo, Barcode, VoucherId, Value, ExpDate, ValidStart, ValidEnd, ScannedTime FROM ParkingVouchers WHERE Barcode = @Barcode", new { Barcode = obj.ToString() }).FirstOrDefault();
+            if (v == null)
+            {
+                MessageBox.Show("Invalid Voucher", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                return;
+            }
+            else if (v.ScannedTime == null)
+            {
+                MessageBox.Show("Voucher already redeemed.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                return;
+            }
+            else if (!VoucherTypes.Any(x => x.VoucherId == v.VoucherId && x.VehicleType == PIN.VehicleType))
+            {
+                MessageBox.Show("The Voucher is not valid for selected vehicle.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                return;
+            }
+            else if (v.ExpDate < CurDate)
+            {
+                MessageBox.Show("Voucher has expired.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                return;
+            }
+            else
+            {
+                TimeSpan outTime = Convert.ToDateTime(POUT.OutTime).TimeOfDay;
+                if (v.ValidStart < v.ValidEnd)
+                {
+                    if (outTime < v.ValidStart || outTime > v.ValidEnd)
+                    {
+                        MessageBox.Show("Voucher is not valid for current Shift.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                        return;
+                    }
+                }
+                else
+                {
+                    if (outTime < v.ValidStart && outTime > v.ValidEnd)
+                    {
+                        MessageBox.Show("Voucher is not valid for current Shift.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                        return;
+                    }
+                }
+            }
+            SaveWithStaffEnabled = false;
+            v.Value = (POUT.ChargedAmount > v.Value) ? v.Value : POUT.ChargedAmount;
+            POUT.ChargedAmount = POUT.CashAmount = POUT.ChargedAmount - v.Value;
+            PIN.Barcode = string.Empty;
+            Vouchers.Add(v);
+            if (POUT.ChargedAmount == 0)
+                ExecuteSave(null);
+        }
+
+        void CalculateParkingCharge(SqlConnection conn, DateTime InTime, DateTime OutTime, int RateId, int VehicleID, ref decimal ChargedAmount, ref decimal ChargedHours)
         {
             using (SqlCommand cmd = conn.CreateCommand())
             {
@@ -379,8 +479,8 @@ namespace ParkingManagement.ViewModel
                 {
                     if (dr.Read())
                     {
-                        POUT.ChargedAmount = GParse.ToDecimal(dr[0]);
-                        POUT.ChargedHours = (decimal)dr[1];
+                        ChargedAmount = GParse.ToDecimal(dr[0]);
+                        ChargedHours = (decimal)dr[1];
                     }
                 }
             }
@@ -390,7 +490,7 @@ namespace ParkingManagement.ViewModel
         private void ExecuteSave(object obj)
         {
             string strSQL;
-            decimal Taxable, VAT, Amount, Discount, NonTaxable, Rate, Quantity;
+            decimal Taxable, VAT, Amount, Discount = 0, NonTaxable, Rate, Quantity;
             string BillNo = string.Empty;
             try
             {
@@ -398,13 +498,17 @@ namespace ParkingManagement.ViewModel
                 {
                     conn.Open();
                     using (SqlTransaction tran = conn.BeginTransaction())
-                    {                        
+                    {
+                        POUT.SESSION_ID = GlobalClass.Session;
                         POUT.Save(tran);
                         if (POUT.CashAmount > 0)
                         {
                             BillNo = InvoicePrefix + GlobalClass.GetInvoiceNo(InvoicePrefix, tran);
                             Quantity = POUT.ChargedHours;
-                            Discount = Vouchers.Sum(x => x.Value);
+                            if (Vouchers.Count > 0)
+                                Discount = Vouchers.Sum(x => x.Value);
+                            else if (mDiscount != null)
+                                Discount = mDiscount.DiscountAmount;
                             Amount = POUT.CashAmount / (1 + (GlobalClass.VAT / 100)) + Discount;
                             Rate = Amount / Quantity;
                             NonTaxable = 0;
@@ -452,6 +556,13 @@ namespace ParkingManagement.ViewModel
 
                             conn.Execute("UPDATE tblSequence SET CurNo = CurNo + 1 WHERE VNAME = @VNAME AND FYID = @FYID", new { VNAME = InvoicePrefix, FYID = GlobalClass.FYID }, transaction: tran);
                             GlobalClass.SetUserActivityLog(tran, "Parking Out", "New", VCRHNO: BillNo, WorkDetail: "Bill No : " + BillNo);
+
+                            if (!string.IsNullOrEmpty(SyncFunctions.username))
+                            {
+                                BillViewModel bvm = conn.Query<BillViewModel>("SELECT BILLTOPAN buyer_pan, F.FYNAME fiscal_year, BILLTO buyer_name, BillNo  invoice_number, TMiti invoice_date, Taxable + NonTaxable total_sales, TAXABLE taxable_sales_vat, VAT vat FROM ParkingSales PS JOIN tblFiscalYear F ON PS.FYID = F.FYID WHERE BillNo = @BillNo AND PS.FYID = @FYID", new { BillNo, GlobalClass.FYID }, tran).FirstOrDefault();
+                                bvm.seller_pan = GlobalClass.CompanyPan;
+                                SyncFunctions.SyncSalesData(bvm);
+                            }
                         }
                         if (Vouchers.Count > 0)
                         {
@@ -468,6 +579,11 @@ namespace ParkingManagement.ViewModel
                                 }, transaction: tran);
                                 conn.Execute("UPDATE ParkingVouchers SET ScannedTime = GETDATE() WHERE VoucherNo = @VoucherNo", v, tran);
                             }
+                        }
+                        else if (mDiscount != null)
+                        {
+                            mDiscount.BillNo = string.IsNullOrEmpty(BillNo) ? "MS1" : BillNo;
+                            mDiscount.Save(tran);
                         }
                         tran.Commit();
                     }
@@ -509,6 +625,7 @@ namespace ParkingManagement.ViewModel
             POUT.PropertyChanged += POUT_PropertyChanged;
             SetAction(ButtonAction.Init);
             Vouchers.Clear();
+            mDiscount = null;
             OnPropertyChanged("IsEntryMode");
         }
 
@@ -667,6 +784,23 @@ namespace ParkingManagement.ViewModel
             }
             CurTime = DateTime.Now.ToString("hh:mm tt");
             CurDate = DateTime.Today;
+            if (!string.IsNullOrEmpty(SyncFunctions.username))
+            {
+                if (CurTime.Substring(4, 1) == "5" || CurTime.Substring(4, 1) == "0")
+                {
+                    using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
+                    {
+                        var PendingBills = conn.Query<string>("SELECT JSON_DATA FROM tblSyncLog WHERE STATUS = 0");
+                        foreach (string bill in PendingBills)
+                        {
+                            BillViewModel model = JsonConvert.DeserializeObject<BillViewModel>(bill);
+                            model.datetimeClient = DateTime.Now;
+                            SyncFunctions.SyncSalesData(model);
+                            System.Threading.Thread.Sleep(100);
+                        }
+                    }
+                }
+            }
         }
     }
 

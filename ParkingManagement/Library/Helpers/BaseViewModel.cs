@@ -22,6 +22,8 @@ namespace ParkingManagement.Library.Helpers
         protected string SaveConfirmText = "You are about to save new {0}. Do you want to proceed?";
         protected string UpdateConfirmText = "You are about to update selected {0}. Do you want to proceed?";
         protected string DeleteConfirmText = "You are about to delete selected {0}. Do you want to proceed?";
+        private bool _ImportEnabled;
+
         public short FocusedElement { get { return _FocusedElement; } set { _FocusedElement = value; OnPropertyChanged("FocusedElement");  } }
         public string TMODE { get { return _TMODE; } set { _TMODE = value; OnPropertyChanged("TMODE"); } }
         public string SearchCriteria
@@ -62,6 +64,7 @@ namespace ParkingManagement.Library.Helpers
         public RelayCommand PrintPreviewCommand { get; set; }
         public RelayCommand PrintCommand { get; set; }
         public RelayCommand ExportCommand { get; set; }
+        public RelayCommand ImportCommand { get; set; }
 
         //public RelayCommand NumericField_GotFocus { get; set; }
 
@@ -71,7 +74,7 @@ namespace ParkingManagement.Library.Helpers
         public bool EditEnabled { get { return _EditEnabled; } set { _EditEnabled = value; OnPropertyChanged("EditEnabled"); } }
         public bool SaveEnabled { get { return _SaveEnabled; } set { _SaveEnabled = value; OnPropertyChanged("SaveEnabled"); } }
         public bool DeleteEnabled { get { return _DeleteEnabled; } set { _DeleteEnabled = value; OnPropertyChanged("DeleteEnabled"); } }
-
+        public bool ImportEnabled { get { return _ImportEnabled; } set { _ImportEnabled = value; OnPropertyChanged("ImportEnabled"); } }
 
         public BaseViewModel()
         {
@@ -85,6 +88,7 @@ namespace ParkingManagement.Library.Helpers
             NewEnabled = false;
             EntryPanelEnabled = false;            
             DeleteEnabled = false;
+            ImportEnabled = false;
             switch (action)
             {
                 case ButtonAction.New:
@@ -99,6 +103,7 @@ namespace ParkingManagement.Library.Helpers
                     break;
                 case ButtonAction.Init:                    
                     NewEnabled = true;
+                    ImportEnabled = true;
                     TMODE = "INIT";
                     break;
                 case ButtonAction.Selected:

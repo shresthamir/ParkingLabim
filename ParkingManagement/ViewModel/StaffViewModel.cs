@@ -32,7 +32,7 @@ namespace ParkingManagement.ViewModel
                 MessageBoxCaption = "Staff Registration";
                 using (SqlConnection Conn = new SqlConnection(GlobalClass.TConnectionString))
                 {                  
-                    StaffList = new ObservableCollection<Staff>(Conn.Query<Staff>("SELECT BARCODE, FULLNAME,[ADDRESS], DESIGNATION, REMARKS, [STATUS]  FROM tblStaff"));
+                    StaffList = new ObservableCollection<Staff>(Conn.Query<Staff>("SELECT BARCODE, FULLNAME,[ADDRESS], DESIGNATION, REMARKS, [STATUS], BCODE  FROM tblStaff"));
                     StaffList.CollectionChanged += PAList_CollectionChanged;
                 }               
                 LoadData = new RelayCommand(ExecuteLoad, CanExecuteLoad);
@@ -93,7 +93,8 @@ namespace ParkingManagement.ViewModel
                 ADDRESS = SelectedStaff.ADDRESS,
                 DESIGNATION = SelectedStaff.DESIGNATION,
                 REMARKS = SelectedStaff.REMARKS,
-                STATUS = SelectedStaff.STATUS
+                STATUS = SelectedStaff.STATUS,
+                BCODE = SelectedStaff.BCODE
             };
             SetAction(ButtonAction.Selected);
         }
@@ -166,6 +167,7 @@ namespace ParkingManagement.ViewModel
                     pa.DESIGNATION = staff.DESIGNATION;
                     pa.REMARKS = staff.REMARKS;
                     pa.STATUS = staff.STATUS;
+                    pa.BCODE = staff.BCODE;
                     ExecuteUndo(null);
                 }
             }

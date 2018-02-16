@@ -16,8 +16,10 @@ namespace ParkingManagement.Models
         private string _DESIGNATION;
         private string _REMARKS;
         private byte _STATUS;
+        private string _BCODE;
 
         public string BARCODE { get { return _BARCODE; } set { _BARCODE = value; OnPropertyChanged("BARCODE"); } }
+        public string BCODE { get { return _BCODE; } set { _BCODE = value; OnPropertyChanged("BCODE"); } }
         public string FULLNAME { get { return _FULLNAME; } set { _FULLNAME = value; OnPropertyChanged("FULLNAME"); } }
         public string ADDRESS { get { return _ADDRESS; } set { _ADDRESS = value; OnPropertyChanged("ADDRESS"); } }
         public string DESIGNATION { get { return _DESIGNATION; } set { _DESIGNATION = value; OnPropertyChanged("DESIGNATION"); } }
@@ -26,12 +28,12 @@ namespace ParkingManagement.Models
 
         public override bool Save(System.Data.SqlClient.SqlTransaction tran)
         {
-            return tran.Connection.Execute("INSERT INTO tblStaff (BARCODE, FULLNAME, ADDRESS, DESIGNATION, REMARKS, STATUS) VALUES (@BARCODE, @FULLNAME, @ADDRESS, @DESIGNATION, @REMARKS, @STATUS)", this, tran) == 1;
+            return tran.Connection.Execute("INSERT INTO tblStaff (BARCODE, FULLNAME, ADDRESS, DESIGNATION, REMARKS, STATUS, BCODE) VALUES (@BARCODE, @FULLNAME, @ADDRESS, @DESIGNATION, @REMARKS, @STATUS, @BCODE)", this, tran) == 1;
         }
 
         public override bool Update(System.Data.SqlClient.SqlTransaction tran)
         {
-            return tran.Connection.Execute("UPDATE tblStaff SET FULLNAME = @FULLNAME, ADDRESS = @ADDRESS, DESIGNATION = @DESIGNATION, REMARKS = @REMARKS, STATUS = @STATUS WHERE BARCODE = @BARCODE", this, tran) == 1;
+            return tran.Connection.Execute("UPDATE tblStaff SET FULLNAME = @FULLNAME, ADDRESS = @ADDRESS, DESIGNATION = @DESIGNATION, REMARKS = @REMARKS, STATUS = @STATUS, BCODE = @BCODE WHERE BARCODE = @BARCODE", this, tran) == 1;
         }
         public override bool Delete(System.Data.SqlClient.SqlTransaction tran)
         {
@@ -44,6 +46,8 @@ namespace ParkingManagement.Models
             get
             {
                 if (string.IsNullOrEmpty(BARCODE))
+                    return "Staff Id cannot be empty";
+                else if (string.IsNullOrEmpty(BCODE))
                     return "Barcode cannot be empty";
                 else if (string.IsNullOrEmpty(FULLNAME))
                     return "Staff Name cannot be empty";
@@ -66,6 +70,10 @@ namespace ParkingManagement.Models
                         break;
                     case "BARCODE":
                         if (string.IsNullOrEmpty(BARCODE))
+                            Result = "Staff Id cannot be empty";
+                        break;
+                    case "BCODE":
+                        if (string.IsNullOrEmpty(BCODE))
                             Result = "Barcode cannot be empty";
                         break;
                 }

@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:ParkingManagement.Forms.Master"
              xmlns:CommandBehavior="clr-namespace:ParkingManagement.ACommandBehavior"
              xmlns:toolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:syncfusion="http://schemas.syncfusion.com/wpf"
              mc:Ignorable="d" 
              d:DesignHeight="768" d:DesignWidth="1366">
     <UserControl.Resources>
@@ -33,8 +34,7 @@
                 <Grid  HorizontalAlignment="Right" >
                     <StackPanel Orientation="Horizontal" Margin="0">
                         <Button Content="New" IsEnabled="{Binding NewEnabled}" Command="{Binding NewCommand}"/>
-                        <Button Content="Edit" IsEnabled="{Binding EditEnabled}" Command="{Binding EditCommand}" />
-                        <Button Content="Import" IsEnabled="{Binding ImportEnabled}" Command="{Binding ImportCommand}"/>
+                        <Button Content="Edit" IsEnabled="{Binding EditEnabled}" Command="{Binding EditCommand}" />                        
                         <Button Content="Save" IsEnabled="{Binding SaveEnabled}" Command="{Binding SaveCommand}"  />
                         <Button Content="Delete" IsEnabled="{Binding DeleteEnabled}" Command="{Binding DeleteCommand}" />
                         <Button Content="Undo" Command="{Binding UndoCommand}"  />
@@ -48,40 +48,43 @@
                         <ColumnDefinition Width="250"/>
                     </Grid.ColumnDefinitions>
                     <GroupBox Grid.Column="1" Header="Valid Hours">
-                        <DataGrid ItemsSource="{Binding Scheme.ValidHoursList}" CanUserAddRows="True" AutoGenerateColumns="False" >
-                            <DataGrid.Columns>
-                                <DataGridTemplateColumn Header="Valid Start" Width="*">
-                                    <DataGridTemplateColumn.CellTemplate>
+                        <syncfusion:SfDataGrid ItemsSource="{Binding Scheme.ValidHoursList}"
+                                               IsEnabled="{Binding EntryPanelEnabled}"
+                                               AllowEditing="True"
+                                               AutoGenerateColumns="False" 
+                                               AddNewRowPosition="Bottom">
+                            <syncfusion:SfDataGrid.Columns>
+                                <syncfusion:GridTemplateColumn HeaderText="Valid Start" Width="120">
+                                    <syncfusion:GridTemplateColumn.EditTemplate>
                                         <DataTemplate>
-                                            <TextBlock Text="{Binding Start, Converter={StaticResource TimeSpanToString}}"/>
+                                            <TextBox HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Text="{Binding Start, Converter={StaticResource TimeSpanToString}}"/>
                                         </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                    <DataGridTemplateColumn.CellEditingTemplate>
+                                    </syncfusion:GridTemplateColumn.EditTemplate>
+                                    <syncfusion:GridTemplateColumn.CellTemplate>
                                         <DataTemplate>
-                                            <toolkit:TimePicker Value="{Binding Start}"/>
+                                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Start, Converter={StaticResource TimeSpanToString}}"/>
                                         </DataTemplate>
-                                    </DataGridTemplateColumn.CellEditingTemplate>
-                                </DataGridTemplateColumn>
-                                <DataGridTemplateColumn Header="Valid End" Width="*">
-                                    <DataGridTemplateColumn.CellTemplate>
+                                    </syncfusion:GridTemplateColumn.CellTemplate>
+                                </syncfusion:GridTemplateColumn>
+                                <syncfusion:GridTemplateColumn HeaderText="Valid End" Width="120">
+                                    <syncfusion:GridTemplateColumn.EditTemplate>
                                         <DataTemplate>
-                                            <TextBlock Text="{Binding End, Converter={StaticResource TimeSpanToString}}"/>
+                                            <TextBox HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Text="{Binding End, Converter={StaticResource TimeSpanToString}}"/>
                                         </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                    <DataGridTemplateColumn.CellEditingTemplate>
+                                    </syncfusion:GridTemplateColumn.EditTemplate>
+                                    <syncfusion:GridTemplateColumn.CellTemplate>
                                         <DataTemplate>
-                                            <toolkit:TimePicker Value="{Binding End}"/>
+                                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding End, Converter={StaticResource TimeSpanToString}}"/>
                                         </DataTemplate>
-                                    </DataGridTemplateColumn.CellEditingTemplate>
-                                </DataGridTemplateColumn>
-                                <DataGridTextColumn Header="test" Binding="{Binding test}"/>
-                            </DataGrid.Columns>
-                        </DataGrid>
+                                    </syncfusion:GridTemplateColumn.CellTemplate>
+                                </syncfusion:GridTemplateColumn>
+                            </syncfusion:SfDataGrid.Columns>
+                        </syncfusion:SfDataGrid>
                     </GroupBox>
                     <StackPanel Margin="4" >
                         <StackPanel Orientation="Horizontal" IsEnabled="{Binding IdPanelSelected}" >
                             <Label Content="Scheme Id :" Width="100"></Label>
-                            <TextBox Text="{Binding Scheme.SchemeId,Converter={StaticResource  NoZero}}" Height="25" Width="50" Margin="5" ></TextBox>
+                            <TextBox Text="{Binding Scheme.SchemeId,Converter={StaticResource  NoZero}, ConverterParameter='int'}" Height="25" Width="50" Margin="5" ></TextBox>
                         </StackPanel>
                         <StackPanel Grid.Row="1" IsEnabled="{Binding EntryPanelEnabled}" Margin="0">
                             <StackPanel Orientation="Horizontal"  Margin="5 0">
@@ -94,11 +97,11 @@
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" Margin="5 0" ToolTip="Validity Period in days from date of Activation" >
                                 <Label Content="Validity Period :" Width="100"></Label>
-                                <TextBox Text="{Binding Scheme.ValidityPeriod, Converter={StaticResource NoZero}}" Height="25" Width="120" Margin="5" HorizontalContentAlignment="Right"/>
+                                <TextBox Text="{Binding Scheme.ValidityPeriod, Converter={StaticResource NoZero}, ConverterParameter='int'}" Height="25" Width="120" Margin="5" HorizontalContentAlignment="Right"/>
                                 <Label Content="Days" Width="50"></Label>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" Margin="5 0" >
-                                <Label Content="Discount :" Width="100"></Label>
+                                <Label Content="Discount (%):" Width="100"></Label>
                                 <TextBox Text="{Binding Scheme.Discount, Converter={StaticResource NoZero}}" Height="25" Width="120" Margin="5" HorizontalContentAlignment="Right"/>
 
                                 <Label Content="Duration Limit :" Width="100" Margin="50 0 0 0" ToolTip="Duration in mins per day."></Label>
@@ -110,11 +113,15 @@
                     </StackPanel>
                 </Grid>
             </Border>
-            <DataGrid Grid.Row="2" ItemsSource="{Binding HolidayList}" AutoGenerateColumns="False" SelectedItem="{Binding SelectedHoliday}" IsReadOnly="True" CommandBehavior:CommandBehavior.Event="MouseDoubleClick" CommandBehavior:CommandBehavior.Command="{Binding LoadData}"  >
+            <DataGrid Grid.Row="2" ItemsSource="{Binding SchemeList}" AutoGenerateColumns="False" SelectedItem="{Binding SelectedScheme}" IsReadOnly="True" CommandBehavior:CommandBehavior.Event="MouseDoubleClick" CommandBehavior:CommandBehavior.Command="{Binding LoadData}"  >
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Holiday Name" Binding="{Binding HolidayName}" Width="2*"/>
-                    <DataGridTextColumn Header="Date"  Binding="{Binding HolidayDate, StringFormat={}{0:MM/dd/yyyy}}" Width="2*"/>
-                    <DataGridTextColumn Header="Miti"  Binding="{Binding HolidayDate, Converter={StaticResource DateToMiti}}" Width="2*"/>
+                    <DataGridTextColumn Header="Scheme Id" Binding="{Binding SchemeId}" Width="70"/>
+                    <DataGridTextColumn Header="Scheme Name" Binding="{Binding SchemeName}" Width="*"/>
+                    <DataGridTextColumn Header="Validity (Days)"  Binding="{Binding ValidityPeriod}" Width="130"/>
+                    <DataGridTextColumn Header="Limit (Mins)"  Binding="{Binding Limit}" Width="110"/>
+                    <DataGridTextColumn Header="Discount (%)"  Binding="{Binding Discount}" Width="110"/>
+                    <DataGridTextColumn Header="Valid on Weekends"  Binding="{Binding ValidOnWeekends}" Width="130"/>
+                    <DataGridTextColumn Header="Valid on Holidays"  Binding="{Binding ValidOnHolidays}" Width="130"/>
                 </DataGrid.Columns>
             </DataGrid>
         </Grid>

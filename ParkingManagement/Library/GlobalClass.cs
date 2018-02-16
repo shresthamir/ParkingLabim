@@ -60,11 +60,11 @@ namespace ParkingManagement.Library
                     printer = new PrintServer().GetPrintQueues().FirstOrDefault(x => x.FullName.Contains(PrinterName));
                 }
 
-                if (File.Exists(Environment.SystemDirectory + "\\DBSetting.dat"))
+                if (File.Exists(Environment.SystemDirectory + "\\ParkingDBSetting.dat"))
                 {
-                    string[] connProps = File.ReadAllLines(Environment.SystemDirectory + "\\DBSetting.dat");
-                    DataConnectionString = string.Format("SERVER = {3}; DATABASE = {2}; UID = {0}; PWD = {1}", connProps[0], connProps[1], connProps[2], connProps[3]);
-                    Terminal = connProps[4];
+                    string[] connProps = File.ReadAllLines(Environment.SystemDirectory + "\\ParkingDBSetting.dat");
+                    DataConnectionString = string.Format("SERVER = {3}; DATABASE = {2}; UID = {0}; PWD = {1}", Encrypt(connProps[0]), Encrypt(connProps[1]), Encrypt(connProps[2]), Encrypt(connProps[3]));
+                    Terminal = Encrypt(connProps[4]);
                 }
                 using (SqlConnection cnmain = new SqlConnection(DataConnectionString))
                 {
@@ -292,7 +292,7 @@ set Nocount off"
                             INSERT INTO UserRight  SELECT UID, @MID, 1 FROM Users
                             ");
             }
-            else if (UpdateHistory < 2)
+            if (UpdateHistory < 2)
             {
                 conn.Execute(@"IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE COLUMN_NAME = 'SESSION_SETTLED' AND TABLE_NAME = 'SESSION' AND DATA_TYPE = 'bit')
                             BEGIN
@@ -306,7 +306,7 @@ set Nocount off"
 
                 conn.Execute("UPDATE tblSetting SET UpdateHistory = 2");
             }
-            else if (UpdateHistory < 3)
+            if (UpdateHistory < 3)
             {
                 conn.Execute(@"IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'tblStaff')
 BEGIN
@@ -317,6 +317,16 @@ END");
                 conn.Execute(@"IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'tblSetting' AND COLUMN_NAME = 'AllowMultiVehicleForStaff')
 ALTER TABLE tblSetting ADD AllowMultiVehicleForStaff TINYINT NULL");
                 conn.Execute("UPDATE tblSetting SET UpdateHistory = 3");
+            }
+            if (UpdateHistory < 4)
+            {
+                conn.Execute(@"IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'tblSyncLog')
+CREATE TABLE tblSyncLog(VCHRNO varchar(50) NOT NULL, SYNC_DATE smalldatetime NOT NULL, SYNC_TIME varchar(20) NOT NULL, JSON_DATA nvarchar(max) NULL, [STATUS] tinyint NOT NULL, RETURN_CODE int NOT NULL)");
+                conn.Execute(@"IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'tblSetting' AND COLUMN_NAME = 'IrdApiUser')
+ALTER TABLE tblSetting ADD IrdApiUser VARCHAR(200) NULL");
+                conn.Execute(@"IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'tblSetting' AND COLUMN_NAME = 'IrdApiPassword')
+ALTER TABLE tblSetting ADD IrdApiPassword VARCHAR(50) NULL");
+                conn.Execute("UPDATE tblSetting SET UpdateHistory = 4");
             }
         }
 
@@ -503,6 +513,23 @@ ALTER TABLE tblSetting ADD AllowMultiVehicleForStaff TINYINT NULL");
                                         BillNo, User.UserName, string.IsNullOrEmpty(PrintRemarks) ? "null" : "'" + PrintRemarks + "'", PrintDesc, FYID);
                 conn.Execute(strSavePrintLog);
             }
+        }
+
+        static string Encrypt(string Text, string Key = "AMITLALJOSHI")
+        {
+            int i;
+            string TEXTCHAR;
+            string KEYCHAR;
+            string encoded = string.Empty;
+            for (i = 0; i < Text.Length; i++)
+            {
+                TEXTCHAR = Text.Substring(i, 1);
+                var keysI = ((i + 1) % Key.Length);
+                KEYCHAR = Key.Substring(keysI);
+                var encrypted = Microsoft.VisualBasic.Strings.Asc(TEXTCHAR) ^ Microsoft.VisualBasic.Strings.Asc(KEYCHAR);
+                encoded += Microsoft.VisualBasic.Strings.Chr(encrypted);
+            }
+            return encoded;
         }
     }
 }
