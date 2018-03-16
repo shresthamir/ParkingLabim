@@ -339,7 +339,8 @@ namespace ParkingManagement.ViewModel
         {
             if (mDiscount != null)
                 return;
-            TimeSpan outTime = Convert.ToDateTime(POUT.OutTime).TimeOfDay;
+            TimeSpan InTime = DateTime.Parse(PIN.InTime).TimeOfDay;
+            TimeSpan OutTime = DateTime.Parse(POUT.OutTime).TimeOfDay;
             decimal DiscountAmount = 0;
             decimal DiscountHour = 0;
             int Interval;
@@ -371,20 +372,19 @@ namespace ParkingManagement.ViewModel
                 MessageBox.Show("The Membership is not valid on Public Holidays", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 return;
             }
-            else if (!scheme.ValidHoursList.Any(x => x.Start < outTime && x.End > outTime))
+            List<dynamic> TimeSpentInEachSession = GetTimeSpentInEachSession(InTime, OutTime, scheme);
+            //else if (!scheme.ValidHoursList.Any(x => x.Start < outTime && x.End > outTime))
+            //{
+            //    MessageBox.Show("Membership is not valid for current Shift.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            //    return;
+            //}
+            Interval = conn.ExecuteScalar<int>("SELECT ISNULL(SUM(MDD.Interval - MDD.SkipInterval),0) Interval FROM MemberDiscountDetail MDD JOIN ParkingOutDetails POD ON MDD.PID = POD.PID WHERE MemberId = @MemberId AND POD.OutDate = @OutDate", new { MemberId = m.MemberId, OutDate = POUT.OutDate });
+            if (Interval >= scheme.Limit && !TimeSpentInEachSession.Any(x => x.SkipValidityPeriod && x.TimeSpent > 0))
             {
-                MessageBox.Show("Membership is not valid for current Shift.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                MessageBox.Show("Free parking for the Member has exceeded for day.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 return;
             }
-            else
-            {
-                Interval = conn.ExecuteScalar<int>("SELECT ISNULL(SUM(MDD.Interval),0) Interval FROM MemberDiscountDetail MDD JOIN ParkingOutDetails POD ON MDD.PID = POD.PID WHERE MemberId = @MemberId AND POD.OutDate = @OutDate", new { MemberId = m.MemberId, OutDate = POUT.OutDate });
-                if (Interval >= scheme.Limit)
-                {
-                    MessageBox.Show("Free parking for the Member has exceeded for day.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                    return;
-                }
-            }
+
 
             SaveWithStaffEnabled = false;
             mDiscount = new MemberDiscount
@@ -396,18 +396,82 @@ namespace ParkingManagement.ViewModel
             };
             POUT.BILLTO = m.MemberName;
             POUT.BILLTOADD = m.Address;
-            int DiscountInterval = scheme.Limit - Interval;
-            int TotalInterval = Convert.ToInt32(POUT.ChargedHours * 60);
-            DiscountInterval = (TotalInterval <= DiscountInterval) ? TotalInterval : DiscountInterval;
-            CalculateParkingCharge(conn, PIN.InDate.Add(DateTime.Parse(PIN.InTime).TimeOfDay), PIN.InDate.Add(DateTime.Parse(PIN.InTime).TimeOfDay).AddMinutes(DiscountInterval), POUT.Rate_ID, PIN.VehicleType, ref DiscountAmount, ref DiscountHour);
-            mDiscount.Interval = DiscountHour * 60;
-            mDiscount.DiscountAmount = DiscountAmount * scheme.Discount / 100;
 
+            if (TimeSpentInEachSession.Any(x => x.SkipValidityPeriod))
+                mDiscount.SkipInterval = TimeSpentInEachSession.Where(x => x.SkipValidityPeriod).Sum(x => x.TimeSpent);
+
+            int DiscountInterval = scheme.Limit - Interval + mDiscount.SkipInterval;
+            foreach (dynamic session in TimeSpentInEachSession.Where(x => x.TimeSpent > 0))
+            {
+                CalculateParkingCharge(conn, session.Start, (DiscountInterval < session.TimeSpent) ? session.Start.AddMinutes(DiscountInterval) : session.End, POUT.Rate_ID, PIN.VehicleType, ref DiscountAmount, ref DiscountHour);
+                DiscountInterval -= (DiscountInterval < session.TimeSpent) ? DiscountInterval : session.TimeSpent;
+                mDiscount.Interval += DiscountHour * 60;
+                mDiscount.DiscountAmount += DiscountAmount * scheme.Discount / 100;
+                DiscountHour = 0;
+                DiscountAmount = 0;
+            }
             POUT.ChargedAmount = POUT.CashAmount = POUT.ChargedAmount - mDiscount.DiscountAmount;
             PIN.Barcode = string.Empty;
             if (POUT.ChargedAmount == 0)
                 ExecuteSave(null);
 
+        }
+
+        List<dynamic> GetTimeSpentInEachSession(TimeSpan InTime, TimeSpan OutTime, MembershipScheme scheme)
+        {
+            //TimeSpan Start = InTime;
+            DateTime Start = PIN.InDate;
+            DateTime End = PIN.InDate;
+            TimeSpan Minute = new TimeSpan(0, 1, 0);
+            List<dynamic> TimeSpentInEachSession = new List<dynamic>();
+            //while (Start < OutTime)
+            //{
+            //    TimeSpan TimeSpent;
+            //    var Session = scheme.ValidHoursList.FirstOrDefault(x => x.Start <= Start && x.End >= Start);
+
+            //    if (OutTime > Session.End.Add(Minute))
+            //        TimeSpent = Session.End.Subtract(Start).Add(Minute);
+            //    else
+            //        TimeSpent = OutTime.Subtract(Start);
+
+            //    TimeSpentInEachSession.Add(new { Session.SkipValidityPeriod, TimeSpent });
+            //    Start = Start.Add(TimeSpent);
+            //}
+            foreach (var session in scheme.ValidHoursList)
+            {
+                TimeSpan TimeSpent = new TimeSpan(0, 0, 0);
+                if (InTime >= session.Start && InTime <= session.End)
+                {
+                    if (OutTime <= session.End.Add(Minute))
+                    {
+                        TimeSpent = OutTime.Subtract(InTime);
+                        End = PIN.InDate.Add(OutTime);
+                    }
+                    else
+                    {
+                        TimeSpent = session.End.Add(Minute).Subtract(InTime);
+                        End = PIN.InDate.Add(session.End.Add(Minute));
+                    }
+                    Start = PIN.InDate.Add(InTime);
+
+                }
+                else if (InTime < session.Start)
+                {
+                    if (OutTime <= session.End.Add(Minute))
+                    {
+                        TimeSpent = OutTime.Subtract(session.Start);
+                        End = PIN.InDate.Add(OutTime);
+                    }
+                    else
+                    {
+                        TimeSpent = session.End.Add(Minute).Subtract(session.Start);
+                        End = PIN.InDate.Add(session.End.Add(Minute));
+                    }
+                    Start = PIN.InDate.Add(session.Start);
+                }
+                TimeSpentInEachSession.Add(new { session.SkipValidityPeriod, TimeSpent = Convert.ToInt32(TimeSpent.TotalMinutes), Start, End });
+            }
+            return TimeSpentInEachSession;
         }
 
         private void ValidateVoucher(object obj, SqlConnection conn)
@@ -468,7 +532,8 @@ namespace ParkingManagement.ViewModel
         {
             using (SqlCommand cmd = conn.CreateCommand())
             {
-                conn.Open();
+                if (conn.State != ConnectionState.Open)
+                    conn.Open();
                 cmd.CommandText = "sp_Calculate_PCharge";
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@InTime", InTime);

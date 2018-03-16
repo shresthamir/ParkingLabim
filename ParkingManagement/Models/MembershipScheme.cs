@@ -51,8 +51,9 @@ namespace ParkingManagement.Models
     {
         private TimeSpan _Start;
         private TimeSpan _End;
-
+        private bool _SkipValidityPeriod;
         public TimeSpan Start { get { return _Start; } set { _Start = value; OnPropertyChanged("Start"); } }
-        public TimeSpan End { get { return _End; } set { _End = value; OnPropertyChanged("End"); } }       
+        public TimeSpan End { get { return _End; } set { _End = value; OnPropertyChanged("End"); } }
+        public bool SkipValidityPeriod { get { return _SkipValidityPeriod; } set { _SkipValidityPeriod = value; OnPropertyChanged("SkipValidityPeriod"); } }
     }
 }

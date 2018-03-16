@@ -45,7 +45,7 @@
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
-                        <ColumnDefinition Width="250"/>
+                        <ColumnDefinition Width="300"/>
                     </Grid.ColumnDefinitions>
                     <GroupBox Grid.Column="1" Header="Valid Hours">
                         <syncfusion:SfDataGrid ItemsSource="{Binding Scheme.ValidHoursList}"
@@ -54,7 +54,7 @@
                                                AutoGenerateColumns="False" 
                                                AddNewRowPosition="Bottom">
                             <syncfusion:SfDataGrid.Columns>
-                                <syncfusion:GridTemplateColumn HeaderText="Valid Start" Width="120">
+                                <syncfusion:GridTemplateColumn HeaderText="Valid Start" Width="100">
                                     <syncfusion:GridTemplateColumn.EditTemplate>
                                         <DataTemplate>
                                             <TextBox HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Text="{Binding Start, Converter={StaticResource TimeSpanToString}}"/>
@@ -66,7 +66,7 @@
                                         </DataTemplate>
                                     </syncfusion:GridTemplateColumn.CellTemplate>
                                 </syncfusion:GridTemplateColumn>
-                                <syncfusion:GridTemplateColumn HeaderText="Valid End" Width="120">
+                                <syncfusion:GridTemplateColumn HeaderText="Valid End" Width="100">
                                     <syncfusion:GridTemplateColumn.EditTemplate>
                                         <DataTemplate>
                                             <TextBox HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Text="{Binding End, Converter={StaticResource TimeSpanToString}}"/>
@@ -75,6 +75,18 @@
                                     <syncfusion:GridTemplateColumn.CellTemplate>
                                         <DataTemplate>
                                             <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding End, Converter={StaticResource TimeSpanToString}}"/>
+                                        </DataTemplate>
+                                    </syncfusion:GridTemplateColumn.CellTemplate>
+                                </syncfusion:GridTemplateColumn>
+                                <syncfusion:GridTemplateColumn HeaderText="Skip" Width="100">
+                                    <syncfusion:GridTemplateColumn.EditTemplate>
+                                        <DataTemplate>
+                                            <CheckBox HorizontalAlignment="Center" VerticalContentAlignment="Center" IsChecked="{Binding SkipValidityPeriod}"/>
+                                        </DataTemplate>
+                                    </syncfusion:GridTemplateColumn.EditTemplate>
+                                    <syncfusion:GridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding SkipValidityPeriod}"/>
                                         </DataTemplate>
                                     </syncfusion:GridTemplateColumn.CellTemplate>
                                 </syncfusion:GridTemplateColumn>

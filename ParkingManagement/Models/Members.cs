@@ -119,10 +119,10 @@ namespace ParkingManagement.Models
         public int SchemeId { get; set; }
         public decimal Interval { get; set; }
         public decimal DiscountAmount { get; set; }
-
+        public int SkipInterval { get; set; }
         public override bool Save(SqlTransaction tran)
         {
-            return tran.Connection.Execute("INSERT INTO MemberDiscountDetail(BillNo, FYID, PID, MemberId, SchemeId, Interval, DiscountAmount) VALUES (@BillNo, @FYID, @PID, @MemberId, @SchemeId, @Interval, @DiscountAmount)", this, tran) == 1;
+            return tran.Connection.Execute("INSERT INTO MemberDiscountDetail(BillNo, FYID, PID, MemberId, SchemeId, Interval, DiscountAmount, SkipInterval) VALUES (@BillNo, @FYID, @PID, @MemberId, @SchemeId, @Interval, @DiscountAmount, @SkipInterval)", this, tran) == 1;
         }
     }
 }

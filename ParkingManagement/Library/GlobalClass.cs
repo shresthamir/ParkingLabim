@@ -61,10 +61,10 @@ namespace ParkingManagement.Library
                 }
 
                 if (File.Exists(Environment.SystemDirectory + "\\ParkingDBSetting.dat"))
-                {
-                    string[] connProps = File.ReadAllLines(Environment.SystemDirectory + "\\ParkingDBSetting.dat");
-                    DataConnectionString = string.Format("SERVER = {3}; DATABASE = {2}; UID = {0}; PWD = {1}", Encrypt(connProps[0]), Encrypt(connProps[1]), Encrypt(connProps[2]), Encrypt(connProps[3]));
-                    Terminal = Encrypt(connProps[4]);
+                {                    
+                    dynamic connProps = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(File.ReadAllText(Environment.SystemDirectory + "\\ParkingDBSetting.dat"));
+                    DataConnectionString = string.Format("SERVER = {0}; DATABASE = {1}; UID = {2}; PWD = {3}", Encrypt(connProps.DataSource.ToString()), Encrypt(connProps.InitialCatalog.ToString()), Encrypt(connProps.UserID.ToString()), Encrypt(connProps.Password.ToString()));
+                    Terminal = Encrypt(connProps.Terminal.ToString());                   
                 }
                 using (SqlConnection cnmain = new SqlConnection(DataConnectionString))
                 {
@@ -326,8 +326,10 @@ CREATE TABLE tblSyncLog(VCHRNO varchar(50) NOT NULL, SYNC_DATE smalldatetime NOT
 ALTER TABLE tblSetting ADD IrdApiUser VARCHAR(200) NULL");
                 conn.Execute(@"IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'tblSetting' AND COLUMN_NAME = 'IrdApiPassword')
 ALTER TABLE tblSetting ADD IrdApiPassword VARCHAR(50) NULL");
+                conn.Execute(@"IF NOT EXITS(SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'MemberDiscountDetail' AND COLUMN_NAME = 'SkipInterval')
+ALTER TABLE MemberDiscountDetail ADD SkipInterval INT NOT NULL, CONSTRAINT DF_MemberDiscountDetail_SkipInterval DEFAULT (0) FOR SkipInterval");
                 conn.Execute("UPDATE tblSetting SET UpdateHistory = 4");
-            }
+            }            
         }
 
         public static bool StartSession()
@@ -514,8 +516,8 @@ ALTER TABLE tblSetting ADD IrdApiPassword VARCHAR(50) NULL");
                 conn.Execute(strSavePrintLog);
             }
         }
-
-        static string Encrypt(string Text, string Key = "AMITLALJOSHI")
+        
+        static string Encrypt(string Text, string Key = "AmitLalJoshi")
         {
             int i;
             string TEXTCHAR;
@@ -524,8 +526,9 @@ ALTER TABLE tblSetting ADD IrdApiPassword VARCHAR(50) NULL");
             for (i = 0; i < Text.Length; i++)
             {
                 TEXTCHAR = Text.Substring(i, 1);
-                var keysI = ((i + 1) % Key.Length);
-                KEYCHAR = Key.Substring(keysI);
+                var keysI = (i % (Key.Length - 1)) + (i < Key.Length - 1 ? 1 : 0);
+                KEYCHAR = Key.Substring(keysI, Key.Length - keysI);
+
                 var encrypted = Microsoft.VisualBasic.Strings.Asc(TEXTCHAR) ^ Microsoft.VisualBasic.Strings.Asc(KEYCHAR);
                 encoded += Microsoft.VisualBasic.Strings.Chr(encrypted);
             }
