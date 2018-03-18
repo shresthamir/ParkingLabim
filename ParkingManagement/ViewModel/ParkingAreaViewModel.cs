@@ -31,7 +31,7 @@ namespace ParkingManagement.ViewModel
             PA = new ParkingArea();
             try
             {
-                MessageBoxCaption = "Parking Area Setup";
+                MessageBoxCaption = "Occupency Area Setup";
                 using (SqlConnection Conn = new SqlConnection(GlobalClass.TConnectionString))
                 {                  
                     VTypeList = new ObservableCollection<VehicleType>(Conn.Query<VehicleType>("SELECT VTYPEID, [Description], Capacity, [UID] FROM VehicleType"));
@@ -121,7 +121,7 @@ namespace ParkingManagement.ViewModel
 
         private void SaveParkingArea()
         {
-            if (MessageBox.Show("You are about to Save new Parking Area. Do you really want to proceed?", MessageBoxCaption, MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
+            if (MessageBox.Show("You are about to Save new Occupency Area. Do you really want to proceed?", MessageBoxCaption, MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
                 return;
             try
             {
@@ -133,14 +133,14 @@ namespace ParkingManagement.ViewModel
                     {
                         if ((int)Conn.ExecuteScalar(string.Format("SELECT COUNT(PA_ID) FROM PARKINGAREA WHERE PA_NAME = '{0}'", PA.PA_Name), transaction: tran) > 0)
                         {
-                            MessageBox.Show("Parking Area with same name already exist. Please enter another name and try again.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                            MessageBox.Show("Occupency Area with same name already exist. Please enter another name and try again.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
                             return;
                         }
                         PA.Save(tran);
-                        GlobalClass.SetUserActivityLog(tran, "Parking Area Setting", "New", WorkDetail: "PA_ID : " + PA.PA_ID, Remarks: PA.Description);
+                        GlobalClass.SetUserActivityLog(tran, "Occupency Area Setting", "New", WorkDetail: "PA_ID : " + PA.PA_ID, Remarks: PA.Description);
                         tran.Commit();
                     }
-                    MessageBox.Show("Parking Area Saved Successfully", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show("Occupency Area Saved Successfully", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Information);
                     PAList.Add(PA);
                     ExecuteUndo(null);
                 }
@@ -153,7 +153,7 @@ namespace ParkingManagement.ViewModel
 
         private void UpdateParkingArea()
         {
-            if (MessageBox.Show("Are you sure you want to Edit this Parking Area?", MessageBoxCaption, MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
+            if (MessageBox.Show("Are you sure you want to Edit this Occupency Area?", MessageBoxCaption, MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
                 return;
             try
             {
@@ -163,17 +163,17 @@ namespace ParkingManagement.ViewModel
                     Conn.Open();
                     using (SqlTransaction tran = Conn.BeginTransaction())
                     {
-                        if ((int)Conn.ExecuteScalar(string.Format("SELECT COUNT(PA_ID) FROM PARKINGAREA WHERE PA_NAME = '{0}' AND PA_ID <>{1}", PA.PA_Name, PA.PA_ID), transaction: tran) > 0)
+                        if ((int)Conn.ExecuteScalar(string.Format("SELECT COUNT(PA_ID) FROM ParkingArea WHERE PA_NAME = '{0}' AND PA_ID <>{1}", PA.PA_Name, PA.PA_ID), transaction: tran) > 0)
                         {
-                            MessageBox.Show("Parking Area with same name already exist. Please enter another name and try again.", "Save Data", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                            MessageBox.Show("Occupency Area with same name already exist. Please enter another name and try again.", "Save Data", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                             return;
                         }
                         TParkingArea PArea = Conn.Query<TParkingArea>("SELECT * FROM ParkingArea WHERE PA_ID = @PA_ID", PA, tran).First();
                         PA.Update(tran);
-                        GlobalClass.SetUserActivityLog(tran, "Parking Area Setting", "Edit", WorkDetail: "PA_ID : " + PA.PA_ID, Remarks: Newtonsoft.Json.JsonConvert.SerializeObject(PArea));
+                        GlobalClass.SetUserActivityLog(tran, "Occupency Area Setting", "Edit", WorkDetail: "PA_ID : " + PA.PA_ID, Remarks: Newtonsoft.Json.JsonConvert.SerializeObject(PArea));
                         tran.Commit();
                     }
-                    MessageBox.Show("Parking Area Updated Successfully.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show("Occupency Area Updated Successfully.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Information);
                     var pa = PAList.First(x => x.PA_ID == PA.PA_ID);
                     pa.Description = PA.Description;
                     pa.Capacity = PA.Capacity;
@@ -193,7 +193,7 @@ namespace ParkingManagement.ViewModel
 
         private void ExecuteDelete(object obj)
         {
-            if (MessageBox.Show("You are about to delete selected Parking Area. Do you really want to proceed?", MessageBoxCaption, MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
+            if (MessageBox.Show("You are about to delete selected Occupency Area. Do you really want to proceed?", MessageBoxCaption, MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
                 return;
             try
             {
@@ -205,10 +205,10 @@ namespace ParkingManagement.ViewModel
                     {
                         TParkingArea PArea = Conn.Query<TParkingArea>("SELECT * FROM ParkingArea WHERE PA_ID = @PA_ID", PA, tran).First();
                         PA.Delete(tran);
-                        GlobalClass.SetUserActivityLog(tran, "Parking Area Setting", "Delete", WorkDetail: "PA_ID : " + PA.PA_ID, Remarks: Newtonsoft.Json.JsonConvert.SerializeObject(PArea));                        
+                        GlobalClass.SetUserActivityLog(tran, "Occupency Area Setting", "Delete", WorkDetail: "PA_ID : " + PA.PA_ID, Remarks: Newtonsoft.Json.JsonConvert.SerializeObject(PArea));                        
                         tran.Commit();
                     }
-                    MessageBox.Show("Parking Area Deleted successfully.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show("Occupency Area Deleted successfully.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Information);
                     PAList.Remove(PAList.First(x => x.PA_ID == PA.PA_ID));
                     ExecuteUndo(null);
                 }
@@ -217,7 +217,7 @@ namespace ParkingManagement.ViewModel
             catch (SqlException ex)
             {
                 if (ex.Number == 547)
-                    MessageBox.Show("Selected parking area type cannot be deleted because it has already been linked to another transaction.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Hand);
+                    MessageBox.Show("Selected occupency area type cannot be deleted because it has already been linked to another transaction.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Hand);
                 else
                     MessageBox.Show(ex.Number + " : " + ex.Message, MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Error);
             }

@@ -452,13 +452,13 @@ namespace ParkingManagement.ViewModel
                     {
                         if (Rate.Rates.Count(x => x.VehicleType == vt.VTypeID) < 7)
                         {
-                            MessageBox.Show("Please complete filling Rate Details for all days and all vehicle type.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Warning);
+                            MessageBox.Show("Please complete filling Rate Details for all days and all Entrance type.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Warning);
                             return false;
                         }
                     }
                     if (this.Rate.Rates.Count <= 0)
                     {
-                        MessageBox.Show("Please add atleast one Rate Details", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                        MessageBox.Show("Please add at least one Rate Details", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
                         return false;
                     }
                 }

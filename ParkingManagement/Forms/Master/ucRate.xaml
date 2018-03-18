@@ -75,7 +75,7 @@
             <Border Grid.Column="1" Style="{StaticResource PlainBackground}" IsEnabled="{Binding EntryPanelEnabled}" >
                 <StackPanel>
                     <StackPanel Orientation="Horizontal" Margin="15 0 0 10">
-                        <Label Content="Vehicle Type"></Label>
+                        <Label Content="Entrance Type"></Label>
                         <ComboBox Height="28" ItemsSource="{Binding VehicleTypeList }" DisplayMemberPath="Description" SelectedValuePath="VTypeID" IsEnabled="{Binding VTypeEnabled}"
                               SelectedItem="{Binding RateDetails.VType}" SelectedValue="{Binding RateDetails.VehicleType}"  Width="250" 
                               IsTextSearchEnabled="True"></ComboBox>
@@ -302,7 +302,7 @@
             </Grid.ColumnDefinitions>
             <DataGrid ItemsSource="{Binding Rate.Rates}" AutoGenerateColumns="False" LoadingRow="DataGrid_LoadingRow" SelectedItem="{Binding SelectedRateDetail}" IsReadOnly="True" Grid.Column="0" >
                 <DataGrid.Columns>
-                    <DataGridTextColumn Binding="{Binding VType.Description}"  Header="Vehicle Type" Width="150"/>
+                    <DataGridTextColumn Binding="{Binding VType.Description}"  Header="Entrance Type" Width="150"/>
                     <DataGridTextColumn Binding="{Binding DayOfWeek.DayName}" Header="Day" Width="120"/>
                     <DataGridTextColumn Binding="{Binding BeginTime, StringFormat={}{0:hh:mm tt}}"  Header="Start" Width="110"/>
                     <DataGridTextColumn Binding="{Binding EndTime,StringFormat={}{0:hh:mm tt}}" Header="End" Width="110"/>

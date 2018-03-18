@@ -45,7 +45,7 @@
                     <TextBox Width="400" Text="{Binding VType.VoucherName}"></TextBox>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
-                    <Label Content="Vehicle Type"/>
+                    <Label Content="Entrance Type"/>
                     <ComboBox Width="200" ItemsSource="{Binding VehicleTypeList}" DisplayMemberPath="Description" SelectedValuePath="VTypeID" SelectedValue="{Binding VType.VehicleType}"/>
 
                     <Label Content="Voucher Text" Margin="10 0 0 0"/>

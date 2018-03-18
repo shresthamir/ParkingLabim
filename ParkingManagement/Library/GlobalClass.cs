@@ -326,7 +326,7 @@ CREATE TABLE tblSyncLog(VCHRNO varchar(50) NOT NULL, SYNC_DATE smalldatetime NOT
 ALTER TABLE tblSetting ADD IrdApiUser VARCHAR(200) NULL");
                 conn.Execute(@"IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'tblSetting' AND COLUMN_NAME = 'IrdApiPassword')
 ALTER TABLE tblSetting ADD IrdApiPassword VARCHAR(50) NULL");
-                conn.Execute(@"IF NOT EXITS(SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'MemberDiscountDetail' AND COLUMN_NAME = 'SkipInterval')
+                conn.Execute(@"IF NOT EXISTS(SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'MemberDiscountDetail' AND COLUMN_NAME = 'SkipInterval')
 ALTER TABLE MemberDiscountDetail ADD SkipInterval INT NOT NULL, CONSTRAINT DF_MemberDiscountDetail_SkipInterval DEFAULT (0) FOR SkipInterval");
                 conn.Execute("UPDATE tblSetting SET UpdateHistory = 4");
             }            

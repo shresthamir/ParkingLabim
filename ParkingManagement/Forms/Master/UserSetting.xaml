@@ -62,7 +62,7 @@
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="10 10 0 0">
                             <CheckBox Content="Desktop Access" IsChecked="{Binding user.DESKTOP_ACCESS, Converter={StaticResource ByteToBool}}" VerticalAlignment="Center"/>
-                            <CheckBox Content="Mobile Access" IsChecked="{Binding user.MOBILE_ACCESS, Converter={StaticResource ByteToBool}}" VerticalAlignment="Center" Margin="20 0 0 0"/>
+                            <CheckBox Content="Mobile Access" Visibility="Hidden" IsChecked="{Binding user.MOBILE_ACCESS, Converter={StaticResource ByteToBool}}" VerticalAlignment="Center" Margin="20 0 0 0"/>
                         </StackPanel>
                     </StackPanel>
                 </StackPanel>
@@ -112,11 +112,10 @@
                                 </LinearGradientBrush>
                                 <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
                                 <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="Black" />
-
                             </TreeView.Resources>
                         </TreeView>
                     </TabItem>
-                    <TabItem Header="Mobile Rights">
+                    <TabItem Header="Mobile Rights" Visibility="Hidden">
                         <Border Style="{StaticResource PlainBackground}" IsEnabled="{Binding EntryPanelEnabled}">
                             <StackPanel>
                                 <CheckBox Content="Parking Area Assignment" IsChecked="{Binding user.PA_ASSIGN, Converter={StaticResource ByteToBool}}" Margin="2"/>

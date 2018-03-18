@@ -33,8 +33,8 @@
 
         <Border Grid.Row="1" Style="{StaticResource PlainBackground}" >
             <StackPanel>
-                <StackPanel Orientation="Horizontal" Margin="0">
-                    <Label Content="ID"></Label>
+                <StackPanel Orientation="Horizontal" Margin="10 0 0 0">
+                    <Label Content="ID" Width="110"></Label>
                     <TextBox Grid.Column="1" Width="100" Text="{Binding PA.PA_ID}" IsEnabled="{Binding EntryPanelEnabled, Converter={StaticResource ReverseBool}}" HorizontalAlignment="Left" ></TextBox>
                 </StackPanel>
                 <Grid IsEnabled="{Binding EntryPanelEnabled}" >
@@ -62,7 +62,7 @@
                     <Label Grid.Row="2" Content="Floor"></Label>
                     <ComboBox IsEditable="True" Grid.Row="2" Grid.Column="1" ItemsSource="{Binding FloorList}"  Text="{Binding PA.FLOOR, ValidatesOnDataErrors=True}" Margin="0 0 50 0"></ComboBox>
 
-                    <Label Grid.Row="3" Content="Vehicle Type"></Label>
+                    <Label Grid.Row="3" Content="Entrance Type"></Label>
                     <ComboBox Grid.Row="3" Grid.Column="1" ItemsSource="{Binding VTypeList}" DisplayMemberPath="Description" SelectedValuePath="VTypeID" SelectedItem="{Binding PA.VType}" SelectedValue="{Binding PA.VehicleType, ValidatesOnDataErrors=True}" HorizontalAlignment="Left" Width="200"></ComboBox>
 
                     <Label Grid.Row="4" Content="Capacity"></Label>

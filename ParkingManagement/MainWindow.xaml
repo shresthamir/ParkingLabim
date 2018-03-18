@@ -5,7 +5,7 @@
          xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
         xmlns:Lib="clr-namespace:ParkingManagement.Library"
         WindowState="Maximized"
-        Title="Parking Management System" KeyUp="Window_KeyUp" >
+        Title="IMS - Ticketing System" KeyUp="Window_KeyUp" >
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="25"/>
@@ -30,8 +30,8 @@
 
         <Grid Grid.Row="1">
             <StackPanel Panel.ZIndex="1" x:Name="spIMS" Grid.Column="1" Margin="100 100 0 0">
-                <TextBlock Text="IMS - Parking Management Software" FontFamily="Comic Sans MS" FontSize="24" FontWeight="SemiBold" TextDecorations="UnderLine"  ></TextBlock>
-                <TextBlock Text="Parking Charge Managment System" FontFamily="Comic Sans MS" FontSize="12" FontWeight="SemiBold"  Margin="0 0 0 20"  />
+                <TextBlock Text="IMS - Ticketing Software" FontFamily="Comic Sans MS" FontSize="24" FontWeight="SemiBold" TextDecorations="UnderLine"  ></TextBlock>
+                <TextBlock Text="Ticketing System" FontFamily="Comic Sans MS" FontSize="12" FontWeight="SemiBold"  Margin="0 0 0 20"  />
 
                 <TextBlock Text="Developed By:"></TextBlock>
                 <StackPanel Orientation="Horizontal">

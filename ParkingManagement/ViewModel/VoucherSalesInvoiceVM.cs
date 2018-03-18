@@ -142,7 +142,7 @@ namespace ParkingManagement.ViewModel
                     }
                     else if (PType == "P")
                     {
-                        MessageBox.Show("Parking Invoice cannot be loaded in this interface.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                        MessageBox.Show("Entrance Invoice cannot be loaded in this interface.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
                         return;
                     }
 
@@ -557,7 +557,7 @@ namespace ParkingManagement.ViewModel
                     }
                     else if (PType == "P")
                     {
-                        MessageBox.Show("Parking Invoice cannot be loaded in this interface.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                        MessageBox.Show("Entrance Invoice cannot be loaded in this interface.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
                         return;
                     }
 

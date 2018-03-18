@@ -123,7 +123,7 @@ namespace ParkingManagement.ViewModel
         {
             try
             {
-                MessageBoxCaption = "Parking Out";
+                MessageBoxCaption = "Exit";
                 TaxInvoice = false;
                 CanChangeInvoiceType = true;
                 nepDate = new DateConverter(GlobalClass.TConnectionString);
@@ -227,7 +227,7 @@ namespace ParkingManagement.ViewModel
                     string DuplicateCaption = GlobalClass.GetReprintCaption(BillNo);
                     PrintBill(BillNo, conn, (TaxInvoice) ? "INVOICE" : "ABBREVIATED TAX INVOCE", DuplicateCaption);
                     GlobalClass.SavePrintLog(BillNo, null, DuplicateCaption);
-                    GlobalClass.SetUserActivityLog("Parking Out", "Re-Print", WorkDetail: string.Empty, VCRHNO: BillNo, Remarks: "Reprinted : " + DuplicateCaption);
+                    GlobalClass.SetUserActivityLog("Exit", "Re-Print", WorkDetail: string.Empty, VCRHNO: BillNo, Remarks: "Reprinted : " + DuplicateCaption);
                 }
                 ExecuteUndo(null);
             }
@@ -296,7 +296,7 @@ namespace ParkingManagement.ViewModel
                     if (POUTS.Count() > 0)
                     {
                         //POUT = POUTS.First();
-                        MessageBox.Show("Vehicle already exited", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                        MessageBox.Show("Entity already exited", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
                         PIN.Barcode = string.Empty;
                         return;
                     }
@@ -362,7 +362,7 @@ namespace ParkingManagement.ViewModel
                 MessageBox.Show("Membership scheme does not exists.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 return;
             }
-            else if (!scheme.ValidOnWeekends && (POUT.OutDate.DayOfWeek == DayOfWeek.Friday || POUT.OutDate.DayOfWeek == DayOfWeek.Saturday))
+            else if (!scheme.ValidOnWeekends && POUT.OutDate.DayOfWeek == DayOfWeek.Saturday)
             {
                 MessageBox.Show("The Membership is not valid on Weekends", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 return;
@@ -381,7 +381,7 @@ namespace ParkingManagement.ViewModel
             Interval = conn.ExecuteScalar<int>("SELECT ISNULL(SUM(MDD.Interval - MDD.SkipInterval),0) Interval FROM MemberDiscountDetail MDD JOIN ParkingOutDetails POD ON MDD.PID = POD.PID WHERE MemberId = @MemberId AND POD.OutDate = @OutDate", new { MemberId = m.MemberId, OutDate = POUT.OutDate });
             if (Interval >= scheme.Limit && !TimeSpentInEachSession.Any(x => x.SkipValidityPeriod && x.TimeSpent > 0))
             {
-                MessageBox.Show("Free parking for the Member has exceeded for day.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                MessageBox.Show("Free Entrance for the Member has exceeded for day.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 return;
             }
 
@@ -491,7 +491,7 @@ namespace ParkingManagement.ViewModel
             }
             else if (!VoucherTypes.Any(x => x.VoucherId == v.VoucherId && x.VehicleType == PIN.VehicleType))
             {
-                MessageBox.Show("The Voucher is not valid for selected vehicle.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                MessageBox.Show("The Voucher is not valid for current Entrance Type.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 return;
             }
             else if (v.ExpDate < CurDate)
@@ -620,7 +620,7 @@ namespace ParkingManagement.ViewModel
                             PSalesDetails.Save(tran);
 
                             conn.Execute("UPDATE tblSequence SET CurNo = CurNo + 1 WHERE VNAME = @VNAME AND FYID = @FYID", new { VNAME = InvoicePrefix, FYID = GlobalClass.FYID }, transaction: tran);
-                            GlobalClass.SetUserActivityLog(tran, "Parking Out", "New", VCRHNO: BillNo, WorkDetail: "Bill No : " + BillNo);
+                            GlobalClass.SetUserActivityLog(tran, "Exit", "New", VCRHNO: BillNo, WorkDetail: "Bill No : " + BillNo);
 
                             if (!string.IsNullOrEmpty(SyncFunctions.username))
                             {

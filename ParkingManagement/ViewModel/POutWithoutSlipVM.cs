@@ -108,7 +108,7 @@ namespace ParkingManagement.ViewModel
         {
             try
             {
-                MessageBoxCaption = "Parking Out Without Slip";
+                MessageBoxCaption = "Exit Without Slip";
                 TaxInvoice = false;
                 CanChangeInvoiceType = true;
                 nepDate = new DateConverter(GlobalClass.TConnectionString);
@@ -164,7 +164,7 @@ namespace ParkingManagement.ViewModel
                     string DuplicateCaption = GlobalClass.GetReprintCaption(BillNo);
                     POutVMTouch.PrintBill(BillNo, conn, (TaxInvoice) ? "INVOICE" : "ABBREVIATED TAX INVOCE", DuplicateCaption);
                     GlobalClass.SavePrintLog(BillNo, null, DuplicateCaption);
-                    GlobalClass.SetUserActivityLog("Parking Out", "Re-Print", WorkDetail: string.Empty, VCRHNO: BillNo, Remarks: "Reprinted : " + DuplicateCaption);
+                    GlobalClass.SetUserActivityLog("Exit", "Re-Print", WorkDetail: string.Empty, VCRHNO: BillNo, Remarks: "Reprinted : " + DuplicateCaption);
                     
                 }
                 ExecuteUndo(null);
@@ -333,7 +333,7 @@ namespace ParkingManagement.ViewModel
 
                             conn.Execute("UPDATE tblSequence SET CurNo = CurNo + 1 WHERE VNAME = 'PID' AND FYID = " + GlobalClass.FYID, transaction: tran);
                             conn.Execute("UPDATE tblSequence SET CurNo = CurNo + 1 WHERE VNAME = @VNAME AND FYID = @FYID", new { VNAME = InvoicePrefix, FYID = GlobalClass.FYID }, transaction: tran);
-                            GlobalClass.SetUserActivityLog("Parking Out Withous Slip", "New", VCRHNO: BillNo, WorkDetail: "PID : " + PIN.PID);
+                            GlobalClass.SetUserActivityLog("Exit", "New", VCRHNO: BillNo, WorkDetail: "PID : " + PIN.PID);
                         }
                         tran.Commit();
                     }

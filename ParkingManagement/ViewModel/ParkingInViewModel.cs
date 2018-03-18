@@ -41,7 +41,7 @@ namespace ParkingManagement.ViewModel
         public RelayCommand RefreshDependencyCommand { get; set; }
         public ParkingInViewModel(Dispatcher _D)
         {
-            MessageBoxCaption = "Parking Entry";
+            MessageBoxCaption = "Entrance";
             d = _D;
             nepDate = new DateFunction.DateConverter(GlobalClass.TConnectionString);
             Parking = new ParkingIn();
@@ -107,12 +107,12 @@ namespace ParkingManagement.ViewModel
                     pin.VType = _VehicleTypeList.FirstOrDefault(x => x.VTypeID == pin.VehicleType);
                     var pslip = new ParkingSlip { PIN = pin, CompanyName = GlobalClass.CompanyName, CompanyAddress = GlobalClass.CompanyAddress };
                     pslip.Print();
-                    GlobalClass.SetUserActivityLog("Parking In", "Re-Print", WorkDetail: "PID : " + pin.PID);
+                    GlobalClass.SetUserActivityLog("Entrance", "Re-Print", WorkDetail: "PID : " + pin.PID);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show(GlobalClass.GetRootException(ex).Message, "Parking In", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(GlobalClass.GetRootException(ex).Message, "Entrance", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -164,17 +164,17 @@ namespace ParkingManagement.ViewModel
                         if (Parking.Save(tran))
                         {
                             Conn.Execute("UPDATE tblSequence SET CurNo = CurNo + 1 WHERE VNAME = 'PID' AND FYID = " + GlobalClass.FYID, transaction: tran);
-                            GlobalClass.SetUserActivityLog(tran, "Parking In", "New", WorkDetail: "PID : " + Parking.PID);
+                            GlobalClass.SetUserActivityLog(tran, "Entrance", "New", WorkDetail: "PID : " + Parking.PID);
                             var pslip = new ParkingSlip { PIN = Parking, CompanyName = GlobalClass.CompanyName, CompanyAddress = GlobalClass.CompanyAddress };
                             pslip.Print();
                             tran.Commit();
 
-                            MessageBox.Show("Vehicle Entry Success." + Environment.NewLine + "Barcode : " + Parking.Barcode + Environment.NewLine + "In Time : " + Parking.InMiti + " " + Parking.InTime, MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Information);
+                            MessageBox.Show("Entrance Success." + Environment.NewLine + "Barcode : " + Parking.Barcode + Environment.NewLine + "In Time : " + Parking.InMiti + " " + Parking.InTime, MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Information);
                             ExecuteUndo(null);
 
                         }
                         else
-                            MessageBox.Show("Vehicle Entry failed.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                            MessageBox.Show("Entrance failed.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
                     }
                 }
             }

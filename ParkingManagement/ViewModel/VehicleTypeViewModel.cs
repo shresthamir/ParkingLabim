@@ -26,7 +26,7 @@ namespace ParkingManagement.ViewModel
         public RelayCommand BrowseImageCommand { get; set; }
         public VehicleTypeViewModel()
         {
-            MessageBoxCaption = "Vehicle Type Setup";
+            MessageBoxCaption = "Entrance Type Setup";
             Vehicle = new VehicleType();
             try
             {
@@ -124,7 +124,7 @@ namespace ParkingManagement.ViewModel
 
         private void SaveVehicleType()
         {
-            if (MessageBox.Show(string.Format(SaveConfirmText, "Vehicle Type"), MessageBoxCaption, MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
+            if (MessageBox.Show(string.Format(SaveConfirmText, "Entrance Type"), MessageBoxCaption, MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
                 return;
             try
             {
@@ -138,15 +138,15 @@ namespace ParkingManagement.ViewModel
                             Vehicle.ButtonImage = Imaging.FileToBinary(Vehicle.ImageSource.UriSource.LocalPath);
                         if (Vehicle.Save(Tran))
                         {
-                            GlobalClass.SetUserActivityLog(Tran,"Vehicle Type", "New", WorkDetail: "VTypeID : " + Vehicle.VTypeID, Remarks: Vehicle.Description);
+                            GlobalClass.SetUserActivityLog(Tran,"Entrance Type", "New", WorkDetail: "VTypeID : " + Vehicle.VTypeID, Remarks: Vehicle.Description);
                             Tran.Commit();
-                            MessageBox.Show("VehicleType Saved Successfully.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Information);
+                            MessageBox.Show("Entrance Type Saved Successfully.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Information);
                             VehicleTypeList.Add(new VehicleType { VTypeID = Vehicle.VTypeID, Description = Vehicle.Description, Capacity = Vehicle.Capacity, UID = GlobalClass.User.UID });
                             ExecuteUndo(null);
                         }
                         else
                         {
-                            MessageBox.Show("Vehicle Type could not be Saved.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                            MessageBox.Show("Entrance Type could not be Saved.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
                         }
                     }
 
@@ -155,7 +155,7 @@ namespace ParkingManagement.ViewModel
             catch (SqlException ex)
             {
                 if (ex.Number == 2601)
-                    MessageBox.Show("Entered Vehicle name already exist in the database. Enter unique name and try again", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Hand);
+                    MessageBox.Show("Entered Entrance name already exist in the database. Enter unique name and try again", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Hand);
                 else
                     MessageBox.Show(ex.Number + " : " + ex.Message, MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Error);
             }
@@ -185,7 +185,7 @@ namespace ParkingManagement.ViewModel
                         {
                             GlobalClass.SetUserActivityLog(tran, "Vehicle Type", "Edit", WorkDetail: "VTypeId : " + Vehicle.VTypeID, Remarks: Remarks);
                             tran.Commit();                            
-                            MessageBox.Show("VehicleType Updated Successfully.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Information);
+                            MessageBox.Show("Entrance Type Updated Successfully.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Information);
                             var vehicle = VehicleTypeList.First(x => x.VTypeID == Vehicle.VTypeID);
                             vehicle.Description = Vehicle.Description;
                             vehicle.Capacity = Vehicle.Capacity;
@@ -194,7 +194,7 @@ namespace ParkingManagement.ViewModel
                         }
                         else
                         {
-                            MessageBox.Show("Vehicle Type could not be updated.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                            MessageBox.Show("Entrance Type could not be updated.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
                             tran.Rollback();
                         }
                     }
@@ -203,7 +203,7 @@ namespace ParkingManagement.ViewModel
             catch (SqlException ex)
             {
                 if (ex.Number == 2601)
-                    MessageBox.Show("Entered Vehicle name already exist in the database. Enter unique name and try again", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Hand);
+                    MessageBox.Show("Entered Entrance name already exist in the database. Enter unique name and try again", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Hand);
                 else
                     MessageBox.Show(ex.Number + " : " + ex.Message, MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Error);
             }
@@ -215,7 +215,7 @@ namespace ParkingManagement.ViewModel
 
         private void ExecuteDelete(object obj)
         {
-            if (MessageBox.Show(string.Format(DeleteConfirmText, "Vehicle Type"), MessageBoxCaption, MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
+            if (MessageBox.Show(string.Format(DeleteConfirmText, "Entrance Type"), MessageBoxCaption, MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
                 return;
             try
             {
@@ -227,15 +227,15 @@ namespace ParkingManagement.ViewModel
                         string Remarks = Newtonsoft.Json.JsonConvert.SerializeObject(Conn.Query<TVehicleType>("SELECT VTypeID, [Description], Capacity, [UID] FROM VehicleType WHERE VTypeID = @VTypeID", Vehicle, tran).First());
                         if (Vehicle.Delete(tran))
                         {
-                            GlobalClass.SetUserActivityLog(tran, "Vehicle Type", "Delete", WorkDetail: "VTypeId : " + Vehicle.VTypeID, Remarks: Remarks);
+                            GlobalClass.SetUserActivityLog(tran, "Entrance Type", "Delete", WorkDetail: "VTypeId : " + Vehicle.VTypeID, Remarks: Remarks);
                             tran.Commit();                            
-                            MessageBox.Show("Vehicle Type Deleted successfully.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Information);
+                            MessageBox.Show("Entrance Type Deleted successfully.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Information);
                             VehicleTypeList.Remove(VehicleTypeList.First(x => x.VTypeID == Vehicle.VTypeID));
                             ExecuteUndo(null);
                         }
                         else
                         {
-                            MessageBox.Show("Vehicle Type could not be Deleted.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                            MessageBox.Show("Entrance Type could not be Deleted.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
                         }
                     }
                 }
@@ -243,7 +243,7 @@ namespace ParkingManagement.ViewModel
             catch (SqlException ex)
             {
                 if (ex.Number == 547)
-                    MessageBox.Show("Selected vehicle type cannot be deleted because it has already been linked to another transaction.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Hand);
+                    MessageBox.Show("Selected entrance type cannot be deleted because it has already been linked to another transaction.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Hand);
                 else
                     MessageBox.Show(ex.Number + " : " + ex.Message, MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Error);
             }
