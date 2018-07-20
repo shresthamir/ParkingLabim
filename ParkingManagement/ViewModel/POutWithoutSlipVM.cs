@@ -209,6 +209,7 @@ namespace ParkingManagement.ViewModel
                         CanChangeInvoiceType = true;
                     }
                     FocusedElement = (short)Focusable.CashAmount;
+                    PoleDisplay.WriteToDisplay(POUT.ChargedAmount, PoleDisplayType.AMOUNT);
                 }
             }
             catch (Exception ex)
@@ -276,7 +277,8 @@ namespace ParkingManagement.ViewModel
                     conn.Open();
                     using (SqlTransaction tran = conn.BeginTransaction())
                     {
-                        PIN.PID = conn.ExecuteScalar<int>("SELECT CurNo FROM tblSequence WHERE VNAME = 'PID' AND FYID = " + GlobalClass.FYID, transaction: tran);
+                        //PIN.PID = conn.ExecuteScalar<int>("SELECT CurNo FROM tblSequence WHERE VNAME = 'PID' AND FYID = " + GlobalClass.FYID, transaction: tran);
+                        PIN.PID = Convert.ToInt32(GetInvoiceNo("PID", tran));
                         PIN.Barcode = string.Empty;
                         PIN.Save(tran);
                         POUT.PID = PIN.PID;
@@ -334,8 +336,13 @@ namespace ParkingManagement.ViewModel
                             conn.Execute("UPDATE tblSequence SET CurNo = CurNo + 1 WHERE VNAME = 'PID' AND FYID = " + GlobalClass.FYID, transaction: tran);
                             conn.Execute("UPDATE tblSequence SET CurNo = CurNo + 1 WHERE VNAME = @VNAME AND FYID = @FYID", new { VNAME = InvoicePrefix, FYID = GlobalClass.FYID }, transaction: tran);
                             GlobalClass.SetUserActivityLog("Exit", "New", VCRHNO: BillNo, WorkDetail: "PID : " + PIN.PID);
+                            SyncFunctions.LogSyncStatus(tran, BillNo, GlobalClass.FYNAME);
                         }
                         tran.Commit();
+                        if (!string.IsNullOrEmpty(SyncFunctions.username))
+                        {
+                            SyncFunctions.SyncSalesData(SyncFunctions.getBillObject(BillNo), 1);
+                        }
                     }
                     if (!string.IsNullOrEmpty(BillNo))
                     {
@@ -355,8 +362,7 @@ namespace ParkingManagement.ViewModel
             }
         }
         private void ExecuteUndo(object obj)
-        {
-         
+        {         
             FocusedElement = (short)Focusable.Barcode;
             TaxInvoice = false;
             InvoiceNo = string.Empty;
@@ -367,6 +373,7 @@ namespace ParkingManagement.ViewModel
             POUT = new ParkingOut();
             SetAction(ButtonAction.Init);
             OnPropertyChanged("IsEntryMode");
+            PoleDisplay.WriteToDisplay(POUT.ChargedAmount, PoleDisplayType.AMOUNT);
         }
 
         string GetInterval(DateTime In, DateTime Out, string InTime, string OutTime)

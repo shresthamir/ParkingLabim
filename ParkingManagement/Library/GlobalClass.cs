@@ -31,8 +31,8 @@ namespace ParkingManagement.Library
         public static PrintQueue printer;
         public static double RateTimeLinePeriodWidth = (System.Windows.Forms.Screen.PrimaryScreen.Bounds.Right - 150) / 13;
         public static Thickness FirstPeriodMargin = new Thickness(RateTimeLinePeriodWidth / 2, 0, 0, 0);
-        public static DateTime BeginTime { get { return new DateTime(1990, 1, 1, 0, 0, 0, 0); } }
-        public static DateTime EndTime { get { return new DateTime(1990, 1, 1, 23, 59, 59); } }
+        public static DateTime BeginTime { get { return new DateTime(1900, 1, 1, 0, 0, 0, 0); } }
+        public static DateTime EndTime { get { return new DateTime(1900, 1, 1, 23, 59, 59); } }
         public static IEnumerable<PSlipTerms> TCList;
         public static RateMaster DefaultRate;
         public static int Session;
@@ -41,12 +41,14 @@ namespace ParkingManagement.Library
         public static byte AllowMultiVehicleForStaff;
         public static short DefaultMinVacantLot;
         public static byte FYID = 1;
+        public static string FYNAME;
         public static byte SettlementMode;
         public static string AppDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\IMS\\Parking";
         public static decimal AbbTaxInvoiceLimit = 5000;
         public static string ReportName { get; set; }
         public static string ReportParams { get; set; }
         public static string PrintTime { get; set; } 
+        public static byte SlipPrinterWith { get; set; }
         static GlobalClass()
         {
             try
@@ -69,17 +71,19 @@ namespace ParkingManagement.Library
                 using (SqlConnection cnmain = new SqlConnection(DataConnectionString))
                 {
                     UpdateDatabase(cnmain);
-                    var Setting = cnmain.Query("SELECT CompanyName, CompanyAddress, CompanyInfo, ISNULL(GraceTime, 5) GraceTime, ISNULL(ShowCollectionAmountInCashSettlement, 0) ShowCollectionAmountInCashSettlement, ISNULL(DisableCashAmountChange,0) DisableCashAmountChange, SettlementMode, ISNULL(AllowMultiVehicleForStaff,0) AllowMultiVehicleForStaff FROM tblSetting").First();
+                    var Setting = cnmain.Query("SELECT CompanyName, CompanyAddress, CompanyInfo, ISNULL(GraceTime, 5) GraceTime, ISNULL(ShowCollectionAmountInCashSettlement, 0) ShowCollectionAmountInCashSettlement, ISNULL(DisableCashAmountChange,0) DisableCashAmountChange, SettlementMode, ISNULL(AllowMultiVehicleForStaff,0) AllowMultiVehicleForStaff, ISNULL(SlipPrinterWidth, 58) SlipPrinterWidth FROM tblSetting").First();
                     CompanyName = Setting.CompanyName;
                     CompanyAddress = Setting.CompanyAddress;
                     CompanyPan = Setting.CompanyInfo;
                     GraceTime = Setting.GraceTime;
                     SettlementMode = Setting.SettlementMode;
+                    SlipPrinterWith = Setting.SlipPrinterWidth;
                     ShowCollectionAmountInCashSettlement = ((bool)Setting.ShowCollectionAmountInCashSettlement) ? Visibility.Visible : Visibility.Collapsed;
                     DisableCashAmountChange = ((bool)Setting.DisableCashAmountChange) ? Visibility.Collapsed : Visibility.Visible;
                     AllowMultiVehicleForStaff = (byte)Setting.AllowMultiVehicleForStaff;
                     TCList = cnmain.Query<PSlipTerms>("SELECT Description, Height from PSlipTerms");
                     FYID = cnmain.ExecuteScalar<byte>("SELECT FYID FROM tblFiscalYear WHERE CONVERT(VARCHAR,GETDATE(),101) BETWEEN BEGIN_DATE AND END_DATE");
+                    FYNAME = cnmain.ExecuteScalar<string>("SELECT FYNAME FROM tblFiscalYear WHERE CONVERT(VARCHAR,GETDATE(),101) BETWEEN BEGIN_DATE AND END_DATE");
                 }
             }
             catch (Exception ex)
@@ -102,10 +106,11 @@ namespace ParkingManagement.Library
         {
             get
             {
-                SqlConnectionStringBuilder ConnBuilder = new SqlConnectionStringBuilder(DataConnectionString);
-                ConnBuilder.UserID = User.UserName;
-                ConnBuilder.Password = User.DBPassword;
-                return ConnBuilder.ConnectionString;
+                return DataConnectionString;
+                //SqlConnectionStringBuilder ConnBuilder = new SqlConnectionStringBuilder(DataConnectionString);
+                //ConnBuilder.UserID = User.UserName;
+                //ConnBuilder.Password = User.DBPassword;
+                //return ConnBuilder.ConnectionString;
             }
         }
 
@@ -117,7 +122,7 @@ namespace ParkingManagement.Library
             return ConnBuilder.ConnectionString;
         }
 
-        static void UpdateDatabase(SqlConnection conn)
+        internal static void UpdateDatabase(SqlConnection conn)
         {
             conn.Execute(@"IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'tblSetting' AND COLUMN_NAME = 'UpdateHistory')
                         ALTER TABLE tblSetting ADD UpdateHistory SMALLINT");
@@ -329,7 +334,22 @@ ALTER TABLE tblSetting ADD IrdApiPassword VARCHAR(50) NULL");
                 conn.Execute(@"IF NOT EXISTS(SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'MemberDiscountDetail' AND COLUMN_NAME = 'SkipInterval')
 ALTER TABLE MemberDiscountDetail ADD SkipInterval INT NOT NULL, CONSTRAINT DF_MemberDiscountDetail_SkipInterval DEFAULT (0) FOR SkipInterval");
                 conn.Execute("UPDATE tblSetting SET UpdateHistory = 4");
-            }            
+            }  
+            if(UpdateHistory <5)
+            {
+                conn.Execute(@"IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'tblSetting' AND COLUMN_NAME = 'SlipPrinterWidth')
+ALTER TABLE tblSetting ADD SlipPrinterWidth TINYINT NOT NULL, CONSTRAINT DF_tblSetting_SlipPrinterWidth DEFAULT (80) FOR SlipPrinterWidth");
+                conn.Execute("UPDATE tblSetting SET UpdateHistory = 5");
+            }
+            if(UpdateHistory<6)
+            {
+                conn.Execute(@"IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'tblSyncLog' AND COLUMN_NAME = 'IsRealTime')
+ALTER TABLE tblSyncLog ADD IsRealTime TINYINT NULL");
+                conn.Execute(@"IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'tblSyncLog' AND COLUMN_NAME = 'FYNAME')
+ALTER TABLE tblSyncLog ADD FYNAME VARCHAR(10) NULL");
+                conn.Execute("UPDATE tblSetting SET UpdateHistory = 6");
+
+            }
         }
 
         public static bool StartSession()

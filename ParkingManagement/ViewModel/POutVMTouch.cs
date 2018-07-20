@@ -327,6 +327,7 @@ namespace ParkingManagement.ViewModel
                     PIN.Barcode = string.Empty;
                     FocusedElement = (short)Focusable.Finish;
                     SaveWithStaffEnabled = true;
+                    PoleDisplay.WriteToDisplay(POUT.ChargedAmount, PoleDisplayType.AMOUNT);
                 }
             }
             catch (Exception ex)
@@ -414,7 +415,7 @@ namespace ParkingManagement.ViewModel
             PIN.Barcode = string.Empty;
             if (POUT.ChargedAmount == 0)
                 ExecuteSave(null);
-
+            PoleDisplay.WriteToDisplay(POUT.ChargedAmount, PoleDisplayType.AMOUNT);
         }
 
         List<dynamic> GetTimeSpentInEachSession(TimeSpan InTime, TimeSpan OutTime, MembershipScheme scheme)
@@ -524,8 +525,10 @@ namespace ParkingManagement.ViewModel
             POUT.ChargedAmount = POUT.CashAmount = POUT.ChargedAmount - v.Value;
             PIN.Barcode = string.Empty;
             Vouchers.Add(v);
+
             if (POUT.ChargedAmount == 0)
                 ExecuteSave(null);
+            PoleDisplay.WriteToDisplay(POUT.ChargedAmount, PoleDisplayType.AMOUNT);
         }
 
         void CalculateParkingCharge(SqlConnection conn, DateTime InTime, DateTime OutTime, int RateId, int VehicleID, ref decimal ChargedAmount, ref decimal ChargedHours)
@@ -621,13 +624,7 @@ namespace ParkingManagement.ViewModel
 
                             conn.Execute("UPDATE tblSequence SET CurNo = CurNo + 1 WHERE VNAME = @VNAME AND FYID = @FYID", new { VNAME = InvoicePrefix, FYID = GlobalClass.FYID }, transaction: tran);
                             GlobalClass.SetUserActivityLog(tran, "Exit", "New", VCRHNO: BillNo, WorkDetail: "Bill No : " + BillNo);
-
-                            if (!string.IsNullOrEmpty(SyncFunctions.username))
-                            {
-                                BillViewModel bvm = conn.Query<BillViewModel>("SELECT BILLTOPAN buyer_pan, F.FYNAME fiscal_year, BILLTO buyer_name, BillNo  invoice_number, TMiti invoice_date, Taxable + NonTaxable total_sales, TAXABLE taxable_sales_vat, VAT vat FROM ParkingSales PS JOIN tblFiscalYear F ON PS.FYID = F.FYID WHERE BillNo = @BillNo AND PS.FYID = @FYID", new { BillNo, GlobalClass.FYID }, tran).FirstOrDefault();
-                                bvm.seller_pan = GlobalClass.CompanyPan;
-                                SyncFunctions.SyncSalesData(bvm);
-                            }
+                            SyncFunctions.LogSyncStatus(tran, BillNo, GlobalClass.FYNAME);
                         }
                         if (Vouchers.Count > 0)
                         {
@@ -651,6 +648,10 @@ namespace ParkingManagement.ViewModel
                             mDiscount.Save(tran);
                         }
                         tran.Commit();
+                        if (!string.IsNullOrEmpty(SyncFunctions.username) && POUT.CashAmount > 0)
+                        {
+                            SyncFunctions.SyncSalesData(SyncFunctions.getBillObject(BillNo), 1);
+                        }
                     }
                     if (!string.IsNullOrEmpty(BillNo))
                     {
@@ -692,6 +693,7 @@ namespace ParkingManagement.ViewModel
             Vouchers.Clear();
             mDiscount = null;
             OnPropertyChanged("IsEntryMode");
+            PoleDisplay.WriteToDisplay(0);
         }
 
         string GetInterval(DateTime In, DateTime Out, string InTime, string OutTime)
@@ -747,7 +749,6 @@ namespace ParkingManagement.ViewModel
 
         void LoadRateSchemes()
         {
-
             using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
             {
                 VoucherTypes = conn.Query<VoucherType>("SELECT VoucherId, VehicleType FROM VoucherTypes").ToList();
@@ -849,23 +850,6 @@ namespace ParkingManagement.ViewModel
             }
             CurTime = DateTime.Now.ToString("hh:mm tt");
             CurDate = DateTime.Today;
-            if (!string.IsNullOrEmpty(SyncFunctions.username))
-            {
-                if (CurTime.Substring(4, 1) == "5" || CurTime.Substring(4, 1) == "0")
-                {
-                    using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
-                    {
-                        var PendingBills = conn.Query<string>("SELECT JSON_DATA FROM tblSyncLog WHERE STATUS = 0");
-                        foreach (string bill in PendingBills)
-                        {
-                            BillViewModel model = JsonConvert.DeserializeObject<BillViewModel>(bill);
-                            model.datetimeClient = DateTime.Now;
-                            SyncFunctions.SyncSalesData(model);
-                            System.Threading.Thread.Sleep(100);
-                        }
-                    }
-                }
-            }
         }
     }
 

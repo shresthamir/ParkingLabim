@@ -54,7 +54,7 @@ namespace ParkingManagement.Forms.File
             {
                 using (SqlConnection conn = new SqlConnection(GlobalClass.DataConnectionString))
                 {
-                    var user = conn.Query<User>(string.Format("SELECT UID, UserName, [Password], FullName, UserCat, [STATUS], DESKTOP_ACCESS, MOBILE_ACCESS, SALT  FROM USERS WHERE UserName = '{0}'", txtUserName.Text)).First();
+                    var user = conn.Query<User>(string.Format("SELECT UID, UserName, [Password], FullName, UserCat, [STATUS], DESKTOP_ACCESS, MOBILE_ACCESS, SALT  FROM USERS WHERE UserName = '{0}'", txtUserName.Text)).FirstOrDefault();
                     if (user == null)
                     {
                         MessageBox.Show("Invalid username or password.", "Invalid Credential", MessageBoxButton.OK, MessageBoxImage.Exclamation);
@@ -75,15 +75,15 @@ namespace ParkingManagement.Forms.File
                         MessageBox.Show("You no longer have privilage to access this application", "Insufficient Access", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                         return;
                     }
-                    using (SqlCommand cmd = conn.CreateCommand())
-                    {
-                        conn.Open();
-                        cmd.CommandText = "SP_CREATE_USER";
-                        cmd.CommandType = CommandType.StoredProcedure;
-                        cmd.Parameters.AddWithValue("@UNAME", txtUserName.Text);
-                        cmd.Parameters.AddWithValue("@PWD", txtPassword.Password);
-                        cmd.ExecuteNonQuery();
-                    }
+                    //using (SqlCommand cmd = conn.CreateCommand())
+                    //{
+                    //    conn.Open();
+                    //    cmd.CommandText = "SP_CREATE_USER";
+                    //    cmd.CommandType = CommandType.StoredProcedure;
+                    //    cmd.Parameters.AddWithValue("@UNAME", txtUserName.Text);
+                    //    cmd.Parameters.AddWithValue("@PWD", txtPassword.Password);
+                    //    cmd.ExecuteNonQuery();
+                    //}
                     user.DBPassword = txtPassword.Password;
                     GlobalClass.User = user;
                     if (!GlobalClass.StartSession())

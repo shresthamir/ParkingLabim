@@ -153,7 +153,8 @@ namespace ParkingManagement.ViewModel
                     using (SqlTransaction tran = Conn.BeginTransaction())
                     {
 
-                        Parking.PID = Conn.ExecuteScalar<int>("SELECT CurNo FROM tblSequence WHERE VNAME = 'PID' AND FYID = " + GlobalClass.FYID, transaction: tran);
+                        //Parking.PID = conn.ExecuteScalar<int>("SELECT CurNo FROM tblSequence WHERE VNAME = 'PID' AND FYID = " + GlobalClass.FYID, transaction: tran);
+                        Parking.PID = Convert.ToInt32(GetInvoiceNo("PID", tran));
 
                         while (Conn.ExecuteScalar<int>("SELECT COUNT (*) FROM ParkingInDetails WHERE PID = @PID AND FYID = @FYID", new { PID = Parking.PID, FYID = GlobalClass.FYID }, tran) > 0)
                         {
@@ -279,7 +280,16 @@ namespace ParkingManagement.ViewModel
             DoDependency();
         }
 
-
+        string GetInvoiceNo(string VNAME, SqlTransaction tran)
+        {
+            string invoice = tran.Connection.ExecuteScalar<string>("SELECT CurNo FROM tblSequence WHERE VNAME = @VNAME AND FYID = @FYID", new { VNAME = VNAME, FYID = GlobalClass.FYID }, tran);
+            if (string.IsNullOrEmpty(invoice))
+            {
+                tran.Connection.Execute("INSERT INTO tblSequence(VNAME, FYID, CurNo) VALUES(@VNAME, @FYID, 1)", new { VNAME = VNAME, FYID = GlobalClass.FYID }, tran);
+                invoice = "1";
+            }
+            return invoice;
+        }
     }
 
 }

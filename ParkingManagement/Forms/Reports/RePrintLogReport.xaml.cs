@@ -33,8 +33,8 @@ namespace ParkingManagement.Forms.Reports
         public RePrintLogReport(byte Flag = 0)
         {
             InitializeComponent();
-            this.chkVatSalesRegister.Visibility = (Flag == 4) ? Visibility.Visible : Visibility.Collapsed;            
-            this.lbSummary.Visibility = this.cmbSummary.Visibility = (Flag == 8) ? Visibility.Visible : Visibility.Collapsed;            
+            this.chkVatSalesRegister.Visibility = (Flag == 4) ? Visibility.Visible : Visibility.Collapsed;
+            this.lbSummary.Visibility = this.cmbSummary.Visibility = (Flag == 8) ? Visibility.Visible : Visibility.Collapsed;
             this.DataContext = new vmPrintLogReport() { Report = Report, ReportFlag = Flag };
         }
     }
@@ -135,24 +135,24 @@ namespace ParkingManagement.Forms.Reports
                 else if (ReportFlag == 4)
                 {
                     strSql = string.Format(@"SELECT CONVERT(VARCHAR,TDATE,101) DATE, TMiti Miti,BillNo BILL_NO,ISNULL(BillTo,'Cash Sales') CUSTOMER_NAME, BillToPan CUSTOMER_PAN,
-                                ISNULL(Taxable,0) + ISNULL(NonTaxable,0) NETSALE, ISNULL(NonTaxable,0) NONTAXABLE, NULL ZERORATED, Taxable TAXABLE_AMOUNT,
-                                VAT TAX_AMOUNT, TTIME BILL_TIME, CAST(SUBSTRING(BILLNO,3,LEN(BILLNO)) AS INT) SNO 
+                                ISNULL(Taxable,0) + ISNULL(NonTaxable,0) NETSALE, ISNULL(NonTaxable,0) NONTAXABLE, 0 ZERORATED, Taxable TAXABLE_AMOUNT,
+                                VAT TAX_AMOUNT, TTIME BILL_TIME, DISCOUNT, CAST(SUBSTRING(BILLNO,3,LEN(BILLNO)) AS INT) SNO 
                                 FROM ParkingSales Where TDATE BETWEEN '{0}' AND '{1}' AND BillNo LIKE 'TI%'", FDate.ToString("MM/dd/yyyy"), TDate.ToString("MM/dd/yyyy"));
                     strSql += Environment.NewLine + "UNION ALL";
                     if (ShowSISummary)
                         strSql += Environment.NewLine + string.Format(@"SELECT CONVERT(VARCHAR,TDATE,101) DATE, MITI,'SI' + CONVERT(VARCHAR,MIN(BillNo)) + ' - ' + 'SI' + CONVERT(VARCHAR,MAX(BillNo)) BILL_NO,'Abb. Tax Invoice'  CUSTOMER_NAME, NULL CUSTOMER_PAN,
-                                SUM(NETSALE) NETSALE,SUM(NonTaxable) NONTAXABLE, NULL ZERORATED, SUM(Taxable) TAXABLE_AMOUNT,
-                                SUM(VAT) TAX_AMOUNT, '' BILL_TIME, 0 SNO FROM
+                                SUM(NETSALE) NETSALE,SUM(NonTaxable) NONTAXABLE, 0 ZERORATED, SUM(Taxable) TAXABLE_AMOUNT,
+                                SUM(VAT) TAX_AMOUNT, '' BILL_TIME, SUM(DISCOUNT) DISCOUNT, 0 SNO FROM
                                 (SELECT  TDATE,TMITI Miti,CONVERT(Numeric,SUBSTRING(BillNo,3,LEN(BillNo))) BillNo,
                                 Amount,Discount,ISNULL(Taxable,0) + ISNULL(NonTaxable,0) NETSALE ,Taxable,
-                                NonTaxable,VAT,GrossAmount NetAmount 
+                                NonTaxable,VAT,GrossAmount NetAmount
                                 FROM ParkingSales TM 
 								WHERE LEFT(BillNo,2) = 'SI' AND TDATE BETWEEN '{0}' AND '{1}'
 								) tbl GROUP BY TDATE,Miti ORDER BY DATE, SNO", FDate.ToString("MM/dd/yyyy"), TDate.ToString("MM/dd/yyyy"));
                     else
                         strSql += Environment.NewLine + string.Format(@"SELECT CONVERT(VARCHAR,TDATE,101) DATE, TMITI Miti,BillNo BILL_NO,ISNULL(BillTo,'Cash Sales') CUSTOMER_NAME, BILLTOPAN CUSTOMER_PAN,
-                                ISNULL(Taxable,0) + ISNULL(NonTaxable,0) NETSALE, ISNULL(NonTaxable,0) NONTAXABLE, NULL ZERORATED, Taxable TAXABLE_AMOUNT,
-                                VAT TAX_AMOUNT, TDate BILL_TIME, CAST(SUBSTRING(BILLNO,3,LEN(BILLNO)) AS INT) SNO 
+                                ISNULL(Taxable,0) + ISNULL(NonTaxable,0) NETSALE, ISNULL(NonTaxable,0) NONTAXABLE, 0 ZERORATED, Taxable TAXABLE_AMOUNT,
+                                VAT TAX_AMOUNT, TDate BILL_TIME, DISCOUNT, CAST(SUBSTRING(BILLNO,3,LEN(BILLNO)) AS INT) SNO 
                                 FROM ParkingSales Where LEFT(BillNo,2) = 'SI' AND TDate BETWEEN '{0}' AND '{1}' AND BillNo LIKE 'SI%' ORDER BY Date,SNO", FDate.ToString("MM/dd/yyyy"), TDate.ToString("MM/dd/yyyy"));
                 }
                 else if (ReportFlag == 5)
@@ -185,7 +185,7 @@ namespace ParkingManagement.Forms.Reports
                                                 JOIN USERS U ON U.UID = VSD.UID WHERE ScannedTime BETWEEN '{1}' AND '{2}'
                                                 ) a GROUP BY BILL_DATE, {0} ORDER BY BILL_DATE", SummaryType, FDate.ToString("MM/dd/yyyy"), TDate.ToString("MM/dd/yyyy") + " 23:59:59");
                 }
-                else if(ReportFlag ==9)
+                else if (ReportFlag == 9)
                 {
                     strSql = string.Format(@"SELECT VT.[Description] CUSTOMER_NAME, InDate PRINTED_DATE, InMiti DATE, InTime PRINTED_TIME, OutDate BILL_DATE, OutMiti MITI, OutTime CUSTOMER_PAN, Interval REMARKS, ChargedAmount TAXABLE_AMOUNT, ChargedHours TAXABLE_IMPORT 
                                                 FROM ParkingInDetails PID JOIN VehicleType VT ON Vt.VTypeID = PID.VehicleType
@@ -249,11 +249,14 @@ namespace ParkingManagement.Forms.Reports
                 Report.Columns.Add(new GridTextColumn { HeaderText = "DISCOUNT", DisplayBinding = new Binding("DISCOUNT") { StringFormat = "#0.00" }, Width = 90, TextAlignment = TextAlignment.Right });
                 Report.Columns.Add(new GridTextColumn { HeaderText = "TAXABLE_AMOUNT", DisplayBinding = new Binding("TAXABLE_AMOUNT") { StringFormat = "#0.00" }, Width = 120, TextAlignment = TextAlignment.Right });
                 Report.Columns.Add(new GridTextColumn { HeaderText = "TAX_AMOUNT", DisplayBinding = new Binding("TAX_AMOUNT") { StringFormat = "#0.00" }, Width = 100, TextAlignment = TextAlignment.Right });
-                Report.Columns.Add(new GridTextColumn { HeaderText = "IS_PRINTED", DisplayBinding = new Binding("IS_PRINTED"), Width = 90 });
-                Report.Columns.Add(new GridTextColumn { HeaderText = "IS_ACTIVE", DisplayBinding = new Binding("IS_ACTIVE"), Width = 80 });
+                Report.Columns.Add(new GridTextColumn { HeaderText = "TOTAL_AMOUNT", DisplayBinding = new Binding("TOTAL_AMOUNT") { StringFormat = "#0.00" }, Width = 100, TextAlignment = TextAlignment.Right });
+                Report.Columns.Add(new GridTextColumn { HeaderText = "SYNC_WITH_IRD", DisplayBinding = new Binding("SYNC_WITH_IRD"), Width = 90 });
+                Report.Columns.Add(new GridTextColumn { HeaderText = "IS_BILL_PRINTED", DisplayBinding = new Binding("IS_PRINTED"), Width = 90 });
+                Report.Columns.Add(new GridTextColumn { HeaderText = "IS_BILL_ACTIVE", DisplayBinding = new Binding("IS_ACTIVE"), Width = 80 });
                 Report.Columns.Add(new GridTextColumn { HeaderText = "PRINTED_TIME", DisplayBinding = new Binding("PRINTED_TIME"), Width = 110 });
                 Report.Columns.Add(new GridTextColumn { HeaderText = "ENTERED_BY", DisplayBinding = new Binding("ENTERED_BY"), Width = 100 });
                 Report.Columns.Add(new GridTextColumn { HeaderText = "PRINTED_BY", DisplayBinding = new Binding("PRINTED_BY"), Width = 100 });
+                Report.Columns.Add(new GridTextColumn { HeaderText = "IS_REALTIME", DisplayBinding = new Binding("IS_REAL_TIME"), Width = 100 });
             }
 
             else if (ReportFlag == 2 || ReportFlag == 3 || ReportFlag == 4)
@@ -263,17 +266,15 @@ namespace ParkingManagement.Forms.Reports
                 Report.Columns.Add(new GridTextColumn { HeaderText = "INVOICE NO", DisplayBinding = new Binding("BILL_NO"), Width = 110 });
                 Report.Columns.Add(new GridTextColumn { HeaderText = "CUSTOMER NAME", DisplayBinding = new Binding("CUSTOMER_NAME"), Width = 130 });
                 Report.Columns.Add(new GridTextColumn { HeaderText = "CUSTOMER PAN", DisplayBinding = new Binding("CUSTOMER_PAN"), Width = 120 });
-                Report.Columns.Add(new GridTextColumn { HeaderText = "AMOUNT", DisplayBinding = new Binding("NETSALE") { StringFormat = "#0.00" }, Width = 95, TextAlignment = TextAlignment.Right });
-                Report.Columns.Add(new GridTextColumn { HeaderText = "AMOUNT", DisplayBinding = new Binding("NONTAXABLE") { StringFormat = "#0.00" }, Width = 145, TextAlignment = TextAlignment.Right });
-                Report.Columns.Add(new GridTextColumn { HeaderText = "AMOUNT", DisplayBinding = new Binding("ZERORATED") { StringFormat = "#0.00" }, Width = 135, TextAlignment = TextAlignment.Right });
+                Report.Columns.Add(new GridTextColumn { HeaderText = "TOTAL SALES", DisplayBinding = new Binding("NETSALE") { StringFormat = "#0.00" }, Width = 95, TextAlignment = TextAlignment.Right });
+                Report.Columns.Add(new GridTextColumn { HeaderText = "NON TAXABLE SALES", DisplayBinding = new Binding("NONTAXABLE") { StringFormat = "#0.00" }, Width = 145, TextAlignment = TextAlignment.Right });
+                Report.Columns.Add(new GridTextColumn { HeaderText = "EXPORT SALES", DisplayBinding = new Binding("ZERORATED") { StringFormat = "#0.00" }, Width = 135, TextAlignment = TextAlignment.Right });
+                Report.Columns.Add(new GridTextColumn { HeaderText = "DISCOUNT", DisplayBinding = new Binding("DISCOUNT") { StringFormat = "#0.00" }, Width = 135, TextAlignment = TextAlignment.Right });
                 Report.Columns.Add(new GridTextColumn { HeaderText = "AMOUNT", DisplayBinding = new Binding("TAXABLE_AMOUNT") { StringFormat = "#0.00" }, Width = 95, TextAlignment = TextAlignment.Right });
                 Report.Columns.Add(new GridTextColumn { HeaderText = "TAX", DisplayBinding = new Binding("TAX_AMOUNT") { StringFormat = "#0.00" }, Width = 80, TextAlignment = TextAlignment.Right });
 
                 StackedHeaderRow shr = new StackedHeaderRow();
                 shr.StackedColumns.Add(new StackedColumn() { HeaderText = "INVOICE", ChildColumns = "DATE,MITI,BILL_NO,CUSTOMER_NAME,CUSTOMER_PAN" });
-                shr.StackedColumns.Add(new StackedColumn() { HeaderText = "TOTAL SALES", ChildColumns = "NETSALE" });
-                shr.StackedColumns.Add(new StackedColumn() { HeaderText = "NON TAXABLE SALES", ChildColumns = "NONTAXABLE" });
-                shr.StackedColumns.Add(new StackedColumn() { HeaderText = "ZERO RATED SALES", ChildColumns = "ZERORATED" });
                 shr.StackedColumns.Add(new StackedColumn() { HeaderText = "TAXABLE SALES", ChildColumns = "TAXABLE_AMOUNT,TAX_AMOUNT" });
                 Report.StackedHeaderRows.Add(shr);
 
@@ -393,7 +394,7 @@ namespace ParkingManagement.Forms.Reports
                 Report.Columns.Add(new GridTextColumn { HeaderText = "In Date", DisplayBinding = new Binding("PRINTED_DATE") { StringFormat = "MM/dd/yyyy" }, Width = 70 });
                 Report.Columns.Add(new GridTextColumn { HeaderText = "In Time", DisplayBinding = new Binding("PRINTED_TIME"), Width = 70, TextAlignment = TextAlignment.Center });
                 Report.Columns.Add(new GridTextColumn { HeaderText = "Out Date", DisplayBinding = new Binding("BILL_DATE") { StringFormat = "MM/dd/yyyy" }, Width = 70 });
-                Report.Columns.Add(new GridTextColumn { HeaderText = "Out Time", DisplayBinding = new Binding("CUSTOMER_PAN"), Width = 70, TextAlignment=TextAlignment.Center });
+                Report.Columns.Add(new GridTextColumn { HeaderText = "Out Time", DisplayBinding = new Binding("CUSTOMER_PAN"), Width = 70, TextAlignment = TextAlignment.Center });
                 Report.Columns.Add(new GridTextColumn { HeaderText = "Interval", DisplayBinding = new Binding("REMARKS"), Width = 100 });
                 Report.Columns.Add(new GridTextColumn { HeaderText = "C. Hours", DisplayBinding = new Binding("TAXABLE_IMPORT") { StringFormat = "#,###,#0.00" }, TextAlignment = TextAlignment.Right, Width = 100 });
                 Report.Columns.Add(new GridTextColumn { HeaderText = "C. Amount", DisplayBinding = new Binding("TAXABLE_AMOUNT") { StringFormat = "#,###,#0.00" }, TextAlignment = TextAlignment.Right, Width = 120 });
@@ -478,6 +479,7 @@ namespace ParkingManagement.Forms.Reports
         public string CUSTOMER_PAN { get; set; }
         public DateTime BILL_DATE { get; set; }
         public decimal AMOUNT { get; set; }
+        public decimal TOTAL_AMOUNT { get; set; }
         public decimal DISCOUNT { get; set; }
         public decimal TAXABLE_AMOUNT { get; set; }
         public decimal TAX_AMOUNT { get; set; }
@@ -493,6 +495,10 @@ namespace ParkingManagement.Forms.Reports
         public decimal? NONTAXABLE { get; set; }
         public string REMARKS { get; set; }
         public string REF_NO { get; set; }
+        public byte SYNC_WITH_IRD { get; set; }
+        public byte IS_REAL_TIME { get; set; }
+        public byte IS_BILL_PRINTED { get { return IS_PRINTED; } set { IS_PRINTED = value; } }
+        public byte IS_BILL_ACTIVE { get { return IS_ACTIVE; } set { IS_ACTIVE = value; } }
     }
 
 }

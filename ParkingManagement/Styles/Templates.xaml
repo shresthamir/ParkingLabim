@@ -340,7 +340,7 @@
             </Grid.ColumnDefinitions>
             <TextBlock Grid.Row="0" FontSize="16" FontWeight="SemiBold"  Text="{x:Static Helper:GlobalClass.CompanyName }"/>
             <TextBlock Grid.Row="1" FontSize="12" Text="{x:Static Helper:GlobalClass.CompanyAddress}" />
-            <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Center">
+            <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Center" Margin="0">
                 <TextBlock FontSize="12" Text="PAN : " />
                 <TextBlock FontSize="12" Text="{x:Static Helper:GlobalClass.CompanyPan}" />
             </StackPanel>

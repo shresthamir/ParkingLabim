@@ -19,6 +19,9 @@ using System.Windows.Shapes;
 using Xceed.Wpf.AvalonDock.Layout;
 using Dapper;
 using ParkingManagement.Forms.DataUtility;
+using System.Windows.Threading;
+using Newtonsoft.Json;
+
 namespace ParkingManagement
 {
     /// <summary>
@@ -29,6 +32,7 @@ namespace ParkingManagement
 
         IEnumerable<TMenu> _MenuList;
         private bool IsAppRunningInServer;
+        DispatcherTimer timer;
         public MainWindow()
         {
 
@@ -37,6 +41,13 @@ namespace ParkingManagement
 
             try
             {
+                if (!string.IsNullOrEmpty(SyncFunctions.username))
+                {
+                    timer = new DispatcherTimer();
+                    timer.Interval = new TimeSpan(0, 0, 1);
+                    timer.Tick += timer_Tick;
+                    timer.Start();
+                }
                 using (SqlConnection conn = new SqlConnection(GlobalClass.DataConnectionString))
                 {
                     conn.Open();
@@ -55,6 +66,52 @@ namespace ParkingManagement
             Assembly entryAssembly = Assembly.GetEntryAssembly();
             object[] customAttributes = entryAssembly.GetCustomAttributes(typeof(AssemblyConfigurationAttribute), false);
             this.Closing += MainWindow_Closing;
+        }
+
+        private void timer_Tick(object sender, EventArgs e)
+        {
+            try
+            {
+                timer.Stop();
+                if (!string.IsNullOrEmpty(SyncFunctions.username))
+                {
+                    using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
+                    {
+                        var PendingBills = conn.Query<dynamic>("SELECT VCHRNO, JSON_DATA FROM tblSyncLog WHERE STATUS = 0");
+                        foreach (dynamic bill in PendingBills)
+                        {
+                            if (bill.VCHRNO.Substring(0, 2) == "CN")
+                            {
+                                BillReturnViewModel model;
+                                if (!string.IsNullOrEmpty(bill.JSON_DATA))
+                                    model = JsonConvert.DeserializeObject<BillReturnViewModel>(bill.JSON_DATA);
+                                else
+                                    model = SyncFunctions.getBillReturnObject(bill.VCHRNO);
+                                model.datetimeClient = DateTime.Now;
+                                model.isrealtime = false;
+                                SyncFunctions.SyncSalesReturnData(model);
+                            }
+                            else
+                            {
+                                BillViewModel model;
+                                if (!string.IsNullOrEmpty(bill.JSON_DATA))
+                                    model = JsonConvert.DeserializeObject<BillViewModel>(bill.JSON_DATA);
+                                else
+                                    model = SyncFunctions.getBillObject(bill.VCHRNO);
+                                model.datetimeClient = DateTime.Now;
+                                model.isrealtime = false;
+                                SyncFunctions.SyncSalesData(model);
+
+                            }
+                            System.Threading.Thread.Sleep(100);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.GetBaseException().Message);
+            }
         }
 
         void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -297,7 +354,7 @@ namespace ParkingManagement
             //if (GlobalClass.User.UserName.ToLower() == "admin")
             //    TDATE = new Forms.wDatePicker().GetDate();
             //else
-                TDATE = DateTime.Today;
+            TDATE = DateTime.Today;
             string strPrint = string.Empty;
             int PrintLen = 40;
             string str =

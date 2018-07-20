@@ -275,6 +275,7 @@
     <Compile Include="Library\Helpers\ExportToPdfHelper.cs" />
     <Compile Include="Library\Helpers\StyleSelectors.cs" />
     <Compile Include="Library\Helpers\SyncFunctions.cs" />
+    <Compile Include="Library\PoleDisplay.cs" />
     <Compile Include="Library\ValueConverter\RadioButtonTrueFalseConveter.cs" />
     <Compile Include="Models\Holiday.cs" />
     <Compile Include="Models\Members.cs" />

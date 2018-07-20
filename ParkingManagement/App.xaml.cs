@@ -17,6 +17,24 @@ namespace ParkingManagement
     {
         protected override void OnStartup(StartupEventArgs e)
         {
+            foreach (string arg in e.Args)
+            {
+                switch (arg)
+                {
+                    case "DebugPoleDisplay":
+                        Library.PoleDisplay.IsDebugMode = true;
+                        break;
+                    case "ShowDisplaySetting":
+                        Library.PoleDisplay.ShowDisplaySetting();
+                        break;
+                    case "CbmsTest":
+                        Library.Helpers.SyncFunctions.CbmsTest = true;
+                        break;
+                    case "UpdateDatabase":
+                       // Library.GlobalClass.UpdateDatabase(string.Empty);
+                        break;
+                }
+            }
             base.OnStartup(e);
         }
     }

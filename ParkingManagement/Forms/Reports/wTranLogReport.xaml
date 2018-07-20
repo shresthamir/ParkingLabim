@@ -1,7 +1,7 @@
 ﻿<Window x:Class="ParkingManagement.Forms.Reports.wTranLogReport"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Transaction Activities Log" Height="400" Width="500">
+        Title="Transaction Activities Log" Height="440" Width="500">
     <Window.Resources>
         <!--<conv:ReverseBoolConverter x:Key="ReverseBool"/>
         <conv:DateToMitiConverter x:Key="ToMiti"/>
@@ -38,7 +38,7 @@
                 </GroupBox.Header>
                 <StackPanel Orientation="Horizontal" Margin="5 2">
                     <Label Content="User" Width="100"/>
-                    <ComboBox ItemsSource="{Binding UserList}" DisplayMemberPath="UserName" SelectedItem="{Binding TrnUser}" Width="300" IsEnabled="{Binding ElementName=chkAllUser, Path=IsChecked, Converter={StaticResource ReverseBool}}"/>
+                    <ComboBox ItemsSource="{Binding UserList}" DisplayMemberPath="UserName" SelectedValuePath="UserName" SelectedValue="{Binding TrnUser}" Width="300" IsEnabled="{Binding ElementName=chkAllUser, Path=IsChecked, Converter={StaticResource ReverseBool}}"/>
                 </StackPanel>
             </GroupBox>
             <Border BorderBrush="Black" BorderThickness="1" Padding="5" Margin="5" CornerRadius="2">

@@ -216,7 +216,7 @@ namespace ParkingManagement.ViewModel
                     conn.Open();
                     using (SqlTransaction tran = conn.BeginTransaction())
                     {
-                        if (conn.ExecuteScalar<int>("SELECT COUNT(*) FROM ParkingSales WHERE RefBillNo = @RefBillNo", new { RefBillNo = InvoicePrefix + RefBillNo }, tran) > 0)
+                        if (conn.ExecuteScalar<int>("SELECT COUNT(*) FROM ParkingSales WHERE RefBillNo = @RefBillNo AND FYID = @FYID", new { RefBillNo = InvoicePrefix + RefBillNo, FYID = GlobalClass.FYID }, tran) > 0)
                         {
                             MessageBox.Show("Credit Note has already been issued on selected bill. Please enter another Bill No and try again.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Warning);
                             return;
@@ -252,9 +252,14 @@ namespace ParkingManagement.ViewModel
                             conn.Execute(strSqlDetails, new { BillNo = BillNo, FYID = GlobalClass.FYID, RefBillNo = InvoicePrefix + RefBillNo }, tran);
                             conn.Execute("UPDATE tblSequence SET CurNo = CurNo + 1 WHERE VNAME = @VNAME AND FYID = @FYID", new { VNAME = "CN", FYID = GlobalClass.FYID }, transaction: tran);
                             GlobalClass.SetUserActivityLog("Credit Note", "New", VCRHNO: BillNo);
+                            SyncFunctions.LogSyncStatus(tran, BillNo, GlobalClass.FYNAME);
                             MessageBox.Show("Credit Note successfully saved.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Information);
                         }
                         tran.Commit();
+                        if (!string.IsNullOrEmpty(SyncFunctions.username))
+                        {
+                            SyncFunctions.SyncSalesReturnData(SyncFunctions.getBillReturnObject(BillNo), 1);
+                        }
                     }
                     if (!string.IsNullOrEmpty(BillNo))
                     {

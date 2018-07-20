@@ -326,12 +326,18 @@ namespace ParkingManagement.ViewModel
 
                         conn.Execute("UPDATE tblSequence SET CurNo = CurNo + 1 WHERE VNAME = @VNAME AND FYID = @FYID", new { VNAME = InvoicePrefix, FYID = GlobalClass.FYID }, transaction: tran);
                         GlobalClass.SetUserActivityLog("Voucher Sales Invoice", "New", VCRHNO: VSales.BillNo, WorkDetail: "Bill No : " + VSales.BillNo);
+
+                        SyncFunctions.LogSyncStatus(tran, VSales.BillNo, GlobalClass.FYNAME);
                         vp = new wVoucherPrintProgress() { DataContext = this };
                         vp.Show();
                         await GenerateVouchers(tran);
-                        vp.Hide();
+                        vp.Hide();                       
                         tran.Commit();
-                        MessageBox.Show("Vouchers Generated Successfully", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Information);                 
+                        if (!string.IsNullOrEmpty(SyncFunctions.username))
+                        {
+                            SyncFunctions.SyncSalesData(SyncFunctions.getBillObject(VSales.BillNo), 1);
+                        }
+                        MessageBox.Show("Vouchers Generated Successfully", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                     if (!string.IsNullOrEmpty(VSales.BillNo))
                     {

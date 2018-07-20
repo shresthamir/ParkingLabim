@@ -334,6 +334,7 @@ namespace ParkingManagement.ViewModel
         }
         private void ExecuteRemove(object obj)
         {
+            SelectedRateDetail = obj as RateDetails;
             this.Rate.Rates.Remove(SelectedRateDetail);
         }
 
@@ -364,7 +365,7 @@ namespace ParkingManagement.ViewModel
                         else if (_action == ButtonAction.Edit)
                         {
                             LRateMaster RM = conn.Query<LRateMaster>("SELECT * FROM RateMaster WHERE Rate_ID = @Rate_ID", Rate, trans).First();
-                            RM.Rates = new ObservableCollection<Models.TRateDetails>(conn.Query<TRateDetails>("SELECT * FROM RateDetails WHERE Rate_ID = @Rate_ID", Rate, trans));
+                            RM.Rates = new ObservableCollection<Models.TRateDetails>(conn.Query<TRateDetails>("SELECT Rate_ID, VehicleType,[Day],CAST(BeginTime AS DATETIME) BeginTime,CAST(EndTime AS DATETIME) EndTime,Rate,IsFixed FROM RateDetails WHERE Rate_ID = @Rate_ID", Rate, trans));
                             conn.Execute(string.Format("DELETE FROM RateDetails WHERE Rate_ID = {0}", Rate.Rate_ID), transaction: trans);
                             Rate.Update(trans);
                             GlobalClass.SetUserActivityLog(trans, "Rate Setting", "Edit", WorkDetail: "Rate_ID : " + Rate.Rate_ID, Remarks: Newtonsoft.Json.JsonConvert.SerializeObject(RM));
@@ -421,6 +422,7 @@ namespace ParkingManagement.ViewModel
                     if (string.IsNullOrEmpty(Rate.RateDescription))
                     {
                         MessageBox.Show("Rate name cannot be empty. Please enter rate name and try again.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return false;
                     }
                     if (_action == ButtonAction.New)
                     {
@@ -440,20 +442,23 @@ namespace ParkingManagement.ViewModel
                             return false;
                         }
 
-                        if (Conn.ExecuteScalar<int>(string.Format("SELECT COUNT(*) FROM ParkingOutDetails WHERE Rate_ID = {0}", Rate.Rate_ID)) > 0)
-                        //if (dc.RMaster.Any(x => x.RateDescription == this.Rate.RateDescription && x.Rate_ID != this.Rate.Rate_ID))
-                        {
-                            MessageBox.Show("Selected rate has been used on transaction. Thus, cannot be edited.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                            return false;
-                        }
+                        //if (Conn.ExecuteScalar<int>(string.Format("SELECT COUNT(*) FROM ParkingOutDetails WHERE Rate_ID = {0}", Rate.Rate_ID)) > 0)
+                        ////if (dc.RMaster.Any(x => x.RateDescription == this.Rate.RateDescription && x.Rate_ID != this.Rate.Rate_ID))
+                        //{
+                        //    MessageBox.Show("Selected rate has been used on transaction. Thus, cannot be edited.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                        //    return false;
+                        //}
 
                     }
                     foreach (VehicleType vt in VehicleTypeList)
                     {
-                        if (Rate.Rates.Count(x => x.VehicleType == vt.VTypeID) < 7)
+                        for(int i =1; i<=7; i++)
                         {
-                            MessageBox.Show("Please complete filling Rate Details for all days and all Entrance type.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Warning);
-                            return false;
+                            if(Rate.Rates.Where(x=>x.Day == i).Max(x=>x.EndTime).TimeOfDay != new TimeSpan(23, 59, 59))
+                            {
+                                MessageBox.Show("Please complete filling Rate Details for all days and all Entrance type.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Warning);
+                                return false;
+                            }
                         }
                     }
                     if (this.Rate.Rates.Count <= 0)
