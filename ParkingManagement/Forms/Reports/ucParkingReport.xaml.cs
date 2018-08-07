@@ -1,5 +1,4 @@
-﻿using DateFunction;
-using ParkingManagement.Library;
+﻿using ParkingManagement.Library;
 using ParkingManagement.Library.Helpers;
 using ParkingManagement.Library.ValueConverter;
 using ParkingManagement.Models;
@@ -37,10 +36,14 @@ namespace ParkingManagement.Forms.Reports
 
         private void txtFMiti_LostFocus(object sender, RoutedEventArgs e)
         {
-            if (nepDate.BSValidate(txtFMiti.Text))
+            try
+            {
                 txtFDate.SelectedDate = nepDate.CADDate(txtFMiti.Text);
-            else
+            }
+            catch (Exception ex)
+            {
                 MessageBox.Show("Invalid BS Date", "Daily Cash Collection Report", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void txtTDate_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
@@ -50,10 +53,14 @@ namespace ParkingManagement.Forms.Reports
 
         private void txtTMiti_LostFocus(object sender, RoutedEventArgs e)
         {
-            if (nepDate.BSValidate(txtTMiti.Text))
-                txtTDate.SelectedDate = nepDate.CADDate(txtTMiti.Text);
-            else
+            try
+            {
+                txtFDate.SelectedDate = nepDate.CADDate(txtTMiti.Text);
+            }
+            catch (Exception ex)
+            {
                 MessageBox.Show("Invalid BS Date", "Daily Cash Collection Report", MessageBoxButton.OK, MessageBoxImage.Error);
+            }           
         }
         public ucParkingReport()
         {
@@ -65,8 +72,8 @@ namespace ParkingManagement.Forms.Reports
             txtTDate.SelectedDate = DateTime.Today;
             txtFDate.SelectedDate = DateTime.Today;
 
-            dgDailySales.Columns.Add(new DataGridTextColumn { Header = "In", Binding = new Binding("Date1"){StringFormat = "MM/dd/yyyy hh:mm tt"}, Width = 150 });
-            dgDailySales.Columns.Add(new DataGridTextColumn { Header = "Out", Binding = new Binding("Date2"){StringFormat = "MM/dd/yyyy hh:mm tt"}, Width = 150 });
+            dgDailySales.Columns.Add(new DataGridTextColumn { Header = "In", Binding = new Binding("Date1"){StringFormat = "MM/dd/yyyy hh:mm:ss tt"}, Width = 150 });
+            dgDailySales.Columns.Add(new DataGridTextColumn { Header = "Out", Binding = new Binding("Date2"){StringFormat = "MM/dd/yyyy hh:mm:ss tt"}, Width = 150 });
             dgDailySales.Columns.Add(new DataGridTextColumn { Header = "Interval", Binding = new Binding("Column3"), Width = 100 });
             dgDailySales.Columns.Add(new DataGridTextColumn { Header = "Vehicle Type", Binding = new Binding("Column4"), Width = 100 });
             dgDailySales.Columns.Add(new DataGridTextColumn { Header = "Rate", Binding = new Binding("Column6"), Width = 200 });
@@ -100,11 +107,11 @@ namespace ParkingManagement.Forms.Reports
                             WHERE (PID.InDate BETWEEN @FDATE AND @TDATE)
                             ORDER BY Date1";
                     dgDailySales.Columns.Add(new DataGridTextColumn { Header = "SNo.", Binding = new Binding("Int1"), Width = 50, CellStyle = NumericColumn });
-                    dgDailySales.Columns.Add(new DataGridTextColumn { Header = "In Date", Binding = new Binding("Date1") { StringFormat = "MM/dd/yyyy hh:mm tt" }, Width = 130 });
+                    dgDailySales.Columns.Add(new DataGridTextColumn { Header = "In Date", Binding = new Binding("Date1") { StringFormat = "MM/dd/yyyy hh:mm:ss tt" }, Width = 140 });
                     dgDailySales.Columns.Add(new DataGridTextColumn { Header = "In User", Binding = new Binding("Column2"), Width = 150 });
                     dgDailySales.Columns.Add(new DataGridTextColumn { Header = "Vehicle Type", Binding = new Binding("Column6"), Width = 150 });
                     dgDailySales.Columns.Add(new DataGridTextColumn { Header = "Plate No", Binding = new Binding("Column3"), Width = 100 });
-                    dgDailySales.Columns.Add(new DataGridTextColumn { Header = "Out Date", Binding = new Binding("Date2") { StringFormat = "MM/dd/yyyy hh:mm tt" }, Width = 130 });
+                    dgDailySales.Columns.Add(new DataGridTextColumn { Header = "Out Date", Binding = new Binding("Date2") { StringFormat = "MM/dd/yyyy hh:mm:ss tt" }, Width = 140 });
                     dgDailySales.Columns.Add(new DataGridTextColumn { Header = "Out User", Binding = new Binding("Column7"), Width = 150 });
                     dgDailySales.Columns.Add(new DataGridTextColumn { Header = "Interval", Binding = new Binding("Column5"), Width = 100 });
                     ViewModel.LoadSummaryReport(txtFDate.SelectedDate.Value, txtTDate.SelectedDate.Value, SQL);
@@ -119,7 +126,7 @@ namespace ParkingManagement.Forms.Reports
                             LEFT JOIN ParkingOutDetails POD ON POD.PID=PID.PID AND POD.FYID = PID.FYID
                             WHERE (PID.InDate BETWEEN @FDATE AND @TDATE)) TEMP WHERE Int3 IS NULL";
                     dgDailySales.Columns.Add(new DataGridTextColumn { Header = "SNo.", Binding = new Binding("Int1"), Width = 50, CellStyle = NumericColumn });
-                    dgDailySales.Columns.Add(new DataGridTextColumn { Header = "In Date", Binding = new Binding("Date1") { StringFormat = "MM/dd/yyyy hh:mm tt" }, Width = 130 });
+                    dgDailySales.Columns.Add(new DataGridTextColumn { Header = "In Date", Binding = new Binding("Date1") { StringFormat = "MM/dd/yyyy hh:mm:ss tt" }, Width = 140 });
                     dgDailySales.Columns.Add(new DataGridTextColumn { Header = "In User", Binding = new Binding("Column2"), Width = 150 });
                     dgDailySales.Columns.Add(new DataGridTextColumn { Header = "Vehicle Type", Binding = new Binding("Column6"), Width = 150 });
                     dgDailySales.Columns.Add(new DataGridTextColumn { Header = "Plate No", Binding = new Binding("Column3"), Width = 100 });
@@ -140,11 +147,11 @@ namespace ParkingManagement.Forms.Reports
                             WHERE (PID.InDate BETWEEN @FDATE AND @TDATE)
                             ORDER BY Date1";
                     dgDailySales.Columns.Add(new DataGridTextColumn { Header = "SNo.", Binding = new Binding("Int1"), Width = 50, CellStyle = NumericColumn });
-                    dgDailySales.Columns.Add(new DataGridTextColumn { Header = "In Date", Binding = new Binding("Date1") { StringFormat = "MM/dd/yyyy hh:mm tt" }, Width = 130 });
+                    dgDailySales.Columns.Add(new DataGridTextColumn { Header = "In Date", Binding = new Binding("Date1") { StringFormat = "MM/dd/yyyy hh:mm:ss tt" }, Width = 140 });
                     dgDailySales.Columns.Add(new DataGridTextColumn { Header = "In User", Binding = new Binding("Column2"), Width = 150 });
                     dgDailySales.Columns.Add(new DataGridTextColumn { Header = "Vehicle Type", Binding = new Binding("Column6"), Width = 150 });
                     dgDailySales.Columns.Add(new DataGridTextColumn { Header = "Plate No", Binding = new Binding("Column3"), Width = 100 });
-                    dgDailySales.Columns.Add(new DataGridTextColumn { Header = "Out Date", Binding = new Binding("Date2") { StringFormat = "MM/dd/yyyy hh:mm tt" }, Width = 130 });
+                    dgDailySales.Columns.Add(new DataGridTextColumn { Header = "Out Date", Binding = new Binding("Date2") { StringFormat = "MM/dd/yyyy hh:mm:ss tt" }, Width = 140 });
                     dgDailySales.Columns.Add(new DataGridTextColumn { Header = "Out User", Binding = new Binding("Column7"), Width = 150 });
                     dgDailySales.Columns.Add(new DataGridTextColumn { Header = "Interval", Binding = new Binding("Column5"), Width = 100 });
                     ViewModel.LoadSummaryReport(txtFDate.SelectedDate.Value, txtTDate.SelectedDate.Value, SQL);

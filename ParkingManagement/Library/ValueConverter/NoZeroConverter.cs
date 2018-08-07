@@ -21,4 +21,20 @@ namespace ParkingManagement.Library.ValueConverter
             return GParse.ToDecimal(value.ToString());
         }
     }
+
+    [ValueConversion(typeof(decimal), typeof(decimal))]
+    internal class VatInclusiveConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return (decimal)value * (1 + GlobalClass.VAT/100);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value == null || value.ToString() == "")
+                value = "0";
+            return Decimal.Parse(value.ToString()) / (1 + GlobalClass.VAT/100);
+        }
+    }
 }

@@ -44,7 +44,7 @@ namespace ParkingManagement
                 if (!string.IsNullOrEmpty(SyncFunctions.username))
                 {
                     timer = new DispatcherTimer();
-                    timer.Interval = new TimeSpan(0, 0, 1);
+                    timer.Interval = new TimeSpan(0, 0, 5);
                     timer.Tick += timer_Tick;
                     timer.Start();
                 }
@@ -72,7 +72,8 @@ namespace ParkingManagement
         {
             try
             {
-                timer.Stop();
+                timer.Interval = new TimeSpan(0, 1, 0);
+                //timer.Stop();
                 if (!string.IsNullOrEmpty(SyncFunctions.username))
                 {
                     using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
@@ -363,7 +364,7 @@ JOIN VehicleType VT ON PID.VehicleType = VT.VTypeID
 {0}
 GROUP BY [Description]";
             string strBase = string.Format(str,
-@"LEFT JOIN ParkingOutDetails POD ON PID.PID = POD.PID
+@"LEFT JOIN ParkingOutDetails POD ON PID.PID = POD.PID AND PID.FYID = POD.FYID
 {0}");
             string strOpening = string.Format(strBase, "WHERE POD.PID IS NULL AND InDate < @TDATE");
             string strMissed = string.Format(strBase, "WHERE POD.PID IS NULL AND InDate = @TDATE");
@@ -375,7 +376,7 @@ GROUP BY [Description]";
 @"SELECT VT.[Description] VehicleType, COUNT(*) [Count], SUM(CL.ChargedAmount) Amount FROM ParkingInDetails PID 
 JOIN VehicleType VT ON PID.VehicleType = VT.VTypeID
 LEFT JOIN POUT_CLEARLOG CL ON PID.PID = CL.PID
-LEFT JOIN ParkingOutDetails POD ON PID.PID = POD.PID
+LEFT JOIN ParkingOutDetails POD ON PID.PID = POD.PID AND POD.FYID = PID.FYID
 WHERE CL.PID IS NOT NULL AND CL.OutDate = @TDATE AND POD.PID IS NULL
 GROUP BY [Description]";
 

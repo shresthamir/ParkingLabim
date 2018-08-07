@@ -86,9 +86,6 @@
     <Reference Include="Dapper">
       <HintPath>..\..\..\Library DLLs\Dapper.dll</HintPath>
     </Reference>
-    <Reference Include="DateFunction">
-      <HintPath>..\..\..\Library DLLs\DateFunction.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Expression.Interactions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>D:\Projects\RMS\RMS\bin\Debug\Microsoft.Expression.Interactions.dll</HintPath>
@@ -271,6 +268,7 @@
     <Compile Include="HelpViewer.xaml.cs">
       <DependentUpon>HelpViewer.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Library\DateConverter.cs" />
     <Compile Include="Library\Helpers\ExportToExcelHelper.cs" />
     <Compile Include="Library\Helpers\ExportToPdfHelper.cs" />
     <Compile Include="Library\Helpers\StyleSelectors.cs" />

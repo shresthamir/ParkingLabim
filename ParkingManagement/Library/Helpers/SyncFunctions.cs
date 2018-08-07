@@ -95,7 +95,7 @@ namespace ParkingManagement.Library.Helpers
                 {
                     string Response = new System.IO.StreamReader(ex.Response.GetResponseStream()).ReadToEnd();
                     FunctionResponse res = JsonConvert.DeserializeObject<FunctionResponse>(Response);
-                    if (res != null)
+                    if (res != null && res.result != null)
                         await LogSyncStatus(SalesModel.invoice_number, SalesModel.fiscal_year, JsonConvert.SerializeObject(SalesModel), 0, res.result.ToString());
                     else
                         await LogSyncStatus(SalesModel.invoice_number, SalesModel.fiscal_year, JsonConvert.SerializeObject(SalesModel), 0, Response);

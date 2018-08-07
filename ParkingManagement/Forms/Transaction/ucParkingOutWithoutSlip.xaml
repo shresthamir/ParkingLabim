@@ -58,7 +58,7 @@
                     </Ctrl:ExtendedTextBox.InputBindings>
                 </Ctrl:ExtendedTextBox>
 
-                <ToggleButton Grid.Column="4" Margin="5" IsChecked="{Binding TaxInvoice}" IsEnabled="{Binding CanChangeInvoiceType}">
+                <ToggleButton Grid.Column="4" Margin="5" IsChecked="{Binding TaxInvoice}" IsEnabled="{Binding CanChangeInvoiceType}" Visibility="Collapsed">
                     <ToggleButton.Template>
                         <ControlTemplate TargetType="ToggleButton">
                             <Border BorderBrush="Blue" BorderThickness="2" CornerRadius="2" Background="White" >
@@ -286,6 +286,9 @@
                         <StackPanel Orientation="Horizontal">
                             <Label Content="Charged Amount"></Label>
                             <TextBox Width="150" IsReadOnly="True" IsTabStop="False" FontSize="14" Text="{Binding POUT.ChargedAmount, StringFormat={}{0:#0.00}}" HorizontalContentAlignment="Right"/>
+                        </StackPanel>
+                        <StackPanel>
+                            <TextBlock FontWeight="Normal" HorizontalAlignment="Left" Text="Bill amount has exceeded Abbreviatated Tax Invoice limit.&#x0a;Please contact administration." Visibility="{Binding TaxInvoice, Converter={StaticResource BoolToVisibility}}"  ></TextBlock>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Visibility="{x:Static local:GlobalClass.DisableCashAmountChange}" >
                             <Label VerticalAlignment="Center" Content="Cash Amount" ></Label>

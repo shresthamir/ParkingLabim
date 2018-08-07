@@ -12,7 +12,6 @@ using ParkingManagement.Models;
 using RawPrintFunctions;
 using Dapper;
 using System.Windows.Threading;
-using DateFunction;
 namespace ParkingManagement.ViewModel
 {
     class CashReceiptViewModel : BaseViewModel

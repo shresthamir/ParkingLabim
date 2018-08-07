@@ -1,5 +1,4 @@
-﻿using DateFunction;
-using ParkingManagement.Library;
+﻿using ParkingManagement.Library;
 using ParkingManagement.Library.Helpers;
 using ParkingManagement.Models;
 using System;
@@ -165,7 +164,7 @@ namespace ParkingManagement.ViewModel
                     POutVMTouch.PrintBill(BillNo, conn, (TaxInvoice) ? "INVOICE" : "ABBREVIATED TAX INVOCE", DuplicateCaption);
                     GlobalClass.SavePrintLog(BillNo, null, DuplicateCaption);
                     GlobalClass.SetUserActivityLog("Exit", "Re-Print", WorkDetail: string.Empty, VCRHNO: BillNo, Remarks: "Reprinted : " + DuplicateCaption);
-                    
+
                 }
                 ExecuteUndo(null);
             }
@@ -177,7 +176,7 @@ namespace ParkingManagement.ViewModel
 
         private bool CanExecuteSave(object obj)
         {
-            return _action == ButtonAction.New;
+            return _action == ButtonAction.New && !TaxInvoice;
         }
         private void ExecuteLoad(object obj)
         {
@@ -327,7 +326,7 @@ namespace ParkingManagement.ViewModel
                                 Taxable = Taxable,
                                 VAT = VAT,
                                 NetAmount = POUT.CashAmount,
-                                ProdId = 0, 
+                                ProdId = 0,
                                 Description = "Parking Charge",
                                 PType = 'P'
                             };
@@ -346,7 +345,8 @@ namespace ParkingManagement.ViewModel
                     }
                     if (!string.IsNullOrEmpty(BillNo))
                     {
-                        RawPrinterHelper.SendStringToPrinter(GlobalClass.PrinterName, ((char)27).ToString() + ((char)112).ToString() + ((char)0).ToString() + ((char)64).ToString() + ((char)240).ToString(), "Receipt");   //Open Cash Drawer
+                        if (!GlobalClass.NoRawPrinter)
+                            RawPrinterHelper.SendStringToPrinter(GlobalClass.PrinterName, ((char)27).ToString() + ((char)112).ToString() + ((char)0).ToString() + ((char)64).ToString() + ((char)240).ToString(), "Receipt");   //Open Cash Drawer
                         POutVMTouch.PrintBill(BillNo.ToString(), conn, (TaxInvoice) ? "TAX INVOICE" : "ABBREVIATED TAX INVOCE");
                         if (TaxInvoice)
                         {
@@ -362,7 +362,7 @@ namespace ParkingManagement.ViewModel
             }
         }
         private void ExecuteUndo(object obj)
-        {         
+        {
             FocusedElement = (short)Focusable.Barcode;
             TaxInvoice = false;
             InvoiceNo = string.Empty;

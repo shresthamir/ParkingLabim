@@ -19,7 +19,7 @@ namespace ParkingManagement.ViewModel
     {
         private Dispatcher d;
         delegate void update();
-        DateFunction.DateConverter nepDate;
+        DateConverter nepDate;
         DispatcherTimer timer;
         ParkingIn _Parking;
         ParkingIn _SelectedParkingIn;
@@ -43,7 +43,7 @@ namespace ParkingManagement.ViewModel
         {
             MessageBoxCaption = "Entrance";
             d = _D;
-            nepDate = new DateFunction.DateConverter(GlobalClass.TConnectionString);
+            nepDate = new DateConverter(GlobalClass.TConnectionString);
             Parking = new ParkingIn();
             SelectedParkingIn = new ParkingIn();
             Vehicle = new VehicleType();
@@ -136,7 +136,6 @@ namespace ParkingManagement.ViewModel
 
         private void ExecuteSave(object obj)
         {
-
             try
             {
                 if (obj is VehicleType)
@@ -144,15 +143,15 @@ namespace ParkingManagement.ViewModel
                     Parking.VType = obj as VehicleType;
                     Parking.VehicleType = Parking.VType.VTypeID;
                 }
-                Parking.InDate = CurDate;
-                Parking.InTime = CurTime;
+                DateTime ServerTime = nepDate.GetServerTime();
+                Parking.InDate = ServerTime.Date;
                 Parking.InMiti = nepDate.CBSDate(Parking.InDate);
+                Parking.InTime = ServerTime.ToString("hh:mm:ss tt");
                 using (SqlConnection Conn = new SqlConnection(GlobalClass.TConnectionString))
                 {
                     Conn.Open();
                     using (SqlTransaction tran = Conn.BeginTransaction())
                     {
-
                         //Parking.PID = conn.ExecuteScalar<int>("SELECT CurNo FROM tblSequence WHERE VNAME = 'PID' AND FYID = " + GlobalClass.FYID, transaction: tran);
                         Parking.PID = Convert.ToInt32(GetInvoiceNo("PID", tran));
 

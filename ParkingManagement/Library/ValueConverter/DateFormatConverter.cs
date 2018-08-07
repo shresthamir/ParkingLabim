@@ -27,14 +27,14 @@ namespace ParkingManagement.Library.ValueConverter
     [ValueConversion(typeof(DateTime), typeof(string))]
     public class DateToMitiConverter : IValueConverter
     {
-        DateFunction.DateConverter nepDate;
+        DateConverter nepDate;
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             if (value == null)
                 return string.Empty;
             if (((DateTime)value) < new DateTime(1882, 4, 13))
                 return "";
-            nepDate = new DateFunction.DateConverter(GlobalClass.TConnectionString);
+            nepDate = new DateConverter(GlobalClass.TConnectionString);
             return nepDate.CBSDate((DateTime)value);
         }
 
@@ -42,7 +42,7 @@ namespace ParkingManagement.Library.ValueConverter
         {
             if (value == null)
                 return DateTime.Today;
-            nepDate = new DateFunction.DateConverter(GlobalClass.TConnectionString);
+            nepDate = new DateConverter(GlobalClass.TConnectionString);
             return nepDate.CADDate(value.ToString());
         }
     }

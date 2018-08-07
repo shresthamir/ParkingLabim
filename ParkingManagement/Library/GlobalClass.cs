@@ -45,6 +45,8 @@ namespace ParkingManagement.Library
         public static byte SettlementMode;
         public static string AppDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\IMS\\Parking";
         public static decimal AbbTaxInvoiceLimit = 5000;
+        internal static bool NoRawPrinter;
+
         public static string ReportName { get; set; }
         public static string ReportParams { get; set; }
         public static string PrintTime { get; set; } 
@@ -120,6 +122,14 @@ namespace ParkingManagement.Library
             ConnBuilder.UserID = TUser;
             ConnBuilder.Password = TPassword;
             return ConnBuilder.ConnectionString;
+        }
+
+        internal static string GetNumToWords(SqlConnection conn, decimal GrossAmount)
+        {
+            string InWords = "Rs. " + conn.ExecuteScalar<string>("SELECT DBO.Num_ToWordsArabic(" + Math.Floor(GrossAmount) + ")");
+            if (GrossAmount > Math.Floor(GrossAmount))
+                InWords += " & " + conn.ExecuteScalar<string>("SELECT DBO.Num_ToWordsArabic(" + GrossAmount.ToString("#0.00").Split('.')[1] + ")") + " Paisa";
+            return InWords;
         }
 
         internal static void UpdateDatabase(SqlConnection conn)

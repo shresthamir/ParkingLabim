@@ -1,5 +1,4 @@
-﻿using DateFunction;
-using ParkingManagement.Library;
+﻿using ParkingManagement.Library;
 using ParkingManagement.Library.Helpers;
 using ParkingManagement.Models;
 using RawPrintFunctions;
@@ -99,9 +98,9 @@ namespace ParkingManagement.ViewModel
                     SetAction(ButtonAction.InvoiceLoaded);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                MessageBox.Show(ex.GetBaseException().Message, MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -239,7 +238,7 @@ namespace ParkingManagement.ViewModel
 
         private bool CanExecuteSave(object obj)
         {
-            return _action == ButtonAction.Selected;
+            return _action == ButtonAction.Selected && !TaxInvoice;
         }
         private void CalculateAmount()
         {
@@ -303,9 +302,9 @@ namespace ParkingManagement.ViewModel
 
                     POUT.Rate_ID = (int)conn.ExecuteScalar("SELECT RATE_ID FROM RATEMASTER WHERE IsDefault = 1");
 
-
-                    POUT.OutDate = _CurDate;
-                    POUT.OutTime = _CurTime;
+                    DateTime ServerTime = nepDate.GetServerTime();
+                    POUT.OutDate = ServerTime.Date;
+                    POUT.OutTime = ServerTime.ToString("hh:mm:ss tt");
                     POUT.OutMiti = nepDate.CBSDate(POUT.OutDate);
                     POUT.Interval = GetInterval(PIN.InDate, POUT.OutDate, PIN.InTime, POUT.OutTime);
                     POUT.PID = PIN.PID;
@@ -404,8 +403,16 @@ namespace ParkingManagement.ViewModel
             int DiscountInterval = scheme.Limit - Interval + mDiscount.SkipInterval;
             foreach (dynamic session in TimeSpentInEachSession.Where(x => x.TimeSpent > 0))
             {
-                CalculateParkingCharge(conn, session.Start, (DiscountInterval < session.TimeSpent) ? session.Start.AddMinutes(DiscountInterval) : session.End, POUT.Rate_ID, PIN.VehicleType, ref DiscountAmount, ref DiscountHour);
-                DiscountInterval -= (DiscountInterval < session.TimeSpent) ? DiscountInterval : session.TimeSpent;
+                if (session.IgnoreLimit)
+                {
+                    CalculateParkingCharge(conn, session.Start, session.End, POUT.Rate_ID, PIN.VehicleType, ref DiscountAmount, ref DiscountHour);
+                    DiscountInterval -= session.TimeSpent;
+                }
+                else
+                {
+                    CalculateParkingCharge(conn, session.Start, (DiscountInterval < session.TimeSpent) ? session.Start.AddMinutes(DiscountInterval) : session.End, POUT.Rate_ID, PIN.VehicleType, ref DiscountAmount, ref DiscountHour);
+                    DiscountInterval -= (DiscountInterval < session.TimeSpent) ? DiscountInterval : session.TimeSpent;
+                }
                 mDiscount.Interval += DiscountHour * 60;
                 mDiscount.DiscountAmount += DiscountAmount * scheme.Discount / 100;
                 DiscountHour = 0;
@@ -470,7 +477,7 @@ namespace ParkingManagement.ViewModel
                     }
                     Start = PIN.InDate.Add(session.Start);
                 }
-                TimeSpentInEachSession.Add(new { session.SkipValidityPeriod, TimeSpent = Convert.ToInt32(TimeSpent.TotalMinutes), Start, End });
+                TimeSpentInEachSession.Add(new { session.SkipValidityPeriod, session.IgnoreLimit, TimeSpent = Convert.ToInt32(TimeSpent.TotalMinutes), Start, End });
             }
             return TimeSpentInEachSession;
         }
@@ -774,8 +781,7 @@ namespace ParkingManagement.ViewModel
                                     WHERE BillNo = '{0}' AND PS.FYID = {1}", BillNo, GlobalClass.FYID), conn).Rows[0];
 
             }
-
-            string InWords = "Rs. " + conn.ExecuteScalar<string>("SELECT DBO.Num_ToWordsArabic(" + dr["GrossAmount"] + ")");
+            string InWords = GlobalClass.GetNumToWords(conn, Convert.ToDecimal(dr["GrossAmount"]));            
             string strPrint = string.Empty;
             int PrintLen = 40;
             string Description = dr["Description"].ToString();
@@ -827,7 +833,10 @@ namespace ParkingManagement.ViewModel
             strPrint += "".PadRight(PrintLen, '-') + Environment.NewLine;
             strPrint += ((char)29).ToString() + ((char)86).ToString() + ((char)1).ToString();
 
-            RawPrinterHelper.SendStringToPrinter(GlobalClass.PrinterName, strPrint, "Receipt");
+            if (GlobalClass.NoRawPrinter)
+                new StringPrint(strPrint).Print();
+            else
+                RawPrinterHelper.SendStringToPrinter(GlobalClass.PrinterName, strPrint, "Receipt");
         }
 
 

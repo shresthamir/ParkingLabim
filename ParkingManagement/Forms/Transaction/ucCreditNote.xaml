@@ -56,7 +56,7 @@
                     </Ctrl:ExtendedTextBox.InputBindings>
                 </Ctrl:ExtendedTextBox>
                 
-                <GroupBox Header="Credit Note of:" Grid.Column="8">
+                <GroupBox Header="Credit Note of:" Grid.Column="8" Visibility="Collapsed">
                     <ToggleButton Grid.Column="4"  IsChecked="{Binding TaxInvoice}" IsEnabled="{Binding EntryPanelEnabled}">
                         <ToggleButton.Template>
                             <ControlTemplate TargetType="ToggleButton">

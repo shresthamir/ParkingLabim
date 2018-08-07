@@ -1,5 +1,4 @@
-﻿using DateFunction;
-using ParkingManagement.Library;
+﻿using ParkingManagement.Library;
 using ParkingManagement.Library.Helpers;
 using ParkingManagement.Models;
 using System;
@@ -46,6 +45,7 @@ namespace ParkingManagement.ViewModel
         decimal _Progress;
         wVoucherPrintProgress vp;
 
+        public bool GenerateVoucher { get; set; }
         public bool IsEntryMode { get { return _action == ButtonAction.Init || _action == ButtonAction.Selected; } }
         public string InvoiceNo { get { return _InvoiceNo; } set { _InvoiceNo = value; OnPropertyChanged("InvoiceNo"); } }
         public string InvoicePrefix { get { return _InvoicePrefix; } set { _InvoicePrefix = value; OnPropertyChanged("InvoicePrefix"); } }
@@ -68,7 +68,8 @@ namespace ParkingManagement.ViewModel
                 if (_SelectedVoucherType != value && value != null)
                 {
                     VSDetail.Description = value.VoucherName;
-                    VSDetail.Rate = value.Rate / (1 + (GlobalClass.VAT / 100));
+                    VSDetail.Rate = value.Rate;
+                    //VSDetail.RateStr = VSDetail.Rate.ToString("#0.00");
                 }
                 _SelectedVoucherType = value;
                 OnPropertyChanged("SelectedVoucherType");
@@ -103,6 +104,7 @@ namespace ParkingManagement.ViewModel
                 MessageBox.Show("Selected Voucher is already added.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 return;
             }
+            GenerateVoucher = !SelectedVoucherType.SkipVoucherGeneration;
             VSDetailList.Add(new TParkingSalesDetails
             {
                 FYID = GlobalClass.FYID,
@@ -110,11 +112,14 @@ namespace ParkingManagement.ViewModel
                 ProdId = VSDetail.ProdId,
                 Description = VSDetail.Description,
                 Quantity = VSDetail.Quantity,
+                QuantityStr = VSDetail.QuantityStr,
                 Rate = VSDetail.Rate,
+                RateStr = VSDetail.RateStr,
                 Amount = VSDetail.Amount,
                 Taxable = VSDetail.Amount,
                 VAT = VSDetail.Amount * GlobalClass.VAT / 100,
-                NetAmount = VSDetail.Amount * (1 + GlobalClass.VAT / 100)
+                NetAmount = VSDetail.Amount * (1 + GlobalClass.VAT / 100),
+                Remarks = VSDetail.Remarks
             });
             VSDetail = new TParkingSalesDetails();
             VSDetail.PropertyChanged += VSDetail_PropertyChanged;
@@ -291,7 +296,7 @@ namespace ParkingManagement.ViewModel
         {
             try
             {
-                if (VSales.TRNMODE && string.IsNullOrEmpty(VSales.BillTo))
+                if (!VSales.TRNMODE && string.IsNullOrEmpty(VSales.BillTo))
                 {
                     MessageBox.Show("Customer Name cannot be empty in Credit Sales.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
                     return;
@@ -328,10 +333,13 @@ namespace ParkingManagement.ViewModel
                         GlobalClass.SetUserActivityLog("Voucher Sales Invoice", "New", VCRHNO: VSales.BillNo, WorkDetail: "Bill No : " + VSales.BillNo);
 
                         SyncFunctions.LogSyncStatus(tran, VSales.BillNo, GlobalClass.FYNAME);
-                        vp = new wVoucherPrintProgress() { DataContext = this };
-                        vp.Show();
-                        await GenerateVouchers(tran);
-                        vp.Hide();                       
+                        if (GenerateVoucher)
+                        {
+                            vp = new wVoucherPrintProgress() { DataContext = this };
+                            vp.Show();
+                            await GenerateVouchers(tran);
+                            vp.Hide();
+                        }
                         tran.Commit();
                         if (!string.IsNullOrEmpty(SyncFunctions.username))
                         {
@@ -342,9 +350,12 @@ namespace ParkingManagement.ViewModel
                     if (!string.IsNullOrEmpty(VSales.BillNo))
                     {
                         PrintBill(VSales.BillNo, true);
-                        vp.Show();
-                        await PrintVouchers(VSales.BillNo, true);
-                        vp.Close();
+                        if (GenerateVoucher)
+                        {
+                            vp.Show();
+                            await PrintVouchers(VSales.BillNo, true);
+                            vp.Close();
+                        }
                     }
                     //GenerateVouchers();
 
@@ -570,7 +581,8 @@ namespace ParkingManagement.ViewModel
                     var vSales = conn.Query<TParkingSales>("SELECT BillNo, FYID, TDate, TMiti, TTime, UserName [Description], BillTo, BILLTOADD, BILLTOPAN, Amount, Discount, NonTaxable, Taxable, VAT, GrossAmount, RefBillNo, TaxInvoice, Remarks, PS.UID, SESSION_ID, PID FROM ParkingSales PS JOIN Users U ON PS.UID = U.UID WHERE BillNo = @BillNo AND FYID = @FYID", new { BillNo = BillNo, FYID = GlobalClass.FYID }).FirstOrDefault();
                     var vSDetailList = new List<TParkingSalesDetails>(
                                         conn.Query<TParkingSalesDetails>("SELECT BillNo, FYID, PTYPE, ProdId, [Description], Quantity, Rate, Amount, Discount, NonTaxable, Taxable, VAT, NetAmount, Remarks FROM ParkingSalesDetails WHERE BillNo = @BillNo AND FYID = @FYID", new { BillNo = BillNo, FYID = GlobalClass.FYID }));
-                    string InWords = "Rs. " + conn.ExecuteScalar<string>("SELECT DBO.Num_ToWordsArabic(" + vSales.GrossAmount + ")");
+                    string InWords = GlobalClass.GetNumToWords(conn, vSales.GrossAmount);
+
                     string DuplicateCaption = (IsNew) ? String.Empty : GlobalClass.GetReprintCaption(BillNo);
                     var pslip = new BillPrint
                     {

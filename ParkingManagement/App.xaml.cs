@@ -33,6 +33,9 @@ namespace ParkingManagement
                     case "UpdateDatabase":
                        // Library.GlobalClass.UpdateDatabase(string.Empty);
                         break;
+                    case "NoRawPrinter":
+                        Library.GlobalClass.NoRawPrinter = true;
+                        break;
                 }
             }
             base.OnStartup(e);

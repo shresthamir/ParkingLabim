@@ -12,7 +12,7 @@ namespace ParkingManagement.Library
     public class ParkingSlip
     {
         int paperWidth = (GlobalClass.SlipPrinterWith == 58) ? 225 : 300;
-        int BarcodeWidth = (GlobalClass.SlipPrinterWith == 58) ? 200 : 250; 
+        int BarcodeWidth = (GlobalClass.SlipPrinterWith == 58) ? 200 : 250;
         PrintDocument PD;
         public string CompanyName { get; set; }
         public string CompanyAddress { get; set; }
@@ -99,10 +99,10 @@ namespace ParkingManagement.Library
             PageSettings ps = new PageSettings();
             PaperSize PSize = new PaperSize("Ticket", paperWidth, 230 + GlobalClass.TCList.Sum(x => x.Height));
             ps.PaperSize = PSize;
-            if(GlobalClass.SlipPrinterWith == 58)
+            if (GlobalClass.SlipPrinterWith == 58)
                 ps.Margins = new Margins(5, 5, 5, 5);
-            else 
-            ps.Margins = new Margins(10, 10, 10, 10);
+            else
+                ps.Margins = new Margins(10, 10, 10, 10);
             ps.Landscape = false;
             PD.DefaultPageSettings = ps;
             PD.Print();
@@ -278,6 +278,11 @@ namespace ParkingManagement.Library
                 G.DrawString(psd.Rate.ToString("#0.00"), new Font(new FontFamily(Font), 9), Brushes.Black, new RectangleF(550, i, 95, 20), format);
                 G.DrawString(psd.Amount.ToString("#,##,##0.00"), new Font(new FontFamily(Font), 9), Brushes.Black, new RectangleF(650, i, 120, 20), format);
                 i += 18;
+                if (!string.IsNullOrEmpty(psd.Remarks))
+                {
+                    G.DrawString("  [" + psd.Remarks + "]", new Font(new FontFamily(Font), 9), Brushes.Black, new RectangleF(65, i, 400, 20));
+                    i += 18;
+                }
             }
             i = 810;
             G.DrawString(PSDetails.Sum(x => x.Quantity).ToString("#0.00"), new Font(new FontFamily(Font), 9, FontStyle.Bold), Brushes.Black, new RectangleF(450, i, 95, 20), format);
@@ -572,6 +577,40 @@ namespace ParkingManagement.Library
             ps.Landscape = false;
             PD.DefaultPageSettings = ps;
 
+            PD.Print();
+        }
+    }
+
+    public class StringPrint
+    {
+        string PrintStr;
+        PrintDocument PD;
+        public StringPrint(string _PrintStr)
+        {
+            PD = new PrintDocument();
+            PD.PrinterSettings.PrinterName = GlobalClass.PrinterName;
+            PD.PrintPage += PD_PrintPage;
+            PrintStr = _PrintStr;
+        }
+
+        void PD_PrintPage(object sender, PrintPageEventArgs e)
+        {
+            PrintTicket(e.Graphics);
+        }
+
+        private void PrintTicket(Graphics G)
+        {
+            G.DrawString(PrintStr, new Font(new FontFamily("Courier New"), 9), Brushes.Black, new RectangleF(10, 10, 320, 500));
+        }
+
+        public void Print()
+        {
+            PageSettings ps = new PageSettings();
+            PaperSize PSize = new PaperSize() { RawKind = (int)PaperKind.A4 };
+            ps.PaperSize = PSize;
+            ps.Margins = new Margins(10, 10, 10, 10);
+            ps.Landscape = false;
+            PD.DefaultPageSettings = ps;
             PD.Print();
         }
     }

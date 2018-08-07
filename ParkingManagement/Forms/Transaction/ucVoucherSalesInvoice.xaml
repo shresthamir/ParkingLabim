@@ -87,7 +87,6 @@
                         </ControlTemplate>
                     </ToggleButton.Template>
                     <ToggleButton.Triggers>
-
                     </ToggleButton.Triggers>
                 </ToggleButton>
 
@@ -153,21 +152,24 @@
                             <RowDefinition Height="35"/>
                             <RowDefinition Height="35"/>
                         </Grid.RowDefinitions>
-                        <Label Content="Voucher Type" />
+                        <Label Content="Product" />
                         <ComboBox Grid.ColumnSpan="4" ItemsSource="{Binding VTypeList}" DisplayMemberPath="VoucherName" SelectedValuePath="VoucherId" SelectedValue="{Binding VSDetail.ProdId}" SelectedItem="{Binding SelectedVoucherType}"  Grid.Column="1" FontSize="14"
                                   helper:CustomFocusManager.IsFocused="{Binding FocusedElement, Converter={StaticResource ShortToBool}, ConverterParameter='1'}"></ComboBox>
 
 
                         <Label Grid.Row="1" Content="Rate"/>
-                        <TextBox Grid.Row="1" Grid.Column="1" Height="28" Text="{Binding VSDetail.Rate, Converter={StaticResource NoZero}}" IsReadOnly="True" Focusable="False" HorizontalContentAlignment="Right"/>
+                        <TextBox Grid.Row="1" Grid.Column="1" Height="28" Text="{Binding VSDetail.RateStr, UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Right"/>
 
                         <Label Grid.Row="2" Content="Quantity"/>
-                        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding VSDetail.Quantity, Converter={StaticResource NoZero}}" HorizontalContentAlignment="Right" />
+                        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding VSDetail.QuantityStr, UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Right" />
 
                         <Label Grid.Row="2" Grid.Column="3"  Content="Amount"/>
                         <TextBox Grid.Row="2" Grid.Column="4" Grid.ColumnSpan="1" Text="{Binding VSDetail.Amount, Converter={StaticResource NoZero}}" HorizontalContentAlignment="Right" IsReadOnly="True" Focusable="False"/>
 
-                        <Button Grid.Row="2" Grid.Column="5" HorizontalAlignment="Left" Style="{DynamicResource NewButton}" Command="{Binding AddVoucherCommand}" Content="Add" Width="60" Height="28" Margin="5 0 0 0"></Button>
+                        <Label Grid.Row="3" Grid.Column="0"  Content="Remarks"/>
+                        <TextBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="4" Text="{Binding VSDetail.Remarks, UpdateSourceTrigger=PropertyChanged}" />
+
+                        <Button Grid.Row="3" Grid.Column="5" HorizontalAlignment="Left" Style="{DynamicResource NewButton}" Command="{Binding AddVoucherCommand}" Content="Add" Width="60" Height="28" Margin="5 0 0 0"></Button>
                     </Grid>
                 </Border>
             </Grid>

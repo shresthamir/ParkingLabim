@@ -20,7 +20,7 @@ namespace ParkingManagement.Models
         public double taxable_sales_vat { get; set; }
         public double vat { get; set; }
         public double excisable_amount { get; set; }
-        public double exercise { get; set; }
+        public double excise { get; set; }
         public double taxable_sales_hst { get; set; }
         public double hst { get; set; }
         public double amount_for_esf { get; set; }
@@ -46,7 +46,7 @@ namespace ParkingManagement.Models
         public double taxable_sales_vat { get; set; }
         public double vat { get; set; }
         public double excisable_amount { get; set; }
-        public double exercise { get; set; }
+        public double excise { get; set; }
         public double taxable_sales_hst { get; set; }
         public double hst { get; set; }
         public double amount_for_esf { get; set; }

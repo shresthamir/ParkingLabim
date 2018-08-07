@@ -8,6 +8,7 @@
     <vc:DateToMitiConverter x:Key="DateToMiti" />
     <vc:DrCrConverter x:Key="DrCr"></vc:DrCrConverter>
     <vc:NoZeroConverter x:Key="NoZero"></vc:NoZeroConverter>
+    <vc:VatInclusiveConverter x:Key="ToVatInclusive"></vc:VatInclusiveConverter>
     <vc:DayWiseRateConverter x:Key="DayWiseRate"></vc:DayWiseRateConverter>
     <vc:RateTimeLineWidthConverter x:Key="RateWidth"/>
     <vc:BooleanToVisiblityConverter x:Key="BoolToVisibility"/>

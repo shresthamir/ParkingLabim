@@ -18,8 +18,8 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="50"/>
-            <RowDefinition Height="210" />
-            <RowDefinition ></RowDefinition>
+            <RowDefinition Height="250" />
+            <RowDefinition />
         </Grid.RowDefinitions>
 
         <Border Grid.Row="0" Style="{StaticResource GradientBackground}">
@@ -41,7 +41,7 @@
                     <TextBox Width="70" Text="{Binding VType.VoucherId}" IsEnabled="{Binding KeyFieldEnabled}" HorizontalContentAlignment="Right"></TextBox>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
-                    <Label Content="Voucher Name"></Label>
+                    <Label Content="Product Name"></Label>
                     <TextBox Width="400" Text="{Binding VType.VoucherName}"></TextBox>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
@@ -52,8 +52,13 @@
                     <TextBox Width="100" Text="{Binding VType.VoucherInfo}"></TextBox>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
+                    <TextBlock Margin="110 0 0 0"  VerticalAlignment="Bottom"  Text="Vat Excluxive"/>
+                    <TextBlock Margin="30 0 0 0" VerticalAlignment="Bottom" Text="Vat Incluxive"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
                     <Label Content="Rate"></Label>
-                    <TextBox Width="100" Text="{Binding VType.Rate, Converter={StaticResource NoZero}}" HorizontalContentAlignment="Right"></TextBox>
+                    <TextBox Width="100" Text="{Binding VType.RateStr, UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Right"></TextBox>
+                    <TextBox Width="100" Margin="5 0 0 0" Text="{Binding VType.Rate, Converter={StaticResource ToVatInclusive}, StringFormat={}{0:#0.00}}" HorizontalContentAlignment="Right"></TextBox>
 
                     <Label Content="Value" Margin="110 0 0 0" ></Label>
                     <TextBox Width="100" Text="{Binding VType.Value, Converter={StaticResource NoZero}}" HorizontalAlignment="Right"></TextBox>

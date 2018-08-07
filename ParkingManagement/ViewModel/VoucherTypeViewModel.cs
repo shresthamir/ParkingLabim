@@ -96,6 +96,7 @@ namespace ParkingManagement.ViewModel
                 VoucherId = SelectedVType.VoucherId,
                 VoucherName = SelectedVType.VoucherName,
                 Rate = SelectedVType.Rate,
+                RateStr = SelectedVType.RateStr,
                 Value = SelectedVType.Value,
                 ValidStart = SelectedVType.ValidStart,
                 ValidEnd = SelectedVType.ValidEnd,
@@ -143,6 +144,7 @@ namespace ParkingManagement.ViewModel
                                 VoucherId = VType.VoucherId,
                                 VoucherName = VType.VoucherName,
                                 Rate = VType.Rate,
+                                RateStr = VType.RateStr,
                                 Value = VType.Value,
                                 ValidStart = VType.ValidStart,
                                 ValidEnd = VType.ValidEnd,
@@ -195,6 +197,7 @@ namespace ParkingManagement.ViewModel
                             var Voucher = VTypeList.First(x => x.VoucherId == VType.VoucherId);
                             Voucher.VoucherName = VType.VoucherName;
                             Voucher.Rate = VType.Rate;
+                            Voucher.RateStr = VType.RateStr;
                             Voucher.Value = VType.Value;
                             Voucher.ValidStart = VType.ValidStart;
                             Voucher.ValidEnd = VType.ValidEnd;

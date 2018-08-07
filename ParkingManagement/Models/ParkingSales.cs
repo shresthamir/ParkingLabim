@@ -84,22 +84,43 @@ namespace ParkingManagement.Models
         private decimal _VAT;
         private decimal _NetAmount;
         private string _Remarks;
+        private string _RateStr;
+        private string _QuantityStr;
 
         public string BillNo { get { return _BillNo; } set { _BillNo = value; } }
         public byte FYID { get { return _FYID; } set { _FYID = value; } }
         public char PType { get { return _PType; } set { _PType = value; } }
         public int ProdId { get { return _ProdId; } set { _ProdId = value; OnPropertyChanged("ProdId"); } }
         public string Description { get { return _Description; } set { _Description = value; OnPropertyChanged("Description"); } }
-        public decimal Quantity { get { return _Quantity; } set { _Quantity = value; OnPropertyChanged("Quantity"); } }
-        public decimal Rate { get { return _Rate; } set { _Rate = value; OnPropertyChanged("Rate"); } }
-        public decimal Amount { get { return _Amount; } set { _Amount = value; OnPropertyChanged("Amount"); } }
+        public decimal Quantity { get { return _Quantity; } set { _Quantity = value; _QuantityStr = value.ToString("#.###"); OnPropertyChanged("Quantity"); OnPropertyChanged("QuantityStr"); } }
+        public decimal Rate { get { return _Rate; } set { _Rate = value; _RateStr = value.ToString("#0.00"); OnPropertyChanged("Rate"); OnPropertyChanged("RateStr"); } }
+        public decimal Amount { get { return _Amount; } set { _Amount = value;  OnPropertyChanged("Amount"); } }
         public decimal Discount { get { return _Discount; } set { _Discount = value; } }
         public decimal NonTaxable { get { return _NonTaxable; } set { _NonTaxable = value; } }
         public decimal Taxable { get { return _Taxable; } set { _Taxable = value; } }
         public decimal VAT { get { return _VAT; } set { _VAT = value; OnPropertyChanged("VAT"); } }
         public decimal NetAmount { get { return _NetAmount; } set { _NetAmount = value; OnPropertyChanged("NetAmount"); } }
-        public string Remarks { get { return _Remarks; } set { _Remarks = value; } }
-
+        public string Remarks { get { return _Remarks; } set { _Remarks = value; OnPropertyChanged("Remarks"); } }
+        public string RateStr
+        {
+            get { return _RateStr; }
+            set
+            {
+                _RateStr = value;
+                Rate = Convert.ToDecimal(value);
+                OnPropertyChanged("RateStr");
+            }
+        }
+        public string QuantityStr
+        {
+            get { return _QuantityStr; }
+            set
+            {
+                _QuantityStr = value;
+                Quantity = Convert.ToDecimal(value);
+                OnPropertyChanged("QuantityStr");
+            }
+        }
 
         public override bool Save(SqlTransaction tran)
         {

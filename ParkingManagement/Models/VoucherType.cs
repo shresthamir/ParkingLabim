@@ -20,11 +20,12 @@ namespace ParkingManagement.Models
         private TimeSpan _ValidEnd;
         private string _VoucherInfo;
         private bool _SkipVoucherGeneration;
+        private string _RateStr;
 
         public int VoucherId { get { return _VoucherId; } set { _VoucherId = value; OnPropertyChanged("VoucherId"); } }
         public string VoucherName { get { return _VoucherName; } set { _VoucherName = value; OnPropertyChanged("VoucherName"); } }
         public byte VehicleType { get { return _VehicleType; } set { _VehicleType = value; OnPropertyChanged("VehicleType"); } }
-        public decimal Rate { get { return _Rate; } set { _Rate = value; OnPropertyChanged("Rate"); } }
+        public decimal Rate { get { return _Rate; } set { _Rate = value; _RateStr = value.ToString("#0.00"); OnPropertyChanged("Rate"); OnPropertyChanged("RateStr"); } }
         public decimal Value { get { return _Value; } set { _Value = value; OnPropertyChanged("Value"); } }
         public int Validity { get { return _Validity; } set { _Validity = value; OnPropertyChanged("Validity"); } }
         public TimeSpan ValidStart { get { return _ValidStart; } set { _ValidStart = value; OnPropertyChanged("ValidStart"); } }
@@ -33,6 +34,16 @@ namespace ParkingManagement.Models
         public DateTime End { get { return new DateTime().Add(ValidEnd); } set { ValidEnd = value.TimeOfDay; OnPropertyChanged("End"); } }
         public string VoucherInfo { get { return _VoucherInfo; } set { _VoucherInfo = value; OnPropertyChanged("VoucherInfo"); } }
         public bool SkipVoucherGeneration { get { return _SkipVoucherGeneration; } set { _SkipVoucherGeneration = value; OnPropertyChanged("Skip Voucher Generation"); } }
+        public string RateStr
+        {
+            get { return _RateStr; }
+            set
+            {
+                _RateStr = value;
+                Rate = Convert.ToDecimal(value);
+                OnPropertyChanged("RateStr");
+            }
+        }
         public VoucherType()
         {
             //ValidStart = new TimeSpan(0, 0, 0);

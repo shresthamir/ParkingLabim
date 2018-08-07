@@ -31,8 +31,8 @@
         <Grid Grid.Row="1">
             <StackPanel Panel.ZIndex="1" x:Name="spIMS" Grid.Column="1" Margin="100 100 0 0">
                 <TextBlock Text="IMS - Ticketing Software" FontFamily="Comic Sans MS" FontSize="24" FontWeight="SemiBold" TextDecorations="UnderLine"  ></TextBlock>
-                <TextBlock Text="Ticketing System" FontFamily="Comic Sans MS" FontSize="12" FontWeight="SemiBold"  Margin="0 0 0 20"  />
-
+                <TextBlock Text="Ticketing System" FontFamily="Comic Sans MS" FontSize="14" FontWeight="SemiBold"    />
+                <TextBlock Text="Application version : 2.1" FontFamily="Comic Sans MS" FontSize="12" Margin="0 0 0 20"  />
                 <TextBlock Text="Developed By:"></TextBlock>
                 <StackPanel Orientation="Horizontal">
                     <Image Source="Images/IMS Logo.png" Width="80"/>

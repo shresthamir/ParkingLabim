@@ -1,5 +1,4 @@
-﻿using DateFunction;
-using ParkingManagement.Library;
+﻿using ParkingManagement.Library;
 using ParkingManagement.Library.Helpers;
 using ParkingManagement.Models;
 using RawPrintFunctions;
@@ -262,9 +261,8 @@ namespace ParkingManagement.ViewModel
                         }
                     }
                     if (!string.IsNullOrEmpty(BillNo))
-                    {
-                        
-                        PrintBill(BillNo.ToString());
+                    {                        
+                        PrintBill(BillNo.ToString(), true);
                     }
                     ExecuteUndo(null);
                 }
@@ -311,7 +309,7 @@ namespace ParkingManagement.ViewModel
                     var vSales = conn.Query<TParkingSales>("SELECT BillNo, FYID, TDate, TMiti, TTime, UserName [Description], BillTo, BILLTOADD, BILLTOPAN, Amount, Discount, NonTaxable, Taxable, VAT, GrossAmount, RefBillNo, TaxInvoice, Remarks, PS.UID, SESSION_ID, PID FROM ParkingSales PS JOIN Users U ON PS.UID = U.UID WHERE BillNo = @BillNo AND FYID = @FYID", new { BillNo = BillNo, FYID = GlobalClass.FYID }).FirstOrDefault();
                     var vSDetailList = new List<TParkingSalesDetails>(
                                         conn.Query<TParkingSalesDetails>("SELECT BillNo, FYID, PTYPE, ProdId, [Description], Quantity, Rate, Amount, Discount, NonTaxable, Taxable, VAT, NetAmount, Remarks FROM ParkingSalesDetails WHERE BillNo = @BillNo AND FYID = @FYID", new { BillNo = BillNo, FYID = GlobalClass.FYID }));
-                    string InWords = "Rs. " + conn.ExecuteScalar<string>("SELECT DBO.Num_ToWordsArabic(" + vSales.GrossAmount + ")");
+                    string InWords = GlobalClass.GetNumToWords(conn, Convert.ToDecimal(vSales.GrossAmount));
                     string DuplicateCaption = (IsNew) ? String.Empty : GlobalClass.GetReprintCaption(BillNo);
                     var pslip = new CreditNote
                     {

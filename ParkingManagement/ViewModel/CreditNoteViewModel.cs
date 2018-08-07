@@ -1,5 +1,4 @@
-﻿using DateFunction;
-using ParkingManagement.Library;
+﻿using ParkingManagement.Library;
 using ParkingManagement.Library.Helpers;
 using ParkingManagement.Models;
 using RawPrintFunctions;
@@ -89,7 +88,7 @@ namespace ParkingManagement.ViewModel
                     PIN = conn.Query<ParkingIn>("SELECT PID, VehicleType, InDate, InMiti, InTime, PlateNo, Barcode FROM ParkingInDetails WHERE PID = @PID AND FYID = @FYID", new { PID = PID, FYID = GlobalClass.FYID }).First();
                     PIN.VType = conn.Query<VehicleType>(string.Format("SELECT VTypeId, Description FROM VehicleType WHERE VTypeId = {0}", PIN.VehicleType)).First();
                     POUT = conn.Query<ParkingOut>(string.Format("SELECT * FROM ParkingOutDetails WHERE PID = {0} AND FYID = {1}", PIN.PID, GlobalClass.FYID)).First();
-                    
+
                 }
             }
             catch (Exception)
@@ -164,7 +163,7 @@ namespace ParkingManagement.ViewModel
                 {
                     string CNO = "CN" + InvoiceNo;
                     string DuplicateCaption = GlobalClass.GetReprintCaption(CNO);
-                    PrintBill(CNO, conn, "CREDIT NOTE");
+                    PrintBill(CNO, conn, "CREDIT NOTE", DuplicateCaption);
                     GlobalClass.SavePrintLog(CNO, null, DuplicateCaption);
                     GlobalClass.SetUserActivityLog("Credit Note", "Re-Print", WorkDetail: string.Empty, VCRHNO: CNO, Remarks: "Reprinted : " + DuplicateCaption);
                 }
@@ -248,7 +247,7 @@ namespace ParkingManagement.ViewModel
                         strSQL = string.Format
                             (
                                 @"INSERT INTO ParkingSales (BillNo, TDate, TMiti, TTime, BILLTO, BILLTOADD, BILLTOPAN, Description, Amount, Discount, NonTaxable, Taxable, VAT, GrossAmount, PID, UID, SESSION_ID, FYID, TaxInvoice, RefBillNo, Remarks) 
-                                    SELECT @BillNo, @TDATE, @TMITI, @TTIME, BILLTO, BILLTOADD, BILLTOPAN, Description, Amount, Discount, NonTaxable, Taxable, VAT, GrossAmount, PID, @UID, @SESSION_ID, @FYID, TaxInvoice, @RefBillNo, @Remarks FROM ParkingSales WHERE BillNo = @RefBillNo AND FYID = @FYID" 
+                                    SELECT @BillNo, @TDATE, @TMITI, @TTIME, BILLTO, BILLTOADD, BILLTOPAN, Description, Amount, Discount, NonTaxable, Taxable, VAT, GrossAmount, PID, @UID, @SESSION_ID, @FYID, TaxInvoice, @RefBillNo, @Remarks FROM ParkingSales WHERE BillNo = @RefBillNo AND FYID = @FYID"
                             );
                         int res = conn.Execute(strSQL, new
                         {
@@ -319,10 +318,10 @@ namespace ParkingManagement.ViewModel
 
 
 
-        void PrintBill(string BillNo, SqlConnection conn, string InvoiceName)
+        void PrintBill(string BillNo, SqlConnection conn, string InvoiceName, string DuplicateCaption = "")
         {
             DataRow dr;
-            string DuplicateCaption = GlobalClass.GetReprintCaption(BillNo);
+            //string DuplicateCaption = GlobalClass.GetReprintCaption(BillNo);
             //// RawPrinterHelper printer = new RawPrinterHelper();
 
             using (DataAccess da = new DataAccess())
@@ -335,8 +334,7 @@ namespace ParkingManagement.ViewModel
                                     WHERE BillNo = '{0}' AND PS.FYID = {1}", BillNo, GlobalClass.FYID), conn).Rows[0];
 
             }
-
-            string InWords = "Rs. " + conn.ExecuteScalar<string>("SELECT DBO.Num_ToWordsArabic(" + dr["GrossAmount"] + ")");
+            string InWords = GlobalClass.GetNumToWords(conn, Convert.ToDecimal(dr["GrossAmount"]));
             string strPrint = string.Empty;
             int PrintLen = 40;
             string Description = dr["Description"].ToString();
@@ -388,8 +386,10 @@ namespace ParkingManagement.ViewModel
             strPrint += Environment.NewLine;
             strPrint += "".PadRight(PrintLen, '-') + Environment.NewLine;
             strPrint += ((char)29).ToString() + ((char)86).ToString() + ((char)1).ToString();
-
-            RawPrinterHelper.SendStringToPrinter(GlobalClass.PrinterName, strPrint, "Receipt");
+            if (GlobalClass.NoRawPrinter)
+                new StringPrint(strPrint).Print();
+            else
+                RawPrinterHelper.SendStringToPrinter(GlobalClass.PrinterName, strPrint, "Receipt");
         }
         void timer_Tick(object sender, EventArgs e)
         {
