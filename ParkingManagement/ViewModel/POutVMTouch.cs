@@ -20,7 +20,7 @@ using Newtonsoft.Json;
 
 namespace ParkingManagement.ViewModel
 {
-    public class POutVMTouch : BaseViewModel
+    class POutVMTouch : BaseViewModel
     {
         enum Focusable
         {
@@ -44,6 +44,9 @@ namespace ParkingManagement.ViewModel
         List<VoucherType> VoucherTypes;
         MemberDiscount mDiscount;
         private bool _SaveWithStaffEnabled;
+        private List<DiscountScheme> _DiscountList;
+        private DiscountScheme _SelectedDiscount;
+        private bool IsHoliday;
 
         public ParkingIn PIN { get { return _PIN; } set { _PIN = value; OnPropertyChanged("PIN"); } }
         public ParkingOut POUT { get { return _POUT; } set { _POUT = value; OnPropertyChanged("POUT"); } }
@@ -71,13 +74,56 @@ namespace ParkingManagement.ViewModel
         public string InvoicePrefix { get { return _InvoicePrefix; } set { _InvoicePrefix = value; OnPropertyChanged("InvoicePrefix"); } }
         public string CurTime { get { return _CurTime; } set { _CurTime = value; OnPropertyChanged("CurTime"); } }
         public DateTime CurDate { get { return _CurDate; } set { _CurDate = value; OnPropertyChanged("CurDate"); } }
-        public bool PartyEnabled { get { return _PartyEnabled; } set { _PartyEnabled = value; OnPropertyChanged("PartyEnabled"); } }
-
-        public RelayCommand PrintCommand { get; set; }
+        public bool PartyEnabled { get { return _PartyEnabled; } set { _PartyEnabled = value; OnPropertyChanged("PartyEnabled"); } }        
+        public List<DiscountScheme> DiscountList { get { return _DiscountList; } set { _DiscountList = value; OnPropertyChanged("DiscountList"); } }
         public RelayCommand OpenStaffBarcodeCommand { get; set; }
         public RelayCommand SaveWithStaffCommand { get; set; }
         public RelayCommand RePrintCommand { get { return new RelayCommand(ExecuteRePrint, CanExecuteRePrint); } }
         public RelayCommand LoadInvoice { get { return new RelayCommand(ExecuteLoadInvoice, CanLoadInvoice); } }
+        public DiscountScheme SelectedDiscount
+        {
+            get { return _SelectedDiscount; }
+            set
+            {
+                try
+                {
+                    if (value != null)
+                    {
+                        if (value.MinHrs > POUT.ChargedHours || value.MaxHrs < POUT.ChargedHours)
+                        {
+                            MessageBox.Show("Parking period does not meet Scheme Criteria", "Parking Out", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                            return;
+                        }
+                        else if (!value.ValidOnHolidays && IsHoliday)
+                        {
+                            MessageBox.Show("The scheme is not valid on Public Holidays", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                            return;
+                        }
+                        else if (!value.ValidOnWeekends && POUT.OutDate.DayOfWeek == DayOfWeek.Saturday)
+                        {
+                            MessageBox.Show("The scheme is not valid on Weekends", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                            return;
+                        }
+                        if (value.DiscountPercent > 0)
+                        {
+                            POUT.RoyaltyAmount = POUT.ChargedAmount * value.DiscountPercent / 100;
+                            POUT.CashAmount = POUT.ChargedAmount - POUT.RoyaltyAmount;
+                        }
+                        else if (value.DisAmountList != null)
+                        {
+                            POUT.CashAmount = POUT.ChargedAmount - value.DisAmountList.First(x => x.VTypeID == PIN.VehicleType).Amount;
+                        }
+                    }
+                    _SelectedDiscount = value;
+                    OnPropertyChanged("SelectedDiscount");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.GetBaseException().Message, MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                }
+                
+            }
+        }
 
         private void ExecuteLoadInvoice(object obj)
         {
@@ -282,7 +328,9 @@ namespace ParkingManagement.ViewModel
                             POUT.SaveLog(conn);
                     }
 
-                    var PINS = conn.Query<ParkingIn>(string.Format("SELECT PID, VehicleType, InDate, InMiti, InTime, PlateNo, Barcode, UID FROM ParkingInDetails WHERE BARCODE = '{0}' AND FYID = {1}", obj, GlobalClass.FYID));
+                    var PINS = conn.Query<ParkingIn>(string.Format(@"SELECT PID, VehicleType, InDate, InMiti, InTime, PlateNo, Barcode, UID FROM ParkingInDetails 
+WHERE((BARCODE <> '' AND  BARCODE = '{0}') OR(ISNULL(PLATENO, '') <> '' AND ISNULL(PlateNo, '') = '{0}'))
+AND FYID = {1}", obj, GlobalClass.FYID));
                     if (PINS.Count() <= 0)
                     {
                         MessageBox.Show("Invalid barcode readings.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
@@ -298,8 +346,7 @@ namespace ParkingManagement.ViewModel
                         MessageBox.Show("Entity already exited", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
                         PIN.Barcode = string.Empty;
                         return;
-                    }
-
+                    }                    
                     POUT.Rate_ID = (int)conn.ExecuteScalar("SELECT RATE_ID FROM RATEMASTER WHERE IsDefault = 1");
 
                     DateTime ServerTime = nepDate.GetServerTime();
@@ -326,6 +373,7 @@ namespace ParkingManagement.ViewModel
                     PIN.Barcode = string.Empty;
                     FocusedElement = (short)Focusable.Finish;
                     SaveWithStaffEnabled = true;
+                    IsHoliday = conn.ExecuteScalar<int>("SELECT COUNT(*) FROM Holiday WHERE HolidayDate = @HolidayDate", new { HolidayDate = POUT.OutDate }) > 0;
                     PoleDisplay.WriteToDisplay(POUT.ChargedAmount, PoleDisplayType.AMOUNT);
                 }
             }
@@ -418,11 +466,11 @@ namespace ParkingManagement.ViewModel
                 DiscountHour = 0;
                 DiscountAmount = 0;
             }
-            POUT.ChargedAmount = POUT.CashAmount = POUT.ChargedAmount - mDiscount.DiscountAmount;
+            POUT.CashAmount = POUT.ChargedAmount - mDiscount.DiscountAmount;
             PIN.Barcode = string.Empty;
-            if (POUT.ChargedAmount == 0)
+            if (POUT.CashAmount == 0)
                 ExecuteSave(null);
-            PoleDisplay.WriteToDisplay(POUT.ChargedAmount, PoleDisplayType.AMOUNT);
+            PoleDisplay.WriteToDisplay(POUT.CashAmount, PoleDisplayType.AMOUNT);
         }
 
         List<dynamic> GetTimeSpentInEachSession(TimeSpan InTime, TimeSpan OutTime, MembershipScheme scheme)
@@ -529,13 +577,13 @@ namespace ParkingManagement.ViewModel
             }
             SaveWithStaffEnabled = false;
             v.Value = (POUT.ChargedAmount > v.Value) ? v.Value : POUT.ChargedAmount;
-            POUT.ChargedAmount = POUT.CashAmount = POUT.ChargedAmount - v.Value;
+            POUT.CashAmount = POUT.ChargedAmount - v.Value;
             PIN.Barcode = string.Empty;
             Vouchers.Add(v);
 
-            if (POUT.ChargedAmount == 0)
+            if (POUT.CashAmount == 0)
                 ExecuteSave(null);
-            PoleDisplay.WriteToDisplay(POUT.ChargedAmount, PoleDisplayType.AMOUNT);
+            PoleDisplay.WriteToDisplay(POUT.CashAmount, PoleDisplayType.AMOUNT);
         }
 
         void CalculateParkingCharge(SqlConnection conn, DateTime InTime, DateTime OutTime, int RateId, int VehicleID, ref decimal ChargedAmount, ref decimal ChargedHours)
@@ -584,7 +632,12 @@ namespace ParkingManagement.ViewModel
                                 Discount = Vouchers.Sum(x => x.Value);
                             else if (mDiscount != null)
                                 Discount = mDiscount.DiscountAmount;
-                            Amount = POUT.CashAmount / (1 + (GlobalClass.VAT / 100)) + Discount;
+                            else if (POUT.CashAmount< POUT.ChargedAmount)
+                            {
+                                Discount = POUT.ChargedAmount - POUT.CashAmount;                                
+                            }
+                            Amount = POUT.ChargedAmount/ (1 + (GlobalClass.VAT / 100));
+                            Discount = Discount / (1 + (GlobalClass.VAT / 100));
                             Rate = Amount / Quantity;
                             NonTaxable = 0;
                             Taxable = Amount - (NonTaxable + Discount);
@@ -699,6 +752,7 @@ namespace ParkingManagement.ViewModel
             SetAction(ButtonAction.Init);
             Vouchers.Clear();
             mDiscount = null;
+            SelectedDiscount = null;
             OnPropertyChanged("IsEntryMode");
             PoleDisplay.WriteToDisplay(0);
         }
@@ -760,6 +814,17 @@ namespace ParkingManagement.ViewModel
             {
                 VoucherTypes = conn.Query<VoucherType>("SELECT VoucherId, VehicleType FROM VoucherTypes").ToList();
                 RSchemes = new ObservableCollection<RateMaster>(conn.Query<RateMaster>("SELECT Rate_ID, RateDescription, IsDefault, [UID] FROM RATEMASTER"));
+                DiscountList = conn.Query<DiscountScheme>("SELECT * FROM DiscountScheme WHERE ExpiryDate >= GETDATE()").ToList();
+                DiscountList.Insert(0, new DiscountScheme {
+                    SchemeId = 0,
+                    SchemeName = "No Discount",
+                    DiscountPercent = 0,
+                    MaxHrs = int.MaxValue,
+                    ExpiryDate = new DateTime(2100, 1, 1),
+                    ValidHours = "[{'Start':'00:00:00','End':'23:59:59'}]",
+                    ValidOnHolidays = true,
+                    ValidOnWeekends = true                    
+                });
             }
             GlobalClass.DefaultRate = RSchemes.First(x => x.IsDefault);
         }
@@ -768,9 +833,7 @@ namespace ParkingManagement.ViewModel
         public static void PrintBill(string BillNo, SqlConnection conn, string InvoiceName, string DuplicateCaption = "")
         {
             DataRow dr;
-
             //// RawPrinterHelper printer = new RawPrinterHelper();
-
             using (DataAccess da = new DataAccess())
             {
                 dr = da.getData(string.Format(@"SELECT PS.*,VT.Description VType,ISNULL(PIN.PlateNo,'') PlateNo,PIN.InTime,PIN.InMiti,POUT.OutTime,POUT.OutMiti,U.UserName, POUT.Interval, POUT.ChargedHours FROM ParkingSales PS 

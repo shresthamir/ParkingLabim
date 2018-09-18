@@ -143,6 +143,13 @@ namespace ParkingManagement.ViewModel
                     Parking.VType = obj as VehicleType;
                     Parking.VehicleType = Parking.VType.VTypeID;
                 }
+                if (GlobalClass.EnablePlateNo)
+                {
+                    if (string.IsNullOrEmpty(Parking.VType.PlateNo))
+                        if (MessageBox.Show("Vehicle Plate No is not entered. Do you want to continue?", MessageBoxCaption, MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
+                            return;
+                    Parking.PlateNo = Parking.VType.PlateNo;                    
+                }
                 DateTime ServerTime = nepDate.GetServerTime();
                 Parking.InDate = ServerTime.Date;
                 Parking.InMiti = nepDate.CBSDate(Parking.InDate);
@@ -150,6 +157,11 @@ namespace ParkingManagement.ViewModel
                 using (SqlConnection Conn = new SqlConnection(GlobalClass.TConnectionString))
                 {
                     Conn.Open();
+                    if(!string.IsNullOrEmpty(Parking.PlateNo) && Conn.ExecuteScalar<int>("SELECT COUNT(*) FROM ParkingInDetails PID LEFT JOIN ParkingOutDetails POD ON PID.PID = POD.PID AND PID.FYID = POD.FYID WHERE PID.PlateNo = @PlateNo AND POD.PID IS NULL", Parking) > 0)
+                    {
+                        MessageBox.Show("Vehicle plate no is already in parking", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                        return;
+                    }
                     using (SqlTransaction tran = Conn.BeginTransaction())
                     {
                         //Parking.PID = conn.ExecuteScalar<int>("SELECT CurNo FROM tblSequence WHERE VNAME = 'PID' AND FYID = " + GlobalClass.FYID, transaction: tran);
@@ -170,8 +182,8 @@ namespace ParkingManagement.ViewModel
                             tran.Commit();
 
                             MessageBox.Show("Entrance Success." + Environment.NewLine + "Barcode : " + Parking.Barcode + Environment.NewLine + "In Time : " + Parking.InMiti + " " + Parking.InTime, MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Information);
+                            Parking.VType.PlateNo = string.Empty;
                             ExecuteUndo(null);
-
                         }
                         else
                             MessageBox.Show("Entrance failed.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);

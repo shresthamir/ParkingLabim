@@ -44,6 +44,8 @@ namespace ParkingManagement.ViewModel
         string _GenCount;
         decimal _Progress;
         wVoucherPrintProgress vp;
+        private Party _SelectedCustomer;
+        private ObservableCollection<Party> _CustomerList;
 
         public bool GenerateVoucher { get; set; }
         public bool IsEntryMode { get { return _action == ButtonAction.Init || _action == ButtonAction.Selected; } }
@@ -56,6 +58,7 @@ namespace ParkingManagement.ViewModel
         public TParkingSalesDetails VSDetail { get { return _VSDetail; } set { _VSDetail = value; OnPropertyChanged("VSDetail"); } }
         public TParkingSalesDetails SelectedVSDetail { get { return _SelectedVSDetail; } set { _SelectedVSDetail = value; OnPropertyChanged("SelectedVSDetail"); } }
         public ObservableCollection<TParkingSalesDetails> VSDetailList { get { return _VSDetailList; } set { _VSDetailList = value; OnPropertyChanged("VSDetailList"); } }
+        public ObservableCollection<Party> CustomerList { get { return _CustomerList; } set { _CustomerList = value; OnPropertyChanged("CustomerList"); } }
         public decimal TotQty { get { return _TotQty; } set { _TotQty = value; OnPropertyChanged("TotQty"); } }
         public string GenCount { get { return _GenCount; } set { _GenCount = value; OnPropertyChanged("GenCount"); } }
         public decimal Progress { get { return _Progress; } set { _Progress = value; OnPropertyChanged("Progress"); } }
@@ -73,6 +76,18 @@ namespace ParkingManagement.ViewModel
                 }
                 _SelectedVoucherType = value;
                 OnPropertyChanged("SelectedVoucherType");
+            }
+        }
+        public Party SelectedCustomer
+        {
+            get { return _SelectedCustomer; }
+            set
+            {
+                _SelectedCustomer = value;
+                VSales.BillTo = value?.Name;
+                VSales.BILLTOADD = value?.Address;
+                VSales.BILLTOPAN = value?.PAN;
+                OnPropertyChanged("SelectedCustomer");
             }
         }
 
@@ -202,6 +217,7 @@ namespace ParkingManagement.ViewModel
                 using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
                 {
                     VTypeList = new ObservableCollection<VoucherType>(conn.Query<VoucherType>("SELECT VoucherId, VoucherName, Rate, Value, ValidStart, ValidEnd, Validity, VoucherInfo, SkipVoucherGeneration FROM VoucherTypes"));
+                    CustomerList = new ObservableCollection<Party>(conn.Query<Party>("SELECT DISTINCT BillTo Name, BillToAdd Address, BillToPan PAN FROM ParkingSales where BillTo IS NOT NULL"));
                 }
             }
             catch (Exception ex)
@@ -346,6 +362,8 @@ namespace ParkingManagement.ViewModel
                             SyncFunctions.SyncSalesData(SyncFunctions.getBillObject(VSales.BillNo), 1);
                         }
                         MessageBox.Show("Vouchers Generated Successfully", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Information);
+                        if (!(string.IsNullOrEmpty(VSales.BillTo) || CustomerList.Any(x => x.Name == VSales.BillTo)))
+                            CustomerList.Add(new Party { Name = VSales.BillTo, Address = VSales.BILLTOADD, PAN = VSales.BILLTOPAN });
                     }
                     if (!string.IsNullOrEmpty(VSales.BillNo))
                     {
@@ -617,8 +635,6 @@ namespace ParkingManagement.ViewModel
                             vp.Show();
                             await PrintVouchers(BillNo, false, vs);
                             vp.Close();
-
-
                         }
                     }
                 }
@@ -628,7 +644,6 @@ namespace ParkingManagement.ViewModel
                 MessageBox.Show(GlobalClass.GetRootException(Ex).Message, MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-
 
 
         void timer_Tick(object sender, EventArgs e)

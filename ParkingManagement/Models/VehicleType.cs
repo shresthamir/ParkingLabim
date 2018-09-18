@@ -52,11 +52,14 @@ namespace ParkingManagement.Models
         private BitmapImage _ImageSource;
         private int _Occupency;
         private ObservableCollection<ParkingArea> _PAOccupencyList;
+        private string _PlateNo;
+
         public BitmapImage ImageSource { get { return _ImageSource; } set { _ImageSource = value; OnPropertyChanged("ImageSource"); } }
         public int Occupency { get { return _Occupency; } set { _Occupency = value; OnPropertyChanged("Occupency"); OnPropertyChanged("Available"); OnPropertyChanged("IsOverMaxLimit"); OnPropertyChanged("IsOverHalf"); } }
         public int Available { get { return Capacity - Occupency; } }
         public bool IsOverMaxLimit { get { return Available < 10; } }
         public bool IsOverHalf { get { return Occupency > Available; } }
+        public string PlateNo { get { return _PlateNo; }set { _PlateNo = value; OnPropertyChanged("PlateNo"); } }
 
         public ObservableCollection<ParkingArea> PAOccupencyList { get { if(_PAOccupencyList == null) _PAOccupencyList = new ObservableCollection<ParkingArea>(); return _PAOccupencyList; } set { _PAOccupencyList = value; OnPropertyChanged("PAOccupencyList"); } }
         public VehicleType()

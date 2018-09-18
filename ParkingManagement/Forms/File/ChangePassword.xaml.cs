@@ -43,16 +43,16 @@ namespace ParkingManagement.Forms.File
                         MessageBox.Show("Password doesn't matched","Change Password",MessageBoxButton.OK,MessageBoxImage.Exclamation);
                         return;
                     }
-                    using (SqlConnection conn = new SqlConnection(GlobalClass.DataConnectionString))
-                    {
-                        conn.Open();
-                        using (SqlCommand cmd = conn.CreateCommand())
-                        {
-                            GlobalClass.User.DBPassword = txtNewPass.Password;
-                            cmd.CommandText = "ALTER LOGIN [" + GlobalClass.User.UserName + "] WITH PASSWORD = '" + GlobalClass.User.DBPassword + "'";
-                            cmd.ExecuteNonQuery();                            
-                        }
-                    }
+                    //using (SqlConnection conn = new SqlConnection(GlobalClass.DataConnectionString))
+                    //{
+                    //    conn.Open();
+                    //    using (SqlCommand cmd = conn.CreateCommand())
+                    //    {
+                    //        GlobalClass.User.DBPassword = txtNewPass.Password;
+                    //        cmd.CommandText = "ALTER LOGIN [" + GlobalClass.User.UserName + "] WITH PASSWORD = '" + GlobalClass.User.DBPassword + "'";
+                    //        cmd.ExecuteNonQuery();                            
+                    //    }
+                    //}
                     using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
                     {
                         SqlCommand cmdSave;

@@ -199,6 +199,9 @@
     <Compile Include="Forms\Master\ucHoliday.xaml.cs">
       <DependentUpon>ucHoliday.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Master\ucDiscountScheme.xaml.cs">
+      <DependentUpon>ucDiscountScheme.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Master\ucMembershipScheme.xaml.cs">
       <DependentUpon>ucMembershipScheme.xaml</DependentUpon>
     </Compile>
@@ -275,6 +278,7 @@
     <Compile Include="Library\Helpers\SyncFunctions.cs" />
     <Compile Include="Library\PoleDisplay.cs" />
     <Compile Include="Library\ValueConverter\RadioButtonTrueFalseConveter.cs" />
+    <Compile Include="Models\DiscountScheme.cs" />
     <Compile Include="Models\Holiday.cs" />
     <Compile Include="Models\Members.cs" />
     <Compile Include="Models\MembershipScheme.cs" />
@@ -286,6 +290,7 @@
     <Compile Include="ViewModel\CreditNoteVoucherWiseViewModel.cs" />
     <Compile Include="ViewModel\CreditNoteViewModel.cs" />
     <Compile Include="ViewModel\HolidayViewModel.cs" />
+    <Compile Include="ViewModel\DiscountSchemeViewModel.cs" />
     <Compile Include="ViewModel\MembershipSchemeViewModel.cs" />
     <Compile Include="ViewModel\MemberViewModel.cs" />
     <Compile Include="ViewModel\VoucherSalesInvoiceVM.cs" />
@@ -324,6 +329,10 @@
     <Page Include="Forms\Master\ucHoliday.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Forms\Master\ucDiscountScheme.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Forms\Master\ucMembershipScheme.xaml">
       <SubType>Designer</SubType>
@@ -675,9 +684,6 @@
     <Resource Include="Images\Terminal.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\IMS Logo.png" />
-  </ItemGroup>
-  <ItemGroup>
     <COMReference Include="Microsoft.Office.Core">
       <Guid>{2DF8D04C-5BFA-101B-BDE5-00AA0044DE52}</Guid>
       <VersionMajor>2</VersionMajor>
@@ -720,6 +726,12 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\IMS_SOFTWARE.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\IMS_SOFTWARE_SMALL.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

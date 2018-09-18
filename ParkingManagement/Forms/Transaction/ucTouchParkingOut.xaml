@@ -7,6 +7,7 @@
              xmlns:Ctrl="clr-namespace:ParkingManagement.Library.Controls"
              xmlns:helper ="clr-namespace:ParkingManagement.Library.Helpers"
              xmlns:Lib ="clr-namespace:ParkingManagement.Library"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              mc:Ignorable="d" 
              d:DesignHeight="768" d:DesignWidth="1024">
     <UserControl.InputBindings>
@@ -212,7 +213,7 @@
                         <RowDefinition Height="60"/>
                     </Grid.RowDefinitions>
                     <TextBlock Text="Payment Details " FontSize="18" FontWeight="SemiBold" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                    <StackPanel Grid.Row="1">
+                    <StackPanel Grid.Row="1">                       
                         <StackPanel Orientation="Horizontal">
                             <Label Content="Charged Hours"></Label>
                             <TextBlock Text=":"/>
@@ -221,6 +222,18 @@
                         <StackPanel Orientation="Horizontal">
                             <Label Content="Charged Amount"></Label>
                             <TextBox Width="150" IsReadOnly="True" IsTabStop="False" FontSize="14" Text="{Binding POUT.ChargedAmount, StringFormat={}{0:#0.00}}" HorizontalContentAlignment="Right"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Visibility="{x:Static Lib:GlobalClass.DiscountVisible}">
+                            <Label Content="Scheme"></Label>
+                            <ComboBox ItemsSource="{Binding DiscountList}" DisplayMemberPath="SchemeName" Width="150" IsEnabled="{Binding EditEnabled}">
+                                <i:Interaction.Behaviors>
+                                    <helper:SelectionBehavior SelectedItem="{Binding SelectedDiscount,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
+                                </i:Interaction.Behaviors>
+                            </ComboBox>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Visibility="{x:Static Lib:GlobalClass.DiscountVisible}">
+                            <Label Content="Total"></Label>
+                            <TextBox Width="150" IsReadOnly="True" IsTabStop="False" FontSize="14" Text="{Binding POUT.CashAmount, StringFormat={}{0:#0.00}}" HorizontalContentAlignment="Right"/>
                         </StackPanel>
                         <StackPanel>
                             <TextBlock FontWeight="Normal" HorizontalAlignment="Left" Text="Bill amount has exceeded Abbreviatated Tax Invoice limit.&#x0a;Please contact administration." Visibility="{Binding TaxInvoice, Converter={StaticResource BoolToVisibility}}"  ></TextBlock>
@@ -261,11 +274,10 @@
                         </GroupBox>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Right">
-                        <Button Content="Stamp" Style="{StaticResource NewButton}" Width="80" Height="45" Command="{Binding SaveWithStaffCommand}"  CommandParameter="STAMP" IsEnabled="{Binding SaveWithStaffEnabled}"/>
-                        <Button Content="Staff" Style="{StaticResource NewButton}" Width="80" Height="45" Command="{Binding OpenStaffBarcodeCommand}"  IsEnabled="{Binding SaveWithStaffEnabled}"/>
+                        <Button Content="Stamp" Style="{StaticResource NewButton}" Width="80" Height="45" Command="{Binding SaveWithStaffCommand}"  CommandParameter="STAMP" IsEnabled="{Binding SaveWithStaffEnabled}" Visibility="{x:Static Lib:GlobalClass.StampVisible}"/>
+                        <Button Content="Staff" Style="{StaticResource NewButton}" Width="80" Height="45" Command="{Binding OpenStaffBarcodeCommand}"  IsEnabled="{Binding SaveWithStaffEnabled}" Visibility="{x:Static Lib:GlobalClass.StaffVisible}"/>
                         <Button Content="Finish" Style="{StaticResource NewButton}" Width="80" Height="45" Command="{Binding SaveCommand}"  helper:CustomFocusManager.IsFocused="{Binding FocusedElement, Converter={StaticResource ShortToBool}, ConverterParameter='1'}"/>
                     </StackPanel>
-
                 </Grid>
 
                 <Grid Grid.Column="2" Visibility="Collapsed">

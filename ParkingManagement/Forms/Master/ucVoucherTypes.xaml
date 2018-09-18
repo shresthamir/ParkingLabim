@@ -83,7 +83,7 @@
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding VoucherId}" Header="ID" Width="100"/>
                 <DataGridTextColumn Binding="{Binding VoucherName}" Header="Voucher Name" Width="250"/>
-                <DataGridTextColumn Binding="{Binding Rate}" Header="Rate" Width="100"/>
+                <DataGridTextColumn Binding="{Binding Rate, StringFormat={}{0:#0.00}}" Header="Rate" Width="100"/>
                 <DataGridTextColumn Binding="{Binding Value}" Header="Value" Width="100"/>
                 <DataGridTextColumn Binding="{Binding ValidStart}" Header="Begin Time" Width="100"/>
                 <DataGridTextColumn Binding="{Binding ValidEnd}" Header="End Time" Width="100"/>

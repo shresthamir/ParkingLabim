@@ -1,0 +1,173 @@
+﻿<UserControl x:Class="ParkingManagement.Forms.Master.ucDiscountScheme"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ParkingManagement.Forms.Master"
+             xmlns:CommandBehavior="clr-namespace:ParkingManagement.ACommandBehavior"
+             xmlns:toolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:syncfusion="http://schemas.syncfusion.com/wpf"
+             mc:Ignorable="d" 
+             d:DesignHeight="768" d:DesignWidth="1366">
+    <UserControl.InputBindings>
+        <KeyBinding Key="N" Modifiers="Control" Command="{Binding NewCommand}"/>
+        <KeyBinding Key="S" Modifiers="Control" Command="{Binding SaveCommand}"/>
+        <KeyBinding Key="E" Modifiers="Control" Command="{Binding EditCommand}"/>
+        <KeyBinding Key="D" Modifiers="Control" Command="{Binding DeleteCommand}"/>
+        <KeyBinding Key="U" Modifiers="Control" Command="{Binding UndoCommand}"/>
+    </UserControl.InputBindings>
+
+    <Border Style="{StaticResource GradientBackground}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"></RowDefinition>
+                <RowDefinition Height="190"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Border Grid.Row="0" Style="{StaticResource GradientBackground}">
+                <Grid  HorizontalAlignment="Right" >
+                    <StackPanel Orientation="Horizontal" Margin="0">
+                        <StackPanel.Resources>
+                            <Style TargetType="Button" BasedOn="{StaticResource NewButton}">
+                                <Setter Property="Width" Value="60" ></Setter>
+                                <Setter Property="Height" Value="30"></Setter>
+                            </Style>
+                        </StackPanel.Resources>
+                        <Button Content="New" IsEnabled="{Binding NewEnabled}" Command="{Binding NewCommand}"/>
+                        <Button Content="Edit" IsEnabled="{Binding EditEnabled}" Command="{Binding EditCommand}" />                        
+                        <Button Content="Save" IsEnabled="{Binding SaveEnabled}" Command="{Binding SaveCommand}"  />
+                        <Button Content="Delete" IsEnabled="{Binding DeleteEnabled}" Command="{Binding DeleteCommand}" />
+                        <Button Content="Undo" Command="{Binding UndoCommand}"  />
+                    </StackPanel>
+                </Grid>
+            </Border>
+            <Border  Style="{StaticResource PlainBackground}" Grid.Row="1">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="300"/>
+                        <ColumnDefinition Width="300"/>
+                    </Grid.ColumnDefinitions>
+                    <GroupBox Grid.Column="1" Header="Discount Amount" Visibility="{Binding IsPercentMode, Converter={StaticResource RevBoolToVisibility}}">
+                        <syncfusion:SfDataGrid ItemsSource="{Binding Scheme.DisAmountList}"                                               
+                                               IsEnabled="{Binding EntryPanelEnabled}"
+                                               AllowEditing="True"
+                                               AutoGenerateColumns="False" >
+                            <syncfusion:SfDataGrid.Columns>
+                                <syncfusion:GridTemplateColumn HeaderText="Vehicle Type" Width="150">
+                                    <syncfusion:GridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding VType}"/>
+                                        </DataTemplate>
+                                    </syncfusion:GridTemplateColumn.CellTemplate>
+                                </syncfusion:GridTemplateColumn>
+                                <syncfusion:GridTemplateColumn HeaderText="Amount" Width="120">
+                                    <syncfusion:GridTemplateColumn.EditTemplate>
+                                        <DataTemplate>
+                                            <TextBox HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Text="{Binding Amount}"/>
+                                        </DataTemplate>
+                                    </syncfusion:GridTemplateColumn.EditTemplate>
+                                    <syncfusion:GridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock HorizontalAlignment="Right" VerticalAlignment="Center" Text="{Binding Amount}"/>
+                                        </DataTemplate>
+                                    </syncfusion:GridTemplateColumn.CellTemplate>
+                                </syncfusion:GridTemplateColumn>
+                            </syncfusion:SfDataGrid.Columns>
+                        </syncfusion:SfDataGrid>
+                    </GroupBox>
+                    <GroupBox Grid.Column="2" Header="Valid Hours">
+                        <syncfusion:SfDataGrid ItemsSource="{Binding Scheme.ValidHoursList}"
+                                               IsEnabled="{Binding EntryPanelEnabled}"
+                                               AllowEditing="True"
+                                               AutoGenerateColumns="False" 
+                                               AddNewRowPosition="Bottom">
+                            <syncfusion:SfDataGrid.Columns>
+                                <syncfusion:GridTemplateColumn HeaderText="Valid Start" Width="100">
+                                    <syncfusion:GridTemplateColumn.EditTemplate>
+                                        <DataTemplate>
+                                            <TextBox HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Text="{Binding Start, Converter={StaticResource TimeSpanToString}}"/>
+                                        </DataTemplate>
+                                    </syncfusion:GridTemplateColumn.EditTemplate>
+                                    <syncfusion:GridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Start, Converter={StaticResource TimeSpanToString}}"/>
+                                        </DataTemplate>
+                                    </syncfusion:GridTemplateColumn.CellTemplate>
+                                </syncfusion:GridTemplateColumn>
+                                <syncfusion:GridTemplateColumn HeaderText="Valid End" Width="100">
+                                    <syncfusion:GridTemplateColumn.EditTemplate>
+                                        <DataTemplate>
+                                            <TextBox HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Text="{Binding End, Converter={StaticResource TimeSpanToString}}"/>
+                                        </DataTemplate>
+                                    </syncfusion:GridTemplateColumn.EditTemplate>
+                                    <syncfusion:GridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding End, Converter={StaticResource TimeSpanToString}}"/>
+                                        </DataTemplate>
+                                    </syncfusion:GridTemplateColumn.CellTemplate>
+                                </syncfusion:GridTemplateColumn>
+                                <syncfusion:GridTemplateColumn HeaderText="Skip" Width="100">
+                                    <syncfusion:GridTemplateColumn.EditTemplate>
+                                        <DataTemplate>
+                                            <CheckBox HorizontalAlignment="Center" VerticalContentAlignment="Center" IsChecked="{Binding SkipValidityPeriod}"/>
+                                        </DataTemplate>
+                                    </syncfusion:GridTemplateColumn.EditTemplate>
+                                    <syncfusion:GridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding SkipValidityPeriod}"/>
+                                        </DataTemplate>
+                                    </syncfusion:GridTemplateColumn.CellTemplate>
+                                </syncfusion:GridTemplateColumn>
+                            </syncfusion:SfDataGrid.Columns>
+                        </syncfusion:SfDataGrid>
+                    </GroupBox>
+                    <StackPanel Margin="4" >
+                        <StackPanel Orientation="Horizontal" IsEnabled="{Binding IdPanelSelected}" >
+                            <Label Content="Scheme Id :" Width="100"></Label>
+                            <TextBox Text="{Binding Scheme.SchemeId,Converter={StaticResource  NoZero}, ConverterParameter='int'}" Height="25" Width="50" Margin="5" ></TextBox>
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" IsEnabled="{Binding EntryPanelEnabled}" Margin="0">
+                            <StackPanel Orientation="Horizontal"  Margin="5 0">
+                                <Label Content="Scheme Name :" Width="100"></Label>
+                                <TextBox Text="{Binding Scheme.SchemeName}" Height="25" Width="400" Margin="5" ></TextBox>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="5">
+                                <CheckBox Content="Valid On Weekends" VerticalAlignment="Center"  Margin="5 0 0 0" IsChecked="{Binding Scheme.ValidOnWeekends}"/>
+                                <CheckBox Content="Valid On Holidays" VerticalAlignment="Center" Margin="30 0 0 0" IsChecked="{Binding Scheme.ValidOnHolidays}"/>
+                                <Label Content="Expiry Date :" Width="100" Margin="10 0 0 0" ></Label>
+                                <DatePicker SelectedDate="{Binding Scheme.ExpiryDate}" Width="120" Height="26" Margin="5 0 0 0" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="5 0" ToolTip="Validity Period in days from date of Activation" >
+                                <Label Content="Min. Time :" Width="100"></Label>
+                                <TextBox Text="{Binding Scheme.MinHrs, Converter={StaticResource NoZero}, ConverterParameter='int'}" Height="25" Width="120" Margin="5" HorizontalContentAlignment="Right"/>
+                                <Label Content="Hrs" Width="50"></Label>
+                                <Label Content="Max. Time :" Width="100"></Label>
+                                <TextBox Text="{Binding Scheme.MaxHrs, Converter={StaticResource NoZero}, ConverterParameter='int'}" Height="25" Width="120" Margin="5" HorizontalContentAlignment="Right"/>
+                                <Label Content="Hrs" Width="50"></Label>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="5 0" >
+                                <Label Content="Discount Type:" Width="100"></Label>
+                                <RadioButton VerticalAlignment="Center" IsChecked="{Binding IsPercentMode}" Margin="5 0 0 0" Width="50" Content="%"/>
+                                <RadioButton VerticalAlignment="Center" Width="50" Content="Rs."/>
+                                <Label Content="Discount (%):" Margin="75 0 0 0" Width="100" Visibility="{Binding IsPercentMode, Converter={StaticResource BoolToVisibility}}"></Label>
+                                <TextBox Text="{Binding Scheme.DiscountPercent, Converter={StaticResource NoZero}}" Height="25" Width="120" Margin="5" Visibility="{Binding IsPercentMode, Converter={StaticResource BoolToVisibility}}" HorizontalContentAlignment="Right"/>                               
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+            </Border>
+            <DataGrid Grid.Row="2" ItemsSource="{Binding SchemeList}" AutoGenerateColumns="False" SelectedItem="{Binding SelectedScheme}" IsReadOnly="True" CommandBehavior:CommandBehavior.Event="MouseDoubleClick" CommandBehavior:CommandBehavior.Command="{Binding LoadData}"  >
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Scheme Id" Binding="{Binding SchemeId}" Width="70"/>
+                    <DataGridTextColumn Header="Scheme Name" Binding="{Binding SchemeName}" Width="*"/>
+                    <DataGridTextColumn Header="Expiry Date"  Binding="{Binding ExpiryDate, StringFormat={}{0:yyyy-MM-dd}}" Width="130"/>
+                    <DataGridTextColumn Header="Discount (%)"  Binding="{Binding DiscountPercent}" Width="110"/>
+                    <DataGridTextColumn Header="Valid on Weekends"  Binding="{Binding ValidOnWeekends}" Width="130"/>
+                    <DataGridTextColumn Header="Valid on Holidays"  Binding="{Binding ValidOnHolidays}" Width="130"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+    </Border>
+ 
+</UserControl>

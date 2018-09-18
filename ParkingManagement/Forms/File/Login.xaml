@@ -10,9 +10,10 @@
         mc:Ignorable="d" 
         
         BorderThickness="0"
-        WindowStartupLocation="CenterScreen"
-    
-        Title="Login" Height="293" Width="350" AllowsTransparency="True" WindowStyle="None" Background="{x:Null}"
+        WindowStartupLocation="CenterScreen"    
+        Title="Login" 
+        Height="293" Width="350"
+        AllowsTransparency="True" WindowStyle="None" Background="{x:Null}"
         KeyDown="Window_KeyDown">
     <Window.Resources>
         <Style TargetType="{x:Type TextBlock}">
@@ -44,7 +45,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="70"/>
                 <RowDefinition Height="150"/>
-                <RowDefinition Height="50"/>                
+                <RowDefinition Height="50"/>
             </Grid.RowDefinitions>
 
             <Border BorderBrush="Black" BorderThickness="1" CornerRadius="10 10 0 0">
@@ -54,12 +55,15 @@
                         <GradientStop Color="White" Offset="1"/>
                     </LinearGradientBrush>
                 </Border.Background>
-                <TextBlock  FontSize="24" FontWeight="SemiBold" Foreground="#F1D85135" Text="USER LOGIN" FontFamily="Century Gothic" 
+                <Grid>
+                    <Image Source="../../Images/IMS_SOFTWARE_SMALL.png" Width="110" Margin="10 0 0 0" HorizontalAlignment="Left"/>
+                    <TextBlock  FontSize="24" FontWeight="SemiBold" Foreground="#F1D85135" Text="USER LOGIN" FontFamily="Century Gothic" 
                              Margin="10"  HorizontalAlignment="Right" VerticalAlignment="Center" >
-                    <TextBlock.Effect>
-                        <DropShadowEffect Opacity="0.3"/>
-                    </TextBlock.Effect>
-                </TextBlock>
+                        <TextBlock.Effect>
+                            <DropShadowEffect Opacity="0.3"/>
+                        </TextBlock.Effect>
+                    </TextBlock>
+                </Grid>
             </Border>
 
             <Grid Grid.Row="1" Margin="10">
@@ -75,14 +79,14 @@
                 </Grid.RowDefinitions>
                 <TextBlock FontSize="16" Foreground="#FFF7F7EF" VerticalAlignment="Bottom" Text="Login ID"/>
                 <TextBox Grid.Row="1" Height="32" GotFocus="TextBox_GotFocus" x:Name="txtUserName" VerticalContentAlignment="Center" />
-                <TextBlock Grid.Row="2" FontSize="16" Foreground="#FFF7F7EF" VerticalAlignment="Bottom" Text="Password"/>                
+                <TextBlock Grid.Row="2" FontSize="16" Foreground="#FFF7F7EF" VerticalAlignment="Bottom" Text="Password"/>
                 <Ctrl:ExtendedTextBox Grid.Row="3" IsTabStop="False" Grid.ColumnSpan="2"  Style="{StaticResource InputTextBox}" x:Name="etbPassword" TextChanged="etbPassword_TextChanged" Margin="1,0,-1,0" />
                 <PasswordBox Grid.Row="3" Height="34" GotFocus="txtPassword_GotFocus" x:Name="txtPassword" VerticalContentAlignment="Center"/>
             </Grid>
             <StackPanel Grid.Row="2" Height="28" Margin="10 0 0 0"  Orientation="Horizontal">
-               
+
             </StackPanel>
-            
+
             <StackPanel Grid.Row="3" Margin="10 0"  Orientation="Horizontal" >
                 <Button x:Name="btnLogin" Content="Login" Click="btnLogin_Click" Width="70" Height="40"  HorizontalAlignment="Right" Style="{StaticResource NewButton}">
                     <Button.Effect>
@@ -92,7 +96,7 @@
                 <Button x:Name="btnCancel" Content="Cancel" HorizontalAlignment="Right" Click="btnCancel_Click" Height="40" Width="70" Margin="10 0 0 0" Style="{StaticResource NewButton}">
                     <Button.Effect>
                         <DropShadowEffect/>
-                    </Button.Effect>                   
+                    </Button.Effect>
                 </Button>
             </StackPanel>
 

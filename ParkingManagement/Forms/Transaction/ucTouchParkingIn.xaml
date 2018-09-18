@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:Lib="clr-namespace:ParkingManagement.Library"
               mc:Ignorable="d" 
              d:DesignHeight="768" d:DesignWidth="1024">
     <UserControl.InputBindings>
@@ -113,13 +114,18 @@
                                         </Storyboard>
                                     </Grid.Resources>
                                     <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="100"/>
                                         <RowDefinition Height="20"/>
                                         <RowDefinition Height="30"/>
                                         <RowDefinition Height="25"/>
                                         <RowDefinition/>
                                     </Grid.RowDefinitions>
-                                    <Button Style="{StaticResource ParkingInButtons}" Width="200" 
+                                    <StackPanel Visibility="{Binding Path=(Lib:GlobalClass.EnablePlateNo), Converter={StaticResource BoolToVisibility}}" Orientation="Horizontal" Margin="2">
+                                        <Label Content="Plate No" Width="60"/>
+                                        <TextBox Height="26" Width="150"  Text="{Binding PlateNo, UpdateSourceTrigger=PropertyChanged}"/>
+                                    </StackPanel>
+                                    <Button Grid.Row="1" Style="{StaticResource ParkingInButtons}" Width="200" 
                                         Command="{Binding Path=DataContext.SaveCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}"
                                         CommandParameter="{Binding Path=DataContext, RelativeSource={RelativeSource Mode=Self}}">
                                         <Button.Content>
@@ -138,8 +144,8 @@
                                             </StackPanel>
                                         </Button.Content>
                                     </Button>
-                                    <ProgressBar x:Name="pBar" Grid.Row="1" Value="{Binding Occupency}" Maximum="{Binding Capacity}" Margin="5 2" Style="{DynamicResource ImsProgressBarTemplate}" />
-                                    <Grid Grid.Row="2" Margin="5 2">
+                                    <ProgressBar x:Name="pBar" Grid.Row="2" Value="{Binding Occupency}" Maximum="{Binding Capacity}" Margin="5 2" Style="{DynamicResource ImsProgressBarTemplate}" />
+                                    <Grid Grid.Row="3" Margin="5 2">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition/>
                                             <ColumnDefinition/>
@@ -151,7 +157,7 @@
                                     </Grid>
 
 
-                                    <ToggleButton Grid.Row="3" Style="{StaticResource ExtendedToggleButton}" >
+                                    <ToggleButton Grid.Row="4" Style="{StaticResource ExtendedToggleButton}" >
                                         <ToggleButton.Triggers>
                                             <EventTrigger RoutedEvent="ToggleButton.Checked">
                                                 <BeginStoryboard Storyboard="{StaticResource ExpandDetail}"/>
@@ -161,7 +167,7 @@
                                             </EventTrigger>
                                         </ToggleButton.Triggers>
                                     </ToggleButton>
-                                    <Border Grid.Row="4" VerticalAlignment="Top" x:Name="Detail" Background="GhostWhite" BorderBrush="Gainsboro" BorderThickness="1 1 1 1" Height="0"  MaxHeight="300">
+                                    <Border Grid.Row="5" VerticalAlignment="Top" x:Name="Detail" Background="GhostWhite" BorderBrush="Gainsboro" BorderThickness="1 1 1 1" Height="0"  MaxHeight="300">
                                         <ScrollViewer>
                                             <ItemsControl ItemsSource="{Binding PAOccupencyList}" ItemTemplate="{StaticResource ExtraDetail}" >
                                             </ItemsControl>

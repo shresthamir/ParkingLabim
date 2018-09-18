@@ -92,7 +92,7 @@
                 <DataGridTextColumn Binding="{Binding Barcode}" Header="Barcode" Width="200"/>
                 <DataGridTextColumn Binding="{Binding MemberName}" Header="Member Name" Width="300"/>
                 <DataGridTextColumn Binding="{Binding Mobile}" Header="Mobile No" Width="200"/>
-                <DataGridTextColumn Binding="{Binding ExpiryDate, StringFormat={}{0:MM/dd/yyyy}}" Header="Expiry Date" Width="100"/>
+                <DataGridTextColumn Binding="{Binding ExpiryDate, StringFormat={}{0:dd/MM/yyyy}}" Header="Expiry Date" Width="100"/>
             </DataGrid.Columns>
         </DataGrid>
 

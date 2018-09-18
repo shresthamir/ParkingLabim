@@ -79,7 +79,7 @@
             <DataGrid Grid.Row="2" ItemsSource="{Binding HolidayList}" AutoGenerateColumns="False" SelectedItem="{Binding SelectedHoliday}" IsReadOnly="True" CommandBehavior:CommandBehavior.Event="MouseDoubleClick" CommandBehavior:CommandBehavior.Command="{Binding LoadData}"  >
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Holiday Name" Binding="{Binding HolidayName}" Width="2*"/>
-                    <DataGridTextColumn Header="Date"  Binding="{Binding HolidayDate, StringFormat={}{0:MM/dd/yyyy}}" Width="2*"/>
+                    <DataGridTextColumn Header="Date"  Binding="{Binding HolidayDate, StringFormat={}{0:dd/MM/yyyy}}" Width="2*"/>
                     <DataGridTextColumn Header="Miti"  Binding="{Binding HolidayDate, Converter={StaticResource DateToMiti}}" Width="2*"/>
                 </DataGrid.Columns>
             </DataGrid>

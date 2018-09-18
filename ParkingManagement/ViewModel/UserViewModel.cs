@@ -103,11 +103,11 @@ namespace ParkingManagement.ViewModel
                         {
                             GlobalClass.SetUserActivityLog(trans, "User Setting", "Delete", WorkDetail: "UID : " + user.UID, Remarks: Newtonsoft.Json.JsonConvert.SerializeObject(LUser));
                             trans.Commit();
-                            using (SqlConnection cnSys = new SqlConnection(GlobalClass.DataConnectionString))
-                            {
-                                cnSys.Execute("DROP USER " + user.UserName);
-                                cnSys.Execute("DROP LOGIN " + user.UserName);
-                            }
+                            //using (SqlConnection cnSys = new SqlConnection(GlobalClass.DataConnectionString))
+                            //{
+                            //    cnSys.Execute("DROP USER " + user.UserName);
+                            //    cnSys.Execute("DROP LOGIN " + user.UserName);
+                            //}
                             UserList.Remove(UserList.First(x => x.UID == user.UID));
                             MessageBox.Show("User Deleted Successfully", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Information);
                             ExecuteUndo(null);
@@ -265,16 +265,16 @@ namespace ParkingManagement.ViewModel
                             GlobalClass.SetUserActivityLog(Tran, "User Setting", "New", WorkDetail: "UID : " + user.UID, Remarks: user.UserName);
                             Tran.Commit();
 
-                            using (SqlConnection cnSys = new SqlConnection(GlobalClass.DataConnectionString))
-                            using (SqlCommand cmd = cnSys.CreateCommand())
-                            {
-                                cnSys.Open();
-                                cmd.CommandType = CommandType.StoredProcedure;
-                                cmd.CommandText = "SP_CREATE_USER";
-                                cmd.Parameters.AddWithValue("@UNAME", user.UserName);
-                                cmd.Parameters.AddWithValue("@PWD", user.DBPassword);
-                                cmd.ExecuteNonQuery();
-                            }
+                            //using (SqlConnection cnSys = new SqlConnection(GlobalClass.DataConnectionString))
+                            //using (SqlCommand cmd = cnSys.CreateCommand())
+                            //{
+                            //    cnSys.Open();
+                            //    cmd.CommandType = CommandType.StoredProcedure;
+                            //    cmd.CommandText = "SP_CREATE_USER";
+                            //    cmd.Parameters.AddWithValue("@UNAME", user.UserName);
+                            //    cmd.Parameters.AddWithValue("@PWD", user.DBPassword);
+                            //    cmd.ExecuteNonQuery();
+                            //}
 
                             MessageBox.Show("User Saved Successfully.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Information);
                             UserList.Add(new User

@@ -38,6 +38,10 @@ namespace ParkingManagement.Library
         public static int Session;
         public static Visibility ShowCollectionAmountInCashSettlement;
         public static Visibility DisableCashAmountChange;
+        public static Visibility DiscountVisible;
+        public static Visibility StampVisible;
+        public static Visibility StaffVisible;
+        public static bool EnablePlateNo { get; set; }
         public static byte AllowMultiVehicleForStaff;
         public static short DefaultMinVacantLot;
         public static byte FYID = 1;
@@ -73,7 +77,7 @@ namespace ParkingManagement.Library
                 using (SqlConnection cnmain = new SqlConnection(DataConnectionString))
                 {
                     UpdateDatabase(cnmain);
-                    var Setting = cnmain.Query("SELECT CompanyName, CompanyAddress, CompanyInfo, ISNULL(GraceTime, 5) GraceTime, ISNULL(ShowCollectionAmountInCashSettlement, 0) ShowCollectionAmountInCashSettlement, ISNULL(DisableCashAmountChange,0) DisableCashAmountChange, SettlementMode, ISNULL(AllowMultiVehicleForStaff,0) AllowMultiVehicleForStaff, ISNULL(SlipPrinterWidth, 58) SlipPrinterWidth FROM tblSetting").First();
+                    var Setting = cnmain.Query("SELECT CompanyName, CompanyAddress, CompanyInfo, ISNULL(GraceTime, 5) GraceTime, ISNULL(ShowCollectionAmountInCashSettlement, 0) ShowCollectionAmountInCashSettlement, ISNULL(DisableCashAmountChange,0) DisableCashAmountChange, SettlementMode, ISNULL(AllowMultiVehicleForStaff,0) AllowMultiVehicleForStaff, ISNULL(SlipPrinterWidth, 58) SlipPrinterWidth, ISNULL(EnableStaff, 0) EnableStaff, ISNULL(EnableStamp, 0) EnableStamp, ISNULL(EnableDiscount, 0) EnableDiscount, ISNULL(EnablePlateNo, 0) EnablePlateNo FROM tblSetting").First();
                     CompanyName = Setting.CompanyName;
                     CompanyAddress = Setting.CompanyAddress;
                     CompanyPan = Setting.CompanyInfo;
@@ -82,6 +86,10 @@ namespace ParkingManagement.Library
                     SlipPrinterWith = Setting.SlipPrinterWidth;
                     ShowCollectionAmountInCashSettlement = ((bool)Setting.ShowCollectionAmountInCashSettlement) ? Visibility.Visible : Visibility.Collapsed;
                     DisableCashAmountChange = ((bool)Setting.DisableCashAmountChange) ? Visibility.Collapsed : Visibility.Visible;
+                    DiscountVisible = ((bool)Setting.EnableDiscount) ? Visibility.Visible : Visibility.Collapsed;
+                    StaffVisible = ((bool)Setting.EnableStaff) ? Visibility.Visible : Visibility.Collapsed;
+                    StampVisible = ((bool)Setting.EnableStamp) ? Visibility.Visible : Visibility.Collapsed;
+                    EnablePlateNo = (bool)Setting.EnablePlateNo;
                     AllowMultiVehicleForStaff = (byte)Setting.AllowMultiVehicleForStaff;
                     TCList = cnmain.Query<PSlipTerms>("SELECT Description, Height from PSlipTerms");
                     FYID = cnmain.ExecuteScalar<byte>("SELECT FYID FROM tblFiscalYear WHERE CONVERT(VARCHAR,GETDATE(),101) BETWEEN BEGIN_DATE AND END_DATE");
@@ -358,7 +366,20 @@ ALTER TABLE tblSyncLog ADD IsRealTime TINYINT NULL");
                 conn.Execute(@"IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'tblSyncLog' AND COLUMN_NAME = 'FYNAME')
 ALTER TABLE tblSyncLog ADD FYNAME VARCHAR(10) NULL");
                 conn.Execute("UPDATE tblSetting SET UpdateHistory = 6");
-
+            }
+            if (UpdateHistory < 7)
+            {
+                conn.Execute(@"IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'tblSetting' AND COLUMN_NAME = 'EnablePlateNo')
+ALTER TABLE tblSetting ADD EnablePlateNo BIT NULL");
+                conn.Execute(@"IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'tblSetting' AND COLUMN_NAME = 'EnableStaff')
+ALTER TABLE tblSetting ADD EnableStaff BIT NULL");
+                conn.Execute(@"IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'tblSetting' AND COLUMN_NAME = 'EnableStamp')
+ALTER TABLE tblSetting ADD EnableStamp BIT NULL");
+                conn.Execute(@"IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'tblSetting' AND COLUMN_NAME = 'EnableDiscount')
+ALTER TABLE tblSetting ADD EnableDiscount BIT NULL");
+                conn.Execute(@"IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'tblSetting' AND COLUMN_NAME = 'EnableDiscount')
+ALTER TABLE tblSetting ADD CalculationMethod TINYINT NULL");
+                conn.Execute("UPDATE tblSetting SET UpdateHistory = 7");
             }
         }
 
@@ -404,7 +425,6 @@ ALTER TABLE tblSyncLog ADD FYNAME VARCHAR(10) NULL");
         {
             try
             {
-
                 if (ex.InnerException != null)
                     ex = GetRootException(ex);
                 return ex;
