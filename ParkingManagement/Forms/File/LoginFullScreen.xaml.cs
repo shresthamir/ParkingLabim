@@ -76,42 +76,10 @@ namespace ParkingManagement.Forms.File
                     MessageBox.Show("PIN cannot be blank!", "Login", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                     return;
                 }
-
-                string EPassword = Encrypt(txtpassword.Password, "AmitLalJoshi");
-                using (SqlConnection con = new SqlConnection(GlobalClass.TConnectionString))
-                using (SqlCommand cmd = con.CreateCommand())
-                {
-                    con.Open();
-                    if (Settings.GblPasswordWiseLogin == 1)
-
-                        cmd.CommandText = @"SELECT U.UNAME, U.PASSWORD, U.ROLE, ISNULL(U.IsWaiter, 0) IsWaiter FROM USERPROFILES U WHERE PASSWORD = @PASSWORD";
-                    else
-                    {
-                        cmd.CommandText = @"SELECT U.UNAME, U.PASSWORD, U.ROLE, ISNULL(U.IsWaiter, 0) IsWaiter FROM USERPROFILES U WHERE UNAME = @UNAME AND PASSWORD = @PASSWORD";
-                        cmd.Parameters.AddWithValue("@UNAME", txtusername.Text);
-                    }
-                    cmd.Parameters.AddWithValue("@PASSWORD", EPassword);
-                    SqlDataReader dr = cmd.ExecuteReader();
-                    if (dr.HasRows)
-                    {
-                        dr.Read();
-                        GlobalClass.TRNUSER = dr["UNAME"].ToString();
-                        GlobalClass.UserRole = dr["ROLE"].ToString();
-                        GlobalClass.TRNUSERPWD = txtpassword.Password;
-                        GlobalClass.IsUserWaiter = (byte)dr["IsWaiter"];
-                        dr.Close();
-                        loginsuccess();
-                        ImportWaiter();
-                    }
-                    else
-                    {
-                        MessageBox.Show("Invalid Username or Password!", "Login", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                    }
-                }
             }
             catch (Exception ex)
             {
-                GlobalClass.ProcessError(ex, "Login Error");
+                
             }
             finally
             {

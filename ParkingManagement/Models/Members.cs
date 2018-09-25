@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Data.SqlClient;
 using Dapper;
 using System.ComponentModel;
+using ParkingManagement.Library;
 
 namespace ParkingManagement.Models
 {
@@ -55,12 +56,12 @@ namespace ParkingManagement.Models
                     return "Member Id cannot be empty";
                 else if (string.IsNullOrEmpty(Barcode))
                     return "Barcode cannot be empty";
-                else if (!Barcode.StartsWith("@"))
-                    return "Barcode must start with '@' character";
+                else if (!Barcode.StartsWith(GlobalClass.MemberBarcodePrefix))
+                    return "Barcode must start with '"+GlobalClass.MemberBarcodePrefix+"' character";
                 else if (string.IsNullOrEmpty(MemberName))
                     return "Member Name cannot be empty";
-                else if (string.IsNullOrEmpty(Mobile))
-                    return "Mobile No cannot be empty";
+                //else if (string.IsNullOrEmpty(Mobile))
+                //    return "Mobile No cannot be empty";
                 else if (ExpiryDate < ActivationDate)
                     return "ExpiryDate cannot be earilier than Activation Date";
                 else if (SchemeId == 0)
