@@ -177,8 +177,11 @@ namespace ParkingManagement.ViewModel
                         {
                             Conn.Execute("UPDATE tblSequence SET CurNo = CurNo + 1 WHERE VNAME = 'PID' AND FYID = " + GlobalClass.FYID, transaction: tran);
                             GlobalClass.SetUserActivityLog(tran, "Entrance", "New", WorkDetail: "PID : " + Parking.PID);
-                            var pslip = new ParkingSlip { PIN = Parking, CompanyName = GlobalClass.CompanyName, CompanyAddress = GlobalClass.CompanyAddress };
-                            pslip.Print();
+                            if (string.IsNullOrEmpty(Parking.PlateNo) || !Parking.PlateNo.StartsWith(GlobalClass.MemberBarcodePrefix))
+                            {
+                                var pslip = new ParkingSlip { PIN = Parking, CompanyName = GlobalClass.CompanyName, CompanyAddress = GlobalClass.CompanyAddress };
+                                pslip.Print();
+                            }
                             tran.Commit();
 
                             MessageBox.Show("Entrance Success." + Environment.NewLine + "Barcode : " + Parking.Barcode + Environment.NewLine + "In Time : " + Parking.InMiti + " " + Parking.InTime, MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Information);

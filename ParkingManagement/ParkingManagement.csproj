@@ -740,6 +740,12 @@
   <ItemGroup>
     <Resource Include="Images\IMS_SOFTWARE_SMALL.png" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BarcodeStickerPrinter\BarcodeStickerPrinter.vbproj">
+      <Project>{2391769d-a85b-4acd-a5b0-11389d3e0d95}</Project>
+      <Name>BarcodeStickerPrinter</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

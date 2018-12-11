@@ -76,6 +76,7 @@ namespace ParkingManagement.Models
         public string BillNo { get; set; }
         public int Sno { get; set; }
         public string VoucherName { get; set; }
+        public string VoucherText { get; set; }
         public string Barcode { get; set; }
         public int VoucherId { get; set; }
         public decimal Value { get; set; }

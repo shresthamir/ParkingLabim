@@ -330,7 +330,7 @@ namespace ParkingManagement.ViewModel
 
                     var PINS = conn.Query<ParkingIn>(string.Format(@"SELECT PID, VehicleType, InDate, InMiti, InTime, PlateNo, Barcode, UID FROM ParkingInDetails 
 WHERE((BARCODE <> '' AND  BARCODE = '{0}') OR(ISNULL(PLATENO, '') <> '' AND ISNULL(PlateNo, '') = '{0}'))
-AND FYID = {1}", obj, GlobalClass.FYID));
+AND FYID = {1} ORDER BY PID DESC", obj, GlobalClass.FYID));
                     if (PINS.Count() <= 0)
                     {
                         MessageBox.Show("Invalid barcode readings.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
@@ -576,8 +576,8 @@ AND FYID = {1}", obj, GlobalClass.FYID));
                 }
             }
             SaveWithStaffEnabled = false;
-            v.Value = (POUT.ChargedAmount > v.Value) ? v.Value : POUT.ChargedAmount;
-            POUT.CashAmount = POUT.ChargedAmount - v.Value;
+            v.Value = (POUT.CashAmount > v.Value) ? v.Value : POUT.CashAmount;
+            POUT.CashAmount = POUT.CashAmount - v.Value;
             PIN.Barcode = string.Empty;
             Vouchers.Add(v);
 

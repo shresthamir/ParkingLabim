@@ -15,6 +15,7 @@ using RawPrintFunctions;
 using System.Collections.ObjectModel;
 using System.Threading;
 using ParkingManagement.Forms;
+using BarcodeStickerPrinter;
 
 namespace ParkingManagement.ViewModel
 {
@@ -370,9 +371,14 @@ namespace ParkingManagement.ViewModel
                         PrintBill(VSales.BillNo, true);
                         if (GenerateVoucher)
                         {
-                            vp.Show();
-                            await PrintVouchers(VSales.BillNo, true);
-                            vp.Close();
+                            if (GlobalClass.StickerVoucher == 1)
+                                PrintVoucherSticker(VSales.BillNo, true);
+                            else
+                            {
+                                vp.Show();
+                                await PrintVouchers(VSales.BillNo, true);
+                                vp.Close();
+                            }
                         }
                     }
                     //GenerateVouchers();
@@ -386,55 +392,6 @@ namespace ParkingManagement.ViewModel
             }
         }
 
-        private void GenerateVouchers()
-        {
-            decimal Total = VSDetailList.Sum(x => x.Quantity);
-            string Status = "{0} of " + Total.ToString() + " Done";
-            Dispatcher d = Dispatcher.CurrentDispatcher;
-            ThreadPool.QueueUserWorkItem(x =>
-            {
-                using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
-                {
-                    conn.Open();
-                    using (SqlTransaction tran = conn.BeginTransaction())
-                    {
-                        foreach (TParkingSalesDetails pSD in _VSDetailList)
-                        {
-                            VoucherType vt = VTypeList.First(y => y.VoucherId == pSD.ProdId && y.SkipVoucherGeneration == false);
-                            for (int i = 1; i <= pSD.Quantity; i++)
-                            {
-                                Voucher v = new Voucher()
-                                {
-                                    BillNo = pSD.BillNo,
-                                    ExpDate = CurDate.AddDays(vt.Validity),
-                                    ValidStart = vt.ValidStart,
-                                    ValidEnd = vt.ValidEnd,
-                                    VoucherName = vt.VoucherName,
-                                    Value = vt.Value,
-                                    Sno = i,
-                                    VoucherId = vt.VoucherId,
-                                    FYID = GlobalClass.FYID
-                                };
-                                do
-                                {
-                                    v.Barcode = "#" + new Random().Next(1677215).ToString("X");
-                                }
-                                while (tran.Connection.ExecuteScalar<int>("SELECT COUNT(*) FROM ParkingVouchers WHERE Barcode = @Barcode", v, transaction: tran) > 0);
-                                v.Save(tran);
-                                ParkingVouchers.Add(v);
-                                d.BeginInvoke((Action)(() =>
-                                {
-                                    GenCount = string.Format(Status, ParkingVouchers.Count);
-                                    Progress = ParkingVouchers.Count / Total * 100;
-                                }));
-                            }
-                        }
-                        tran.Commit();
-                        PrintVouchers(_VSDetailList.First().BillNo, true, d);
-                    }
-                }
-            });
-        }
 
         private async Task GenerateVouchers(SqlTransaction tran)
         {
@@ -518,7 +475,7 @@ namespace ParkingManagement.ViewModel
             });
         }
 
-        private void PrintVouchers(string BillNo, bool IsNew, Dispatcher d, VoucherSelection vs = null)
+        private void PrintVoucherSticker(string BillNo, bool IsNew, VoucherSelection vs = null)
         {
             string Condition = string.Empty;
             Progress = 0;
@@ -530,39 +487,12 @@ namespace ParkingManagement.ViewModel
             }
             using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
             {
-                var Vouchers = conn.Query<Voucher>("SELECT VoucherNo, VoucherInfo VoucherName, PV.VoucherId, Barcode  FROM ParkingVouchers PV JOIN VoucherTypes VT ON PV.VoucherId = VT.VoucherId WHERE BillNo = @BillNo AND FYID = @FYID" + Condition, new { BillNo = BillNo, FYID = GlobalClass.FYID });
-                decimal Total = Vouchers.Count();
-                string Status = "{0} of " + Total.ToString() + " Printed";
-                foreach (Voucher v in Vouchers)
-                {
-                    if (Barcodes.Count <= 3)
-                        Barcodes.Add(v);
-                    else
-                    {
-                        new VoucherPrint(Barcodes.ToArray()).Print();
-                        d.BeginInvoke((Action)(() =>
-                        {
-                            GenCount = string.Format(Status, counter);
-                            Progress = counter / Total * 100;
-                        }));
-                        Thread.Sleep(3000);
-                        Barcodes.Clear();
-                        Barcodes.Add(v);
-                    }
-                    counter++;
-                }
-                if (Barcodes.Count > 0)
-                {
-                    new VoucherPrint(Barcodes.ToArray()).Print();
-                    d.BeginInvoke((Action)(() =>
-                    {
-                        GenCount = string.Format(Status, Total);
-                        Progress = 100;
-                        vp.Close();
-                    }));
-                }
+                var Vouchers = conn.Query<Voucher>("SELECT VoucherNo, V.Description VoucherName, PV.VoucherId, Barcode, PV.Value, VT.voucherInfo VoucherText FROM ParkingVouchers PV JOIN VoucherTypes VT ON PV.VoucherId = VT.VoucherId JOIN VehicleType V on vt.VehicleType = v.VTypeID WHERE BillNo = @BillNo AND FYID = @FYID" + Condition, new { BillNo = BillNo, FYID = GlobalClass.FYID });
+                StickerPrinter sp = new StickerPrinter(GlobalClass.StickerPrinter, 108, 34, 20, 4, "0", 3, 0, "0", 3, 0, "7");
+                sp.PrintSticker(Vouchers.Select(x => new BarcodeObject { Barcode = x.Barcode, Value = x.Value.ToString("Rs #0.00"), VehicleType = x.VoucherName, voucherText = x.VoucherText }).ToArray(), 3);
             }
         }
+
 
         private void ExecuteUndo(object obj)
         {
@@ -631,10 +561,17 @@ namespace ParkingManagement.ViewModel
                             wVoucherSelect wVS = new wVoucherSelect() { DataContext = vs };
                             wVS.ShowDialog();
 
-                            vp = new wVoucherPrintProgress() { DataContext = this };
-                            vp.Show();
-                            await PrintVouchers(BillNo, false, vs);
-                            vp.Close();
+                            if (GlobalClass.StickerVoucher == 1)
+                            {
+                                PrintVoucherSticker(BillNo, false, vs);
+                            }
+                            else
+                            {
+                                vp = new wVoucherPrintProgress() { DataContext = this };
+                                vp.Show();
+                                await PrintVouchers(BillNo, false, vs);
+                                vp.Close();
+                            }
                         }
                     }
                 }

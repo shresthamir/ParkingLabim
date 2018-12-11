@@ -221,7 +221,7 @@
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <Label Content="Charged Amount"></Label>
-                            <TextBox Width="150" IsReadOnly="True" IsTabStop="False" FontSize="14" Text="{Binding POUT.ChargedAmount, StringFormat={}{0:#0.00}}" HorizontalContentAlignment="Right"/>
+                            <TextBox Width="150" IsReadOnly="True" IsTabStop="False" FontSize="14" Text="{Binding POUT.CashAmount, StringFormat={}{0:#0.00}}" HorizontalContentAlignment="Right"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Visibility="{x:Static Lib:GlobalClass.DiscountVisible}">
                             <Label Content="Scheme"></Label>
