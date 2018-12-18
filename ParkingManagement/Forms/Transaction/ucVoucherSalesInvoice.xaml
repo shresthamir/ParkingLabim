@@ -8,7 +8,7 @@
              xmlns:helper ="clr-namespace:ParkingManagement.Library.Helpers"
              FocusManager.FocusedElement="{Binding ElementName=txtInvoice}"
              mc:Ignorable="d" 
-            d:DesignHeight="468" d:DesignWidth="1024">   
+            d:DesignHeight="468" d:DesignWidth="1024">
     <UserControl.InputBindings>
         <KeyBinding Key="S" Modifiers="Control" Command="{Binding SaveCommand}"/>
         <KeyBinding Key="Z" Modifiers="Control" Command="{Binding UndoCommand}"/>
@@ -44,22 +44,25 @@
                     <ColumnDefinition Width="120"/>
                     <ColumnDefinition Width="25"/>
                     <ColumnDefinition Width="150"/>
-                    <ColumnDefinition />
+                    <ColumnDefinition Width="13*" />
+                    <ColumnDefinition Width="14*"/>
                     <ColumnDefinition Width="200"/>
                     <ColumnDefinition Width="70"/>
                     <ColumnDefinition Width="70"/>
                     <ColumnDefinition Width="70"/>
                     <ColumnDefinition Width="70"/>
                 </Grid.ColumnDefinitions>
-                <Label Content="Invoice No" FontSize="14" FontWeight="SemiBold"/>
-                <TextBox Text="{Binding InvoicePrefix}" Grid.Column="1" IsReadOnly="True" Background="GhostWhite" ></TextBox>
-                <Ctrl:ExtendedTextBox x:Name="txtInvoice" Text="{Binding InvoiceNo}" Grid.Column="2" Height="28" Style="{StaticResource InputTextBox}" helper:CustomFocusManager.IsFocused="{Binding FocusedElement, Converter={StaticResource ShortToBool}, ConverterParameter='0'}" IsEnabled="{Binding EntryPanelEnabled, Converter={StaticResource ReverseBool}}">
+                <Label Content="Invoice No" FontSize="14" FontWeight="SemiBold"  Margin="10,8"/>
+                <CheckBox Grid.Column="3" x:Name="chkRental" Content="RENTAL BILL" FontSize="14" FontWeight="SemiBold"  IsChecked="{Binding Scheme.RentalBill}" Checked="CheckBox_Checked" Width="145"  VerticalAlignment="Center"/>
+
+                <TextBox Text="{Binding InvoicePrefix}" Grid.Column="1" IsReadOnly="True" Background="GhostWhite" Margin="0,8" ></TextBox>
+                <Ctrl:ExtendedTextBox x:Name="txtInvoice" Text="{Binding InvoiceNo}" Grid.Column="2" Height="28" Style="{StaticResource InputTextBox}" helper:CustomFocusManager.IsFocused="{Binding FocusedElement, Converter={StaticResource ShortToBool}, ConverterParameter='0'}" IsEnabled="{Binding EntryPanelEnabled, Converter={StaticResource ReverseBool}}" Margin="0,8">
                     <Ctrl:ExtendedTextBox.InputBindings>
                         <KeyBinding Key="Enter" Command="{Binding LoadInvoice}" CommandParameter="{Binding Path=Text,RelativeSource={RelativeSource AncestorType={x:Type TextBox}}}"/>
                     </Ctrl:ExtendedTextBox.InputBindings>
                 </Ctrl:ExtendedTextBox>
 
-                <ToggleButton Grid.Column="4" Margin="5" IsChecked="{Binding TaxInvoice}" IsEnabled="{Binding CanChangeInvoiceType}"  Visibility="Collapsed">
+                <ToggleButton Grid.Column="5" Margin="5" IsChecked="{Binding TaxInvoice}" IsEnabled="{Binding CanChangeInvoiceType}"  Visibility="Collapsed">
                     <ToggleButton.Template>
                         <ControlTemplate TargetType="ToggleButton">
                             <Border BorderBrush="Blue" BorderThickness="2" CornerRadius="2" Background="White" >
@@ -90,10 +93,10 @@
                     </ToggleButton.Triggers>
                 </ToggleButton>
 
-                <Button Style="{StaticResource NewButton}" Width="65" Content="New" Grid.Column="5" Command="{Binding NewCommand}" IsEnabled="{Binding NewEnabled}"/>
-                <Button Style="{StaticResource NewButton}" Width="65" Content="Save" Grid.Column="6" Command="{Binding SaveCommand}" IsEnabled="{Binding SaveEnabled}"/>
-                <Button Style="{StaticResource NewButton}" Width="65" Content="Print" Grid.Column="7" Command="{Binding PrintCommand}" IsEnabled="{Binding PrintEnabled}"/>
-                <Button Content="Clear" Style="{StaticResource NewButton}" Width="65" Grid.Column="8" Command="{Binding UndoCommand}"/>
+                <Button Style="{StaticResource NewButton}" Width="65" Content="New" Grid.Column="6" Command="{Binding NewCommand}" IsEnabled="{Binding NewEnabled}"/>
+                <Button Style="{StaticResource NewButton}" Width="65" Content="Save" Grid.Column="7" Command="{Binding SaveCommand}" IsEnabled="{Binding SaveEnabled}"/>
+                <Button Style="{StaticResource NewButton}" Width="65" Content="Print" Grid.Column="8" Command="{Binding PrintCommand}" IsEnabled="{Binding PrintEnabled}"/>
+                <Button Content="Clear" Style="{StaticResource NewButton}" Width="65" Grid.Column="9" Command="{Binding UndoCommand}"/>
             </Grid>
 
         </Border>
@@ -103,7 +106,6 @@
             <Border.Resources>
                 <Style TargetType="Label">
                     <Setter Property="VerticalAlignment" Value="Center"/>
-
                     <Setter Property="FontWeight" Value="SemiBold"/>
                 </Style>
             </Border.Resources>
@@ -123,12 +125,12 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="100"/>
                             <ColumnDefinition />
-                            <ColumnDefinition Width="20"/>
+                            <ColumnDefinition Width="0"/>
                         </Grid.ColumnDefinitions>
                         <RadioButton IsChecked="{Binding VSales.TRNMODE}" Content="Cash" VerticalAlignment="Center"></RadioButton>
                         <RadioButton Grid.Column="1" IsChecked="{Binding VSales.TRNMODE, Converter={StaticResource ReverseBool}}" Content="Credit" VerticalAlignment="Center"></RadioButton>
                         <Label Grid.Row="1" Content="Customer Name"/>
-                        <ComboBox Grid.Row="1" Grid.Column="1" IsEditable="True" ItemsSource="{Binding CustomerList}" SelectedItem="{Binding SelectedCustomer}" DisplayMemberPath="Name" Text="{Binding VSales.BillTo}"  helper:CustomFocusManager.IsFocused="{Binding FocusedElement, Converter={StaticResource ShortToBool}, ConverterParameter='2'}"></ComboBox>
+                        <ComboBox Grid.Row="1" Grid.Column="1" IsEditable="True" ItemsSource="{Binding CustomerList}" SelectedItem="{Binding SelectedCustomer}" DisplayMemberPath="CustomerName" Text="{Binding VSales.BillTo}"  helper:CustomFocusManager.IsFocused="{Binding FocusedElement, Converter={StaticResource ShortToBool}, ConverterParameter='2'}"></ComboBox>
                         <Label Content="Address" Grid.Row="2" Margin="2 5 0 0" VerticalAlignment="Top" />
                         <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding VSales.BILLTOADD}" Height="50" GotFocus="TextBox_GotFocus" TextWrapping="WrapWithOverflow" ></TextBox>
                         <Label Content="PAN" Grid.Row="3"/>
@@ -172,9 +174,31 @@
                         <Button Grid.Row="3" Grid.Column="5" HorizontalAlignment="Left" Style="{DynamicResource NewButton}" Command="{Binding AddVoucherCommand}" Content="Add" Width="60" Height="28" Margin="5 0 0 0"></Button>
                     </Grid>
                 </Border>
+                <Border Style="{StaticResource PlainBackground}" Grid.Column="1" Padding="5" Visibility="{Binding ElementName=chkRental, Path=IsChecked, Converter={StaticResource BoolToVisibility}}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="25"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="50"/>
+                            <RowDefinition Height="30"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="700"/>
+                        </Grid.ColumnDefinitions>
+                        <Label Content="Year" Grid.Row="1" Margin="5 2 0 0"  />
+                        <TextBox Grid.Column="1" Grid.Row="1"  Text="{Binding Year}" GotFocus="TextBox_GotFocus" PreviewTextInput="TextBox_PreviewTextInput" ></TextBox>
+                        <Label Content="Month"  Grid.Row="2"  Margin="5 5 0 0" />
+                        <TextBox Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="1" Text="{Binding Month}" GotFocus="TextBox_GotFocus" PreviewTextInput="TextBox_PreviewTextInput" ></TextBox>
+                        <Button  Grid.Row="2" Grid.Column="5" HorizontalAlignment="Left" Style="{DynamicResource NewButton}" Command="{Binding LoadRentalCommand}" Content="Load" Width="60" Height="28" Margin="5 0 0 0"></Button>
+                       
+                      
+                    </Grid>
+                </Border>
             </Grid>
-
         </Border>
+
         <DataGrid Grid.Row="3" ItemsSource="{Binding VSDetailList}" AutoGenerateColumns="False" IsReadOnly="True" CanUserResizeColumns="False" CellStyle="{DynamicResource DataGridCellStyle1}">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Voucher Name" Binding="{Binding Description}" MinWidth="300" Width="30*" />
@@ -211,5 +235,9 @@
                 <TextBlock Grid.Column="5" Text="{Binding VSales.GrossAmount, Converter={StaticResource NoZero}}"/>
             </Grid>
         </Border>
+
     </Grid>
+
 </UserControl>
+    
+    

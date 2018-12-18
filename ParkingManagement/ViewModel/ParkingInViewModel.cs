@@ -147,7 +147,7 @@ namespace ParkingManagement.ViewModel
                 {
                     if (string.IsNullOrEmpty(Parking.VType.PlateNo))
                         if (MessageBox.Show("Vehicle Plate No is not entered. Do you want to continue?", MessageBoxCaption, MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
-                            return;
+                           return;
                     Parking.PlateNo = Parking.VType.PlateNo;                    
                 }
                 DateTime ServerTime = nepDate.GetServerTime();
@@ -160,6 +160,7 @@ namespace ParkingManagement.ViewModel
                     if(!string.IsNullOrEmpty(Parking.PlateNo) && Conn.ExecuteScalar<int>("SELECT COUNT(*) FROM ParkingInDetails PID LEFT JOIN ParkingOutDetails POD ON PID.PID = POD.PID AND PID.FYID = POD.FYID WHERE PID.PlateNo = @PlateNo AND POD.PID IS NULL", Parking) > 0)
                     {
                         MessageBox.Show("Vehicle plate no is already in parking", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                        (obj as VehicleType).PlateNo = string.Empty;
                         return;
                     }
                     using (SqlTransaction tran = Conn.BeginTransaction())

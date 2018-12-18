@@ -12,7 +12,7 @@ namespace ParkingManagement.Library
     public class ParkingSlip
     {
         int paperWidth = (GlobalClass.SlipPrinterWith == 58) ? 225 : 300;
-        int BarcodeWidth = (GlobalClass.SlipPrinterWith == 58) ? 200 : 250;
+        int BarcodeWidth = (GlobalClass.SlipPrinterWith == 58) ? 200 : 200;
         PrintDocument PD;
         public string CompanyName { get; set; }
         public string CompanyAddress { get; set; }
@@ -65,17 +65,17 @@ namespace ParkingManagement.Library
             {
                 Alignment = AlignmentPositions.CENTER,
                 Width = BarcodeWidth,
-                Height = 50,
+                Height = 40,
                 RotateFlipType = RotateFlipType.RotateNoneFlipNone,
                 BackColor = Color.White,
                 ForeColor = Color.Black,
                 LabelFont = new Font(new FontFamily("Segoe UI"), 8)
             };
 
-            Image img = barcode.Encode(TYPE.CODE39, PIN.Barcode);
+            Image img = barcode.Encode(TYPE.CODE11, PIN.Barcode);
 
-            G.DrawImage(img, new Point(10, i));
-            i += 50;
+            G.DrawImage(img, new Point(20, i));
+            i += 40;
             format.Alignment = StringAlignment.Center;
             G.DrawString(PIN.Barcode, new Font(new FontFamily("Segoe UI"), 9), Brushes.Black, new RectangleF(10, i, paperWidth, 24), format);
             i += 15;

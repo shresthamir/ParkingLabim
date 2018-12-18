@@ -16,6 +16,7 @@ using System.Collections.ObjectModel;
 using System.Threading;
 using ParkingManagement.Forms;
 using BarcodeStickerPrinter;
+using System.Net;
 
 namespace ParkingManagement.ViewModel
 {
@@ -45,8 +46,10 @@ namespace ParkingManagement.ViewModel
         string _GenCount;
         decimal _Progress;
         wVoucherPrintProgress vp;
-        private Party _SelectedCustomer;
-        private ObservableCollection<Party> _CustomerList;
+        private Customer _SelectedCustomer;
+        private ObservableCollection<Customer> _CustomerList;
+        private int _Year;
+        private int _Month;
 
         public bool GenerateVoucher { get; set; }
         public bool IsEntryMode { get { return _action == ButtonAction.Init || _action == ButtonAction.Selected; } }
@@ -59,10 +62,12 @@ namespace ParkingManagement.ViewModel
         public TParkingSalesDetails VSDetail { get { return _VSDetail; } set { _VSDetail = value; OnPropertyChanged("VSDetail"); } }
         public TParkingSalesDetails SelectedVSDetail { get { return _SelectedVSDetail; } set { _SelectedVSDetail = value; OnPropertyChanged("SelectedVSDetail"); } }
         public ObservableCollection<TParkingSalesDetails> VSDetailList { get { return _VSDetailList; } set { _VSDetailList = value; OnPropertyChanged("VSDetailList"); } }
-        public ObservableCollection<Party> CustomerList { get { return _CustomerList; } set { _CustomerList = value; OnPropertyChanged("CustomerList"); } }
+        public ObservableCollection<Customer> CustomerList { get { return _CustomerList; } set { _CustomerList = value; OnPropertyChanged("CustomerList"); } }
         public decimal TotQty { get { return _TotQty; } set { _TotQty = value; OnPropertyChanged("TotQty"); } }
         public string GenCount { get { return _GenCount; } set { _GenCount = value; OnPropertyChanged("GenCount"); } }
         public decimal Progress { get { return _Progress; } set { _Progress = value; OnPropertyChanged("Progress"); } }
+        public int Year { get { return _Year; } set { _Year = value; OnPropertyChanged("Year"); } }
+        public int Month { get { return _Month; } set { _Month = value; OnPropertyChanged("Month"); } }
 
         public VoucherType SelectedVoucherType
         {
@@ -79,15 +84,15 @@ namespace ParkingManagement.ViewModel
                 OnPropertyChanged("SelectedVoucherType");
             }
         }
-        public Party SelectedCustomer
+        public Customer SelectedCustomer
         {
             get { return _SelectedCustomer; }
             set
             {
                 _SelectedCustomer = value;
-                VSales.BillTo = value?.Name;
+                VSales.BillTo = value?.CustomerName;
                 VSales.BILLTOADD = value?.Address;
-                VSales.BILLTOPAN = value?.PAN;
+                VSales.BILLTOPAN = value?.Pan;
                 OnPropertyChanged("SelectedCustomer");
             }
         }
@@ -95,7 +100,59 @@ namespace ParkingManagement.ViewModel
         public RelayCommand RePrintCommand { get { return new RelayCommand(ExecuteRePrint, CanExecuteRePrint); } }
         public RelayCommand LoadInvoice { get { return new RelayCommand(ExecuteLoadInvoice, CanLoadInvoice); } }
         public RelayCommand AddVoucherCommand { get { return new RelayCommand(AddVoucher, CanAddVoucher); } }
+        public RelayCommand LoadRentalCommand { get { return new RelayCommand(LoadRental, CanLoadRental); } }
 
+        private bool CanLoadRental(object obj)
+        {
+            return SelectedCustomer != null && Year > 2070 && Year < 2090 && Month >= 1 && Month <= 12;
+        }
+
+        private void LoadRental(object obj)
+        {
+            try
+            {
+                var request = (HttpWebRequest)WebRequest.Create(GlobalClass.RentalAPI + "?shopNumber=" + SelectedCustomer.Code + "&billYear=" + Year + "&billMonth=" + Month);
+                request.Method = "GET";
+                var response = (HttpWebResponse)request.GetResponse();
+                var responseString = new System.IO.StreamReader(response.GetResponseStream()).ReadToEnd();
+                if (responseString.StartsWith("["))
+                {
+                    var items = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Rent>>(responseString);
+                    if(items==null || items.Count == 0)
+                    {
+                        MessageBox.Show("No items exists from given Parameters");
+                        return;
+                    }
+                    GenerateVoucher = false;
+                    foreach (Rent r in items)
+                    {                        
+                        decimal Rate = r.Rate / GlobalClass.VATCONRATE;
+                        decimal VAT = r.Rate - Rate;
+                        VSDetailList.Add(new TParkingSalesDetails
+                        {
+                            FYID = GlobalClass.FYID,
+                            PType = 'V',
+                            ProdId = 1,
+                            Description = r.Particulars,
+                            Quantity = 1,
+                            QuantityStr = "1",
+                            Rate = Rate,
+                            RateStr = Rate.ToString(),
+                            Amount = Rate,
+                            Taxable = Rate,
+                            VAT = VAT,
+                            NetAmount = r.Rate
+                        });
+                    }
+                }
+                else
+                    MessageBox.Show(responseString, "Api Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
 
         private bool CanAddVoucher(object obj)
         {
@@ -218,7 +275,7 @@ namespace ParkingManagement.ViewModel
                 using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
                 {
                     VTypeList = new ObservableCollection<VoucherType>(conn.Query<VoucherType>("SELECT VoucherId, VoucherName, Rate, Value, ValidStart, ValidEnd, Validity, VoucherInfo, SkipVoucherGeneration FROM VoucherTypes"));
-                    CustomerList = new ObservableCollection<Party>(conn.Query<Party>("SELECT DISTINCT BillTo Name, BillToAdd Address, BillToPan PAN FROM ParkingSales where BillTo IS NOT NULL"));
+                    CustomerList = new ObservableCollection<Customer>(conn.Query<Customer>("SELECT * FROM Customer"));
                 }
             }
             catch (Exception ex)
@@ -363,8 +420,6 @@ namespace ParkingManagement.ViewModel
                             SyncFunctions.SyncSalesData(SyncFunctions.getBillObject(VSales.BillNo), 1);
                         }
                         MessageBox.Show("Vouchers Generated Successfully", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Information);
-                        if (!(string.IsNullOrEmpty(VSales.BillTo) || CustomerList.Any(x => x.Name == VSales.BillTo)))
-                            CustomerList.Add(new Party { Name = VSales.BillTo, Address = VSales.BILLTOADD, PAN = VSales.BILLTOPAN });
                     }
                     if (!string.IsNullOrEmpty(VSales.BillNo))
                     {

@@ -26,6 +26,7 @@ namespace ParkingManagement.Library
         public static string CompanyAddress;
         public static string CompanyPan;
         public static decimal VAT = 13;
+        public static decimal VATCONRATE = 1.13m;
         public static User User;
         public static string PrinterName = "POS80";
         public static PrintQueue printer;
@@ -52,6 +53,7 @@ namespace ParkingManagement.Library
         public static decimal AbbTaxInvoiceLimit = 5000;
         internal static bool NoRawPrinter;
         internal static string StickerPrinter = "TSC TTP-244 Pro";
+        public static string RentalAPI;
 
         public static string ReportName { get; set; }
         public static string ReportParams { get; set; }
@@ -79,7 +81,7 @@ namespace ParkingManagement.Library
                 using (SqlConnection cnmain = new SqlConnection(DataConnectionString))
                 {
                     UpdateDatabase(cnmain);
-                    var Setting = cnmain.Query("SELECT CompanyName, CompanyAddress, CompanyInfo, ISNULL(GraceTime, 5) GraceTime, ISNULL(ShowCollectionAmountInCashSettlement, 0) ShowCollectionAmountInCashSettlement, ISNULL(DisableCashAmountChange,0) DisableCashAmountChange, SettlementMode, ISNULL(AllowMultiVehicleForStaff,0) AllowMultiVehicleForStaff, ISNULL(SlipPrinterWidth, 58) SlipPrinterWidth, ISNULL(EnableStaff, 0) EnableStaff, ISNULL(EnableStamp, 0) EnableStamp, ISNULL(EnableDiscount, 0) EnableDiscount, ISNULL(EnablePlateNo, 0) EnablePlateNo, MemberBarcodePrefix FROM tblSetting").First();
+                    var Setting = cnmain.Query("SELECT CompanyName, CompanyAddress, CompanyInfo, ISNULL(GraceTime, 5) GraceTime, ISNULL(ShowCollectionAmountInCashSettlement, 0) ShowCollectionAmountInCashSettlement, ISNULL(DisableCashAmountChange,0) DisableCashAmountChange, SettlementMode, ISNULL(AllowMultiVehicleForStaff,0) AllowMultiVehicleForStaff, ISNULL(SlipPrinterWidth, 58) SlipPrinterWidth, ISNULL(EnableStaff, 0) EnableStaff, ISNULL(EnableStamp, 0) EnableStamp, ISNULL(EnableDiscount, 0) EnableDiscount, ISNULL(EnablePlateNo, 0) EnablePlateNo, MemberBarcodePrefix, RentalAPI FROM tblSetting").First();
                     CompanyName = Setting.CompanyName;
                     CompanyAddress = Setting.CompanyAddress;
                     CompanyPan = Setting.CompanyInfo;
@@ -97,6 +99,7 @@ namespace ParkingManagement.Library
                     TCList = cnmain.Query<PSlipTerms>("SELECT Description, Height from PSlipTerms");
                     FYID = cnmain.ExecuteScalar<byte>("SELECT FYID FROM tblFiscalYear WHERE CONVERT(VARCHAR,GETDATE(),101) BETWEEN BEGIN_DATE AND END_DATE");
                     FYNAME = cnmain.ExecuteScalar<string>("SELECT FYNAME FROM tblFiscalYear WHERE CONVERT(VARCHAR,GETDATE(),101) BETWEEN BEGIN_DATE AND END_DATE");
+                    RentalAPI = Setting.RentalAPI;
                 }
             }
             catch (Exception ex)

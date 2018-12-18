@@ -1,0 +1,100 @@
+﻿<UserControl x:Class="ParkingManagement.Forms.Master.ucCustomer"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:Behavior="clr-namespace:ParkingManagement.ACommandBehavior"
+             >
+    <UserControl.Resources>
+        <Style TargetType="Button" BasedOn="{StaticResource NewButton}">
+            <Setter Property="Width" Value="60" ></Setter>
+            <Setter Property="Height" Value="30"></Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="657*"/>
+            <ColumnDefinition Width="145*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="230" />
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Style="{StaticResource GradientBackground}" Grid.ColumnSpan="2">
+            <Grid  HorizontalAlignment="Right" >
+                <StackPanel Orientation="Horizontal" Margin="0">
+                    <Button Content="New" IsEnabled="{Binding NewEnabled}" Command="{Binding NewCommand}"  ></Button>
+                    <Button Content="Edit" IsEnabled="{Binding EditEnabled}" Command="{Binding EditCommand}" ></Button>
+                    <Button Content="Save" IsEnabled="{Binding SaveEnabled}" Command="{Binding SaveCommand}"  ></Button>
+                    <Button Content="Delete" IsEnabled="{Binding DeleteEnabled}" Command="{Binding DeleteCommand}"  ></Button>
+                    <Button Content="Import" IsEnabled="{Binding ImportEnabled}" Command="{Binding ImportCommand}"/>
+                    <Button Content="Undo" Command="{Binding UndoCommand}"  ></Button>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="1" Style="{StaticResource PlainBackground}"  Margin="0,2,2,2" Grid.ColumnSpan="2" >
+            <StackPanel>
+                <Grid >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="120"/>
+                        <ColumnDefinition Width="150"/>
+                        <ColumnDefinition Width="50"/>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="150"/>
+                        <ColumnDefinition Width="200"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="35"/>
+                        <RowDefinition Height="35"/>
+                        <RowDefinition Height="35"/>
+                        <RowDefinition Height="35"/>
+                        <RowDefinition Height="35"/>
+                        <RowDefinition Height="35"/>
+                        <RowDefinition Height="35"/>
+                    </Grid.RowDefinitions>
+                    <Label Content="Customer Id"/>
+                    <TextBox Grid.Column="1"  Text="{Binding Customer.CustomerId}" IsEnabled="{Binding CustomerId}" />
+
+                    <Label Grid.Column="3" Content="Code"/>
+                    <TextBox  Grid.Column="4" Text="{Binding Customer.Code}" IsEnabled="{Binding code}" />
+
+                    <Label Grid.Row="1" Content="Customer Name"/>
+                    <TextBox Grid.Row="1"  Grid.Column="1" Grid.ColumnSpan="5" Text="{Binding Customer.CustomerName, ValidatesOnDataErrors=True}" IsEnabled="{Binding EntryPanelEnabled}" />
+
+                    <Label Grid.Row="2" Content="Address"/>
+                    <TextBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="5"  Text="{Binding Customer.Address}" IsEnabled="{Binding EntryPanelEnabled}" />
+
+                    <Label Grid.Row="3" Content="Mobile No"/>
+                    <TextBox Grid.Row="3" Grid.Column="1" IsEnabled="{Binding EntryPanelEnabled}"  Text="{Binding Customer.Mobile, ValidatesOnDataErrors=True}" />
+
+                    <Label Grid.Row="3" Grid.Column="3" Content="Pan"/>
+                    <TextBox Grid.Row="3" Grid.Column="4" IsEnabled="{Binding EntryPanelEnabled}"  Text="{Binding Customer.Pan, ValidatesOnDataErrors=True}" />
+
+                    <Label Grid.Row="4" Content="Contact Person"/>
+                    <TextBox Grid.Row="4"  Grid.Column="1" Grid.ColumnSpan="5" Text="{Binding Customer.ContactName, ValidatesOnDataErrors=True}" IsEnabled="{Binding EntryPanelEnabled}" />
+
+                    <Label Grid.Row="5" Content="Email"/>
+                    <TextBox Grid.Row="5"  Grid.Column="1" Grid.ColumnSpan="5" Text="{Binding Customer.Email, ValidatesOnDataErrors=True}" IsEnabled="{Binding EntryPanelEnabled}" />
+                </Grid>
+            </StackPanel>
+        </Border>
+        <DataGrid Grid.Row="2" ItemsSource="{Binding CustomerList}" AutoGenerateColumns="False" SelectedItem="{Binding SelectedCustomer}" Behavior:CommandBehavior.Event="MouseDoubleClick" IsReadOnly="True"
+                                                 Behavior:CommandBehavior.Command="{Binding LoadData}" Grid.ColumnSpan="2">
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding CustomerId}" Header="CustomerId" Width="200"/>
+                <DataGridTextColumn Binding="{Binding Code}" Header="Code" Width="200"/>
+                <DataGridTextColumn Binding="{Binding CustomerName}" Header="Customer Name" Width="250"/>
+                <DataGridTextColumn Binding="{Binding Mobile}" Header="Mobile No" Width="200"/>
+                <DataGridTextColumn Binding="{Binding ContactName}" Header="Contact Person" Width="200"/>
+                <DataGridTextColumn Binding="{Binding Email}" Header="Email" Width="300"/>
+
+            </DataGrid.Columns>
+        </DataGrid>
+
+    </Grid>
+
+</UserControl>
