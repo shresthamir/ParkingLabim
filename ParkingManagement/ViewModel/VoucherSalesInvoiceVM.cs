@@ -111,21 +111,39 @@ namespace ParkingManagement.ViewModel
         {
             try
             {
-                var request = (HttpWebRequest)WebRequest.Create(GlobalClass.RentalAPI + "?shopNumber=" + SelectedCustomer.Code + "&billYear=" + Year + "&billMonth=" + Month);
+                using (SqlConnection conn = new SqlConnection(GlobalClass.DataConnectionString))
+                {
+                    if (conn.ExecuteScalar<int>("SELECT COUNT(*) FROM tblRentalInfo WHERE CustomerId = @CustomerId AND BillYear = @Year AND BillMonth = @Month", new { SelectedCustomer.CustomerId, Year, Month }) > 0)
+                    {
+                        MessageBox.Show("Rental bill for Given month is already generated", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                        return;
+                    }
+                    int prevYear = Month == 1 ? Year - 1 : Year;
+                    int prevMonth = Month == 1 ? 12 : Month - 1;
+                    if (conn.ExecuteScalar<int>("SELECT COUNT(*) FROM tblRentalInfo WHERE CustomerId = @CustomerId AND BillYear = @Year AND BillMonth = @Month", new { SelectedCustomer.CustomerId, Year, Month }) == 0)
+                    {
+                        if (MessageBox.Show("Rental bill for previous month is not generated. Do you want to continue?", MessageBoxCaption, MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
+                            return;
+                    }
+
+                }
+                string url = GlobalClass.RentalAPI + "?shopNumber=" + SelectedCustomer.Code + "&billYear=" + Year + "&billMonth=" + Month.ToString().PadLeft(2, '0');
+                MessageBox.Show(url);
+                var request = (HttpWebRequest)WebRequest.Create(url);
                 request.Method = "GET";
                 var response = (HttpWebResponse)request.GetResponse();
                 var responseString = new System.IO.StreamReader(response.GetResponseStream()).ReadToEnd();
                 if (responseString.StartsWith("["))
                 {
                     var items = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Rent>>(responseString);
-                    if(items==null || items.Count == 0)
+                    if (items == null || items.Count == 0)
                     {
                         MessageBox.Show("No items exists from given Parameters");
                         return;
                     }
                     GenerateVoucher = false;
                     foreach (Rent r in items)
-                    {                        
+                    {
                         decimal Rate = r.Rate / GlobalClass.VATCONRATE;
                         decimal VAT = r.Rate - Rate;
                         VSDetailList.Add(new TParkingSalesDetails
@@ -145,12 +163,13 @@ namespace ParkingManagement.ViewModel
                         });
                     }
                 }
+
                 else
                     MessageBox.Show(responseString, "Api Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
             catch (Exception ex)
             {
-
+                MessageBox.Show(ex.GetBaseException().Message);
             }
         }
 
@@ -403,8 +422,11 @@ namespace ParkingManagement.ViewModel
                             PSD.Save(tran);
                         }
 
+                        if (Year > 2070)
+                            conn.Execute("INSERT INTO TblRentalInfo(BillNo, CustomerId, BillMonth, BillYear, BillAmount) VALUES (@BillNo, @CustomerId, @BillMonth, @BillYear, @BillAmount)", new { VSales.BillNo, SelectedCustomer.CustomerId, BillMonth = Month, BillYear = Year, BillAmount = VSales.GrossAmount }, tran);
                         conn.Execute("UPDATE tblSequence SET CurNo = CurNo + 1 WHERE VNAME = @VNAME AND FYID = @FYID", new { VNAME = InvoicePrefix, FYID = GlobalClass.FYID }, transaction: tran);
                         GlobalClass.SetUserActivityLog("Voucher Sales Invoice", "New", VCRHNO: VSales.BillNo, WorkDetail: "Bill No : " + VSales.BillNo);
+
 
                         SyncFunctions.LogSyncStatus(tran, VSales.BillNo, GlobalClass.FYNAME);
                         if (GenerateVoucher)
@@ -560,6 +582,8 @@ namespace ParkingManagement.ViewModel
             FocusedElement = (short)Focusable.Invoice;
             InvoiceNo = string.Empty;
             SetAction(ButtonAction.Init);
+            Year = 0;
+            Month = 0;
             OnPropertyChanged("IsEntryMode");
         }
 

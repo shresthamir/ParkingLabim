@@ -163,6 +163,9 @@ namespace ParkingManagement.Library
                 conn.Execute(@"IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'tblSetting' AND COLUMN_NAME = 'MinChargeUnit')
                         ALTER TABLE tblSetting ADD MinChargeUnit NUMERIC(9,2) NOT NULL, CONSTRAINT DF_Setting_MinChargeUnit DEFAULT (15) FOR MinChargeUnit");
 
+                conn.Execute(@"IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'tblSetting' AND COLUMN_NAME = 'RentalAPI')
+                        ALTER TABLE tblSetting ADD RentalAPI varchar(500)");
+
                 conn.Execute(@"IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'tblSetting' AND COLUMN_NAME = 'MinReturnableCurrency')
                         ALTER TABLE tblSetting ADD MinReturnableCurrency NUMERIC(9,2) NOT NULL, CONSTRAINT DF_Setting_MinReturnableCurrency DEFAULT (5) FOR MinReturnableCurrency");
 
@@ -172,6 +175,7 @@ namespace ParkingManagement.Library
                             INSERT INTO CashReceiptParticulars VALUES ('Slip Lost Penalty')
                             INSERT INTO CashReceiptParticulars VALUES ('Parking Charge')
                             END");
+              
 
                 conn.Execute(@"IF NOT EXISTS(SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'tblFiscalYear')
                                 BEGIN
