@@ -81,10 +81,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="BarcodeLib">
-      <HintPath>..\..\..\Library DLLs\BarcodeLib.dll</HintPath>
+      <HintPath>..\..\Library\BarcodeLib.dll</HintPath>
     </Reference>
     <Reference Include="Dapper">
-      <HintPath>..\..\..\Library DLLs\Dapper.dll</HintPath>
+      <HintPath>..\..\Library\Dapper.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Expression.Interactions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -92,7 +92,7 @@
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="Microsoft.Windows.Shell">
-      <HintPath>..\..\..\Library DLLs\Microsoft.Windows.Shell.dll</HintPath>
+      <HintPath>..\..\Library\Microsoft.Windows.Shell.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\..\..\Library DLLs\Newtonsoft.Json.dll</HintPath>
@@ -100,7 +100,7 @@
     <Reference Include="PresentationFramework.Aero" />
     <Reference Include="PresentationFramework.Aero2" />
     <Reference Include="RawPrintFunctions">
-      <HintPath>..\..\..\Library DLLs\RawPrintFunctions.dll</HintPath>
+      <HintPath>..\..\Library\RawPrintFunctions.dll</HintPath>
     </Reference>
     <Reference Include="ReachFramework" />
     <Reference Include="Syncfusion.Compression.Base">
@@ -164,19 +164,19 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="WPFCustomToolKit">
-      <HintPath>..\..\..\Library DLLs\WPFCustomToolKit.dll</HintPath>
+      <HintPath>..\..\Library\WPFCustomToolKit.dll</HintPath>
     </Reference>
     <Reference Include="Xceed.Wpf.AvalonDock">
-      <HintPath>..\..\..\Library DLLs\Xceed.Wpf.AvalonDock.dll</HintPath>
+      <HintPath>..\..\Library\Xceed.Wpf.AvalonDock.dll</HintPath>
     </Reference>
     <Reference Include="Xceed.Wpf.AvalonDock.Themes.Metro">
-      <HintPath>..\..\..\Library DLLs\Xceed.Wpf.AvalonDock.Themes.Metro.dll</HintPath>
+      <HintPath>..\..\Library\Xceed.Wpf.AvalonDock.Themes.Metro.dll</HintPath>
     </Reference>
     <Reference Include="Xceed.Wpf.Toolkit">
-      <HintPath>..\..\..\Library DLLs\Xceed.Wpf.Toolkit.dll</HintPath>
+      <HintPath>..\..\Library\Xceed.Wpf.Toolkit.dll</HintPath>
     </Reference>
     <Reference Include="Zen.Barcode">
-      <HintPath>..\..\..\Library DLLs\Zen.Barcode.dll</HintPath>
+      <HintPath>..\..\Library\Zen.Barcode.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -189,6 +189,9 @@
     </Compile>
     <Compile Include="Forms\DataUtility\wDataRestore.xaml.cs">
       <DependentUpon>wDataRestore.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\File\LoginFullScreen.xaml.cs">
+      <DependentUpon>LoginFullScreen.xaml</DependentUpon>
     </Compile>
     <Compile Include="Forms\File\ResetPassword.xaml.cs">
       <DependentUpon>ResetPassword.xaml</DependentUpon>
@@ -303,6 +306,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Forms\DataUtility\wDataRestore.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Forms\File\LoginFullScreen.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

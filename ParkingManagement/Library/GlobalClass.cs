@@ -44,6 +44,7 @@ namespace ParkingManagement.Library
         public static bool EnablePlateNo { get; set; }
         public static byte AllowMultiVehicleForStaff;
         public static short DefaultMinVacantLot;
+        public static string MemberBarcodePrefix;
         public static byte FYID = 1;
         public static string FYNAME;
         public static byte SettlementMode;
@@ -77,7 +78,7 @@ namespace ParkingManagement.Library
                 using (SqlConnection cnmain = new SqlConnection(DataConnectionString))
                 {
                     UpdateDatabase(cnmain);
-                    var Setting = cnmain.Query("SELECT CompanyName, CompanyAddress, CompanyInfo, ISNULL(GraceTime, 5) GraceTime, ISNULL(ShowCollectionAmountInCashSettlement, 0) ShowCollectionAmountInCashSettlement, ISNULL(DisableCashAmountChange,0) DisableCashAmountChange, SettlementMode, ISNULL(AllowMultiVehicleForStaff,0) AllowMultiVehicleForStaff, ISNULL(SlipPrinterWidth, 58) SlipPrinterWidth, ISNULL(EnableStaff, 0) EnableStaff, ISNULL(EnableStamp, 0) EnableStamp, ISNULL(EnableDiscount, 0) EnableDiscount, ISNULL(EnablePlateNo, 0) EnablePlateNo FROM tblSetting").First();
+                    var Setting = cnmain.Query("SELECT CompanyName, CompanyAddress, CompanyInfo, ISNULL(GraceTime, 5) GraceTime, ISNULL(ShowCollectionAmountInCashSettlement, 0) ShowCollectionAmountInCashSettlement, ISNULL(DisableCashAmountChange,0) DisableCashAmountChange, SettlementMode, ISNULL(AllowMultiVehicleForStaff,0) AllowMultiVehicleForStaff, ISNULL(SlipPrinterWidth, 58) SlipPrinterWidth, ISNULL(EnableStaff, 0) EnableStaff, ISNULL(EnableStamp, 0) EnableStamp, ISNULL(EnableDiscount, 0) EnableDiscount, ISNULL(EnablePlateNo, 0) EnablePlateNo, MemberBarcodePrefix FROM tblSetting").First();
                     CompanyName = Setting.CompanyName;
                     CompanyAddress = Setting.CompanyAddress;
                     CompanyPan = Setting.CompanyInfo;
@@ -90,6 +91,7 @@ namespace ParkingManagement.Library
                     StaffVisible = ((bool)Setting.EnableStaff) ? Visibility.Visible : Visibility.Collapsed;
                     StampVisible = ((bool)Setting.EnableStamp) ? Visibility.Visible : Visibility.Collapsed;
                     EnablePlateNo = (bool)Setting.EnablePlateNo;
+                    MemberBarcodePrefix = Setting.MemberBarcodePrefix;
                     AllowMultiVehicleForStaff = (byte)Setting.AllowMultiVehicleForStaff;
                     TCList = cnmain.Query<PSlipTerms>("SELECT Description, Height from PSlipTerms");
                     FYID = cnmain.ExecuteScalar<byte>("SELECT FYID FROM tblFiscalYear WHERE CONVERT(VARCHAR,GETDATE(),101) BETWEEN BEGIN_DATE AND END_DATE");
@@ -380,6 +382,12 @@ ALTER TABLE tblSetting ADD EnableDiscount BIT NULL");
                 conn.Execute(@"IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'tblSetting' AND COLUMN_NAME = 'EnableDiscount')
 ALTER TABLE tblSetting ADD CalculationMethod TINYINT NULL");
                 conn.Execute("UPDATE tblSetting SET UpdateHistory = 7");
+            }
+
+            if (UpdateHistory < 8)
+            {
+                conn.Execute(@"IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'tblSetting' AND COLUMN_NAME = 'MemberBarcodePrefix')
+ALTER TABLE tblSetting ADD MemberBarcodePrefix varchar(5) NOT NULL, CONSTRAINT DF_tblSetting_MemberBarcodePrefix DEFAULT ('@') FOR MemberBarcodePrefix");
             }
         }
 

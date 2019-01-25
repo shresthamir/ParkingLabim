@@ -319,7 +319,7 @@ namespace ParkingManagement.ViewModel
                             ValidateVoucher(obj, conn);
                             return;
                         }
-                        else if (obj.ToString().StartsWith("@"))
+                        else if (obj.ToString().StartsWith(GlobalClass.MemberBarcodePrefix))
                         {
                             ValidateMember(obj, conn);
                             return;
@@ -466,7 +466,7 @@ AND FYID = {1}", obj, GlobalClass.FYID));
                 DiscountHour = 0;
                 DiscountAmount = 0;
             }
-            POUT.CashAmount = POUT.ChargedAmount - mDiscount.DiscountAmount;
+            POUT.CashAmount = POUT.ChargedAmount = POUT.ChargedAmount - mDiscount.DiscountAmount;
             PIN.Barcode = string.Empty;
             if (POUT.CashAmount == 0)
                 ExecuteSave(null);

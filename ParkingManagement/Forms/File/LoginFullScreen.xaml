@@ -42,23 +42,30 @@
                     </TextBlock>
                 </Grid>
                 <Grid Grid.Row="2">
-                    <StackPanel Margin= "0 0 100 0" VerticalAlignment="Center" HorizontalAlignment="Right" Width="380" >
+                    <StackPanel Grid.Row="1" Margin= "0 0 100 0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="380" >
                         <StackPanel.Background>
-                            <SolidColorBrush Color="White" Opacity="0.6"/>
+                            <SolidColorBrush Color="White" Opacity="0.6"/>                            
                         </StackPanel.Background>
-                        <StackPanel Orientation="Horizontal" >
-                            <TextBlock Text="Pin :" Width="65" Margin="3" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center" />
-                            <PasswordBox x:Name="txtpassword" GotFocus="txtPassword_GotFocus" Height="40"  Width="240" VerticalContentAlignment="Center" FontSize="20" KeyDown="txtPassword_KeyDown" Margin="3"/>
+                        <StackPanel Orientation="Horizontal">
+                            <RadioButton x:Name="rbPin" IsChecked="True" Margin="50 5 " FontSize="14" FontWeight="SemiBold" Content="PIN Login"/>
+                            <RadioButton x:Name="rbPwd" Margin="10 5" FontSize="14" FontWeight="SemiBold" Content="Password Login"/>
                         </StackPanel>
-                        <ctr:ucNumPad Width="240" Focusable="False" Margin="74 3 3 3 " Target="{Binding ElementName=txtpassword}" HorizontalAlignment="Left"/>
-
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                            <Button HorizontalAlignment="Center"  Click="Login_Click" Width="100" Height="50" FontWeight="Bold" FontSize="18" Content="Login" Style="{StaticResource NewButton}">
-
-                            </Button>
-                            <Button HorizontalAlignment="Center" MinWidth="100" Height="50" FontWeight="Bold" Content="Exit" FontSize="18" Style="{StaticResource NewButton}" Margin="5 20" Click="ExitButton_Click">
-
-                            </Button>
+                        <StackPanel Orientation="Horizontal" Visibility="{Binding ElementName=rbPin, Path=IsChecked, Converter={StaticResource BoolToVisibility}}">
+                            <TextBlock Text="Pin :" Width="80" Margin="3" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center" />
+                            <PasswordBox x:Name="txtPin" GotFocus="txtPassword_GotFocus" Height="40"  Width="280" VerticalContentAlignment="Center" FontSize="20" KeyDown="txtPassword_KeyDown" Margin="3"/>                          
+                        </StackPanel>
+                        <StackPanel Visibility="{Binding ElementName=rbPwd, Path=IsChecked, Converter={StaticResource BoolToVisibility}}">
+                            <StackPanel Orientation="Horizontal" >
+                                <TextBlock Text="User Id :" Width="100" Margin="3" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center" />
+                                <PasswordBox x:Name="txtUsername" GotFocus="txtPassword_GotFocus" Height="40"  Width="255" VerticalContentAlignment="Center" FontSize="20" KeyDown="txtPassword_KeyDown" Margin="3"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" >
+                                <TextBlock Text="Password :" Width="100" Margin="3" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center" />
+                                <PasswordBox x:Name="txtpassword" GotFocus="txtPassword_GotFocus" Height="40"  Width="255" VerticalContentAlignment="Center" FontSize="20" KeyDown="txtPassword_KeyDown" Margin="3"/>
+                            </StackPanel>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                            <Button HorizontalAlignment="Right"  Click="Login_Click" Width="100" Height="50" FontWeight="Bold" FontSize="18" Content="Login" Style="{StaticResource NewButton}"/>
                         </StackPanel>
                     </StackPanel>
                 </Grid>
