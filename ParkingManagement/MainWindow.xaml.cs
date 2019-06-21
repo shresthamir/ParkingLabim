@@ -307,6 +307,9 @@ namespace ParkingManagement
                         case "PRINT DAY SUMMARY":
                             PrintDaySummary();
                             break;
+                        case "FOOTFALL REPORT":
+                            new Forms.Reports.vmFootFallReport().LoadData.Execute(null);
+                            break;
                         default:
                             Reports(m.MENUNAME);
                             break;
@@ -391,8 +394,8 @@ GROUP BY ENTERED_BY";
 
             try
             {
-                strPrint += (GlobalClass.CompanyName.Length > PrintLen) ? GlobalClass.CompanyName.Substring(0, 45) : GlobalClass.CompanyName.PadLeft((PrintLen + GlobalClass.CompanyName.Length) / 2, ' ') + Environment.NewLine;
-                strPrint += (GlobalClass.CompanyAddress.Length > PrintLen) ? GlobalClass.CompanyAddress.Substring(0, 45) : GlobalClass.CompanyAddress.PadLeft((PrintLen + GlobalClass.CompanyAddress.Length) / 2, ' ') + Environment.NewLine;
+                strPrint += (GlobalClass.CompanyName.Length > PrintLen) ? GlobalClass.CompanyName.Substring(0, PrintLen) : GlobalClass.CompanyName.PadLeft((PrintLen + GlobalClass.CompanyName.Length) / 2, ' ') + Environment.NewLine;
+                strPrint += (GlobalClass.CompanyAddress.Length > PrintLen) ? GlobalClass.CompanyAddress.Substring(0, PrintLen) : GlobalClass.CompanyAddress.PadLeft((PrintLen + GlobalClass.CompanyAddress.Length) / 2, ' ') + Environment.NewLine;
                 strPrint += "DAY SUMMARY REPORT".PadLeft(30, ' ') + Environment.NewLine;
 
                 using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))

@@ -35,10 +35,11 @@ namespace ParkingManagement.ViewModel
             {
                 using (SqlConnection Conn = new SqlConnection(GlobalClass.TConnectionString))
                 {
-                    string strSql = @"SELECT VoucherId, VoucherName, VehicleType, Rate, Value, Validity, ValidStart, ValidEnd, VoucherInfo, SkipVoucherGeneration FROM VoucherTypes";
+                    string strSql = @"SELECT VoucherId, VoucherName, VehicleType, Rate, Value, Validity, ValidStart, ValidEnd, VoucherInfo, SkipVoucherGeneration, ISNULL(NonVat, 0) NonVat FROM VoucherTypes";
                     VTypeList = new ObservableCollection<VoucherType>(Conn.Query<VoucherType>(strSql));
                     strSql = @"SELECT VTypeID, [Description] FROM VehicleType";
                     VehicleTypeList = new ObservableCollection<VehicleType>(Conn.Query<VehicleType>(strSql));
+                    VehicleTypeList.Add(new VehicleType { VTypeID = 0, Description = "All Vehicle Type" });
                 }
                 LoadData = new RelayCommand(ExecuteLoad, CanExecuteLoad);
                 NewCommand = new RelayCommand(ExecuteNew);
@@ -103,8 +104,9 @@ namespace ParkingManagement.ViewModel
                 Validity = SelectedVType.Validity,
                 VehicleType = SelectedVType.VehicleType,
                 VoucherInfo = SelectedVType.VoucherInfo,
-                SkipVoucherGeneration = SelectedVType.SkipVoucherGeneration
-
+                SkipVoucherGeneration = SelectedVType.SkipVoucherGeneration,
+                NonVat = SelectedVType.NonVat
+                
             };
             SetAction(ButtonAction.Selected);
         }
@@ -150,7 +152,8 @@ namespace ParkingManagement.ViewModel
                                 ValidEnd = VType.ValidEnd,
                                 Validity = VType.Validity,
                                 VoucherInfo = VType.VoucherInfo,
-                                SkipVoucherGeneration = VType.SkipVoucherGeneration
+                                SkipVoucherGeneration = VType.SkipVoucherGeneration,
+                                NonVat = VType.NonVat
                             });
                             ExecuteUndo(null);
                         }
@@ -204,6 +207,7 @@ namespace ParkingManagement.ViewModel
                             Voucher.Validity = VType.Validity;
                             Voucher.VoucherInfo = VType.VoucherInfo;
                             Voucher.SkipVoucherGeneration = VType.SkipVoucherGeneration;
+                            Voucher.NonVat = VType.NonVat;
                             ExecuteUndo(null);
                         }
                         else

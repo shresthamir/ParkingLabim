@@ -1,15 +1,15 @@
-﻿using System;
+﻿using Dapper;
+using Newtonsoft.Json.Linq;
+using ParkingManagement.Models;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.IO;
 using System.Data;
 using System.Data.SqlClient;
-using ParkingManagement.Models;
+using System.IO;
+using System.Linq;
 using System.Printing;
-using System.Configuration;
+using System.Text;
 using System.Windows;
-using Dapper;
 namespace ParkingManagement.Library
 {
     struct PSlipTerms
@@ -19,8 +19,8 @@ namespace ParkingManagement.Library
     }
     static class GlobalClass
     {
-        public static string DataConnectionString;
-        public static string Terminal;
+        public static string DataConnectionString = "SERVER=IMS-D1\\SQL2017; DATABASE=PARKINGDB;UID=SA;PWD=tebahal";
+        public static string Terminal = "001";
         public static int GraceTime;
         public static string CompanyName;
         public static string CompanyAddress;
@@ -41,6 +41,8 @@ namespace ParkingManagement.Library
         public static Visibility DiscountVisible;
         public static Visibility StampVisible;
         public static Visibility StaffVisible;
+        public static Visibility PrepaidVisible;
+        public static JObject PrepaidInfo;
         public static bool EnablePlateNo { get; set; }
         public static byte AllowMultiVehicleForStaff;
         public static short DefaultMinVacantLot;
@@ -54,14 +56,16 @@ namespace ParkingManagement.Library
 
         public static string ReportName { get; set; }
         public static string ReportParams { get; set; }
-        public static string PrintTime { get; set; } 
+        public static string PrintTime { get; set; }
         public static byte SlipPrinterWith { get; set; }
         static GlobalClass()
         {
             try
             {
                 if (!Directory.Exists(GlobalClass.AppDataPath))
+                {
                     Directory.CreateDirectory(GlobalClass.AppDataPath);
+                }
 
                 if (File.Exists(GlobalClass.AppDataPath + @"\sysPrinter.dat"))
                 {
@@ -70,15 +74,19 @@ namespace ParkingManagement.Library
                 }
 
                 if (File.Exists(Environment.SystemDirectory + "\\ParkingDBSetting.dat"))
-                {                    
+                {
                     dynamic connProps = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(File.ReadAllText(Environment.SystemDirectory + "\\ParkingDBSetting.dat"));
                     DataConnectionString = string.Format("SERVER = {0}; DATABASE = {1}; UID = {2}; PWD = {3}", Encrypt(connProps.DataSource.ToString()), Encrypt(connProps.InitialCatalog.ToString()), Encrypt(connProps.UserID.ToString()), Encrypt(connProps.Password.ToString()));
-                    Terminal = Encrypt(connProps.Terminal.ToString());                   
+                    Terminal = Encrypt(connProps.Terminal.ToString());
                 }
                 using (SqlConnection cnmain = new SqlConnection(DataConnectionString))
                 {
                     UpdateDatabase(cnmain);
-                    var Setting = cnmain.Query("SELECT CompanyName, CompanyAddress, CompanyInfo, ISNULL(GraceTime, 5) GraceTime, ISNULL(ShowCollectionAmountInCashSettlement, 0) ShowCollectionAmountInCashSettlement, ISNULL(DisableCashAmountChange,0) DisableCashAmountChange, SettlementMode, ISNULL(AllowMultiVehicleForStaff,0) AllowMultiVehicleForStaff, ISNULL(SlipPrinterWidth, 58) SlipPrinterWidth, ISNULL(EnableStaff, 0) EnableStaff, ISNULL(EnableStamp, 0) EnableStamp, ISNULL(EnableDiscount, 0) EnableDiscount, ISNULL(EnablePlateNo, 0) EnablePlateNo, MemberBarcodePrefix FROM tblSetting").First();
+                    var Setting = cnmain.Query(@"SELECT CompanyName, CompanyAddress, CompanyInfo, ISNULL(GraceTime, 5) GraceTime, 
+                                ISNULL(ShowCollectionAmountInCashSettlement, 0) ShowCollectionAmountInCashSettlement, ISNULL(DisableCashAmountChange,0) DisableCashAmountChange, 
+                                SettlementMode, ISNULL(AllowMultiVehicleForStaff,0) AllowMultiVehicleForStaff, ISNULL(SlipPrinterWidth, 58) SlipPrinterWidth, 
+                                ISNULL(EnableStaff, 0) EnableStaff, ISNULL(EnableStamp, 0) EnableStamp, ISNULL(EnableDiscount, 0) EnableDiscount, ISNULL(EnablePlateNo, 0) EnablePlateNo, 
+                                ISNULL(EnablePrepaid, 0) EnablePrepaid, ISNULL(PrepaidInfo, '{}') PrepaidInfo, MemberBarcodePrefix FROM tblSetting").First();
                     CompanyName = Setting.CompanyName;
                     CompanyAddress = Setting.CompanyAddress;
                     CompanyPan = Setting.CompanyInfo;
@@ -90,8 +98,10 @@ namespace ParkingManagement.Library
                     DiscountVisible = ((bool)Setting.EnableDiscount) ? Visibility.Visible : Visibility.Collapsed;
                     StaffVisible = ((bool)Setting.EnableStaff) ? Visibility.Visible : Visibility.Collapsed;
                     StampVisible = ((bool)Setting.EnableStamp) ? Visibility.Visible : Visibility.Collapsed;
+                    PrepaidVisible = ((bool)Setting.EnablePrepaid) ? Visibility.Visible : Visibility.Collapsed;
                     EnablePlateNo = (bool)Setting.EnablePlateNo;
                     MemberBarcodePrefix = Setting.MemberBarcodePrefix;
+                    PrepaidInfo = Newtonsoft.Json.JsonConvert.DeserializeObject<JObject>(Setting.PrepaidInfo);
                     AllowMultiVehicleForStaff = (byte)Setting.AllowMultiVehicleForStaff;
                     TCList = cnmain.Query<PSlipTerms>("SELECT Description, Height from PSlipTerms");
                     FYID = cnmain.ExecuteScalar<byte>("SELECT FYID FROM tblFiscalYear WHERE CONVERT(VARCHAR,GETDATE(),101) BETWEEN BEGIN_DATE AND END_DATE");
@@ -138,7 +148,10 @@ namespace ParkingManagement.Library
         {
             string InWords = "Rs. " + conn.ExecuteScalar<string>("SELECT DBO.Num_ToWordsArabic(" + Math.Floor(GrossAmount) + ")");
             if (GrossAmount > Math.Floor(GrossAmount))
+            {
                 InWords += " & " + conn.ExecuteScalar<string>("SELECT DBO.Num_ToWordsArabic(" + GrossAmount.ToString("#0.00").Split('.')[1] + ")") + " Paisa";
+            }
+
             return InWords;
         }
 
@@ -354,14 +367,14 @@ ALTER TABLE tblSetting ADD IrdApiPassword VARCHAR(50) NULL");
                 conn.Execute(@"IF NOT EXISTS(SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'MemberDiscountDetail' AND COLUMN_NAME = 'SkipInterval')
 ALTER TABLE MemberDiscountDetail ADD SkipInterval INT NOT NULL, CONSTRAINT DF_MemberDiscountDetail_SkipInterval DEFAULT (0) FOR SkipInterval");
                 conn.Execute("UPDATE tblSetting SET UpdateHistory = 4");
-            }  
-            if(UpdateHistory <5)
+            }
+            if (UpdateHistory < 5)
             {
                 conn.Execute(@"IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'tblSetting' AND COLUMN_NAME = 'SlipPrinterWidth')
 ALTER TABLE tblSetting ADD SlipPrinterWidth TINYINT NOT NULL, CONSTRAINT DF_tblSetting_SlipPrinterWidth DEFAULT (80) FOR SlipPrinterWidth");
                 conn.Execute("UPDATE tblSetting SET UpdateHistory = 5");
             }
-            if(UpdateHistory<6)
+            if (UpdateHistory < 6)
             {
                 conn.Execute(@"IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'tblSyncLog' AND COLUMN_NAME = 'IsRealTime')
 ALTER TABLE tblSyncLog ADD IsRealTime TINYINT NULL");
@@ -381,7 +394,7 @@ ALTER TABLE tblSetting ADD EnableStamp BIT NULL");
 ALTER TABLE tblSetting ADD EnableDiscount BIT NULL");
                 conn.Execute(@"IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'tblSetting' AND COLUMN_NAME = 'EnableDiscount')
 ALTER TABLE tblSetting ADD CalculationMethod TINYINT NULL");
-                conn.Execute("UPDATE tblSetting SET UpdateHistory = 7");
+
             }
 
             if (UpdateHistory < 8)
@@ -389,6 +402,25 @@ ALTER TABLE tblSetting ADD CalculationMethod TINYINT NULL");
                 conn.Execute(@"IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'tblSetting' AND COLUMN_NAME = 'MemberBarcodePrefix')
 ALTER TABLE tblSetting ADD MemberBarcodePrefix varchar(5) NOT NULL, CONSTRAINT DF_tblSetting_MemberBarcodePrefix DEFAULT ('@') FOR MemberBarcodePrefix");
             }
+            if (UpdateHistory < 9)
+            {
+                conn.Execute(@"IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'VoucherTypes' AND COLUMN_NAME = 'NonVat')
+ALTER TABLE VoucherTypes ADD NonVat BIT");
+            }
+            if (UpdateHistory < 10)
+            {
+                conn.Execute(@"IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'tblSetting' AND COLUMN_NAME = 'EnablePrepaid')
+ALTER TABLE tblSetting ADD EnablePrepaid BIT");
+                conn.Execute(@"IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'tblSetting' AND COLUMN_NAME = 'PrepaidInfo')
+ALTER TABLE tblSetting ADD PrepaidInfo VARCHAR(500)");
+                conn.Execute(@"IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'DiscountScheme')
+CREATE TABLE DiscountScheme (SchemeId INT NOT NULL, SchemeName VARCHAR(100) NOT NULL, ValidOnWeekends BIT NOT NULL, ValidOnHolidays BIT NOT NULL, ValidHours VARCHAR(250) NOT NULL, DiscountPercent Numeric(5,2) NOT NULL, DiscountAmount VARCHAR(250), MinHrs INT NOT NULL, MaxHrs INT NOT NULL, ExpiryDate DATETIME NOT NULL, CONSTRAINT PK_DiscountScheme PRIMARY KEY (SCHEMEID))");
+                conn.Execute("ALTER TABLE PARKINGINDETAILS ALTER COLUMN InTime VARCHAR(12) NOT NULL");
+                conn.Execute("ALTER TABLE POUT_CLEARLOG ALTER COLUMN OutTime VARCHAR(12) NOT NULL");
+                conn.Execute("ALTER TABLE PARKINGOUTDETAILS ALTER COLUMN OutTime VARCHAR(12) NOT NULL");
+                conn.Execute("ALTER TABLE ParkingSales ALTER COLUMN TTime VARCHAR(12) NOT NULL");
+            }
+            conn.Execute("UPDATE tblSetting SET UpdateHistory = 10");
         }
 
         public static bool StartSession()
@@ -434,7 +466,10 @@ ALTER TABLE tblSetting ADD MemberBarcodePrefix varchar(5) NOT NULL, CONSTRAINT D
             try
             {
                 if (ex.InnerException != null)
+                {
                     ex = GetRootException(ex);
+                }
+
                 return ex;
             }
             catch (Exception exs)
@@ -505,7 +540,7 @@ ALTER TABLE tblSetting ADD MemberBarcodePrefix varchar(5) NOT NULL, CONSTRAINT D
                         );
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
             }
@@ -556,10 +591,10 @@ ALTER TABLE tblSetting ADD MemberBarcodePrefix varchar(5) NOT NULL, CONSTRAINT D
                 string strCaption = string.Format(@"SELECT COUNT(*) + 1 FROM tblPrintLog WHERE BillNo = '{0}' AND FYID = {1}",
                                          BillNo, FYID);
                 int RePrintCount = conn.ExecuteScalar<int>(strCaption);
-                if (RePrintCount == 1)
-                    return "Copy of Original";
-                else
-                    return "Copy of Original (" + RePrintCount + ")";
+                //if (RePrintCount == 1)
+                //    return "Copy of Original";
+                //else
+                return "Copy of Original (" + RePrintCount + ")";
             }
         }
 
@@ -574,7 +609,7 @@ ALTER TABLE tblSetting ADD MemberBarcodePrefix varchar(5) NOT NULL, CONSTRAINT D
                 conn.Execute(strSavePrintLog);
             }
         }
-        
+
         static string Encrypt(string Text, string Key = "AmitLalJoshi")
         {
             int i;

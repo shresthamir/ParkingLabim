@@ -29,7 +29,10 @@ namespace ParkingManagement.Library.ValueConverter
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             //return Visibility.Visible;
-            return (bool)value ? Visibility.Collapsed : Visibility.Visible;
+            if (parameter?.ToString() == "Hidden")
+                return (bool)value ? Visibility.Hidden : Visibility.Visible;
+            else
+                return (bool)value ? Visibility.Collapsed : Visibility.Visible;
 
         }
 

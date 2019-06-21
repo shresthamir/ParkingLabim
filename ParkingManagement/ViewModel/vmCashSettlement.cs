@@ -278,8 +278,8 @@ namespace ParkingManagement.ViewModel
             CollectionAmount = (decimal)dr["CollectionAmount"];
             SettlementAmount = (decimal)dr["Amount"];
 
-            strPrint += (GlobalClass.CompanyName.Length > PrintLen) ? GlobalClass.CompanyName.Substring(0, 45) : GlobalClass.CompanyName.PadLeft((PrintLen + GlobalClass.CompanyName.Length) / 2, ' ') + Environment.NewLine;
-            strPrint += (GlobalClass.CompanyAddress.Length > PrintLen) ? GlobalClass.CompanyAddress.Substring(0, 45) : GlobalClass.CompanyAddress.PadLeft((PrintLen + GlobalClass.CompanyAddress.Length) / 2, ' ') + Environment.NewLine;
+            strPrint += ((GlobalClass.CompanyName.Length > PrintLen) ? GlobalClass.CompanyName.Substring(0, PrintLen) : GlobalClass.CompanyName.PadLeft((PrintLen + GlobalClass.CompanyName.Length) / 2, ' ')) + Environment.NewLine;
+            strPrint += ((GlobalClass.CompanyAddress.Length > PrintLen) ? GlobalClass.CompanyAddress.Substring(0, PrintLen) : GlobalClass.CompanyAddress.PadLeft((PrintLen + GlobalClass.CompanyAddress.Length) / 2, ' ')) + Environment.NewLine;
             strPrint += "Cash Settlement Receipt".PadLeft(30, ' ') + Environment.NewLine;
             strPrint += string.Format("S. Id : {0}    Date : {1}", SettlementId.ToString().PadRight(7, ' '), dr["TRNDATE"]) + Environment.NewLine;
             strPrint += string.Format("Cashier : {0}", dr["UserName"]) + Environment.NewLine;
@@ -349,16 +349,8 @@ namespace ParkingManagement.ViewModel
             strPrint += "Cashier".PadRight(10, ' ') + "".PadLeft(20, ' ') + "Received By".PadRight(10, ' ') + Environment.NewLine;
             strPrint += "".PadRight(PrintLen, '-') + Environment.NewLine;
             strPrint += ((char)29).ToString() + ((char)86).ToString() + ((char)1).ToString();
-
             //new PrintHelper() { PrintData = strPrint }.Print();
-
             RawPrinterHelper.SendStringToPrinter(GlobalClass.PrinterName, strPrint, "Receipt");
         }
     }
-
-
-
-
-
-
 }

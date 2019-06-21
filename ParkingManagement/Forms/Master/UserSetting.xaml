@@ -62,7 +62,7 @@
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="10 10 0 0">
                             <CheckBox Content="Desktop Access" IsChecked="{Binding user.DESKTOP_ACCESS, Converter={StaticResource ByteToBool}}" VerticalAlignment="Center"/>
-                            <CheckBox Content="Mobile Access" Visibility="Hidden" IsChecked="{Binding user.MOBILE_ACCESS, Converter={StaticResource ByteToBool}}" VerticalAlignment="Center" Margin="20 0 0 0"/>
+                            <CheckBox Content="Mobile Access"  IsChecked="{Binding user.MOBILE_ACCESS, Converter={StaticResource ByteToBool}}" VerticalAlignment="Center" Margin="20 0 0 0"/>
                         </StackPanel>
                     </StackPanel>
                 </StackPanel>

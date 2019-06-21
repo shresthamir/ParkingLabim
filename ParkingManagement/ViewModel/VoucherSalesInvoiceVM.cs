@@ -120,7 +120,7 @@ namespace ParkingManagement.ViewModel
                 return;
             }
             GenerateVoucher = !SelectedVoucherType.SkipVoucherGeneration;
-            VSDetailList.Add(new TParkingSalesDetails
+            var vsDetail = new TParkingSalesDetails
             {
                 FYID = GlobalClass.FYID,
                 PType = 'V',
@@ -131,11 +131,13 @@ namespace ParkingManagement.ViewModel
                 Rate = VSDetail.Rate,
                 RateStr = VSDetail.RateStr,
                 Amount = VSDetail.Amount,
-                Taxable = VSDetail.Amount,
-                VAT = VSDetail.Amount * GlobalClass.VAT / 100,
-                NetAmount = VSDetail.Amount * (1 + GlobalClass.VAT / 100),
+                Taxable = SelectedVoucherType.NonVat ? 0 : VSDetail.Amount,
+                NonTaxable = SelectedVoucherType.NonVat ? VSDetail.Amount :0,
                 Remarks = VSDetail.Remarks
-            });
+            };
+            vsDetail.VAT = vsDetail.Taxable * GlobalClass.VAT / 100;
+            vsDetail.NetAmount = vsDetail.Amount + vsDetail.VAT;
+            VSDetailList.Add(vsDetail);
             VSDetail = new TParkingSalesDetails();
             VSDetail.PropertyChanged += VSDetail_PropertyChanged;
             FocusedElement = (short)Focusable.VoucherType;
@@ -216,7 +218,7 @@ namespace ParkingManagement.ViewModel
                 SetAction(ButtonAction.Init);
                 using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
                 {
-                    VTypeList = new ObservableCollection<VoucherType>(conn.Query<VoucherType>("SELECT VoucherId, VoucherName, Rate, Value, ValidStart, ValidEnd, Validity, VoucherInfo, SkipVoucherGeneration FROM VoucherTypes"));
+                    VTypeList = new ObservableCollection<VoucherType>(conn.Query<VoucherType>("SELECT VoucherId, VoucherName, Rate, Value, ValidStart, ValidEnd, Validity, VoucherInfo, SkipVoucherGeneration, ISNULL(NonVat,0 ) NonVat FROM VoucherTypes"));
                     CustomerList = new ObservableCollection<Party>(conn.Query<Party>("SELECT DISTINCT BillTo Name, BillToAdd Address, BillToPan PAN FROM ParkingSales where BillTo IS NOT NULL"));
                 }
             }
@@ -233,7 +235,8 @@ namespace ParkingManagement.ViewModel
                 VSales.Amount = VSDetailList.Sum(x => x.Amount);
                 VSales.VAT = VSDetailList.Sum(x => x.VAT);
                 VSales.GrossAmount = VSDetailList.Sum(x => x.NetAmount);
-                VSales.Taxable = VSDetailList.Sum(x => x.Amount);
+                VSales.Taxable = VSDetailList.Sum(x => x.Taxable);
+                VSales.NonTaxable = VSDetailList.Sum(x => x.NonTaxable);
                 TotQty = VSDetailList.Sum(x => x.Quantity);
             }
         }

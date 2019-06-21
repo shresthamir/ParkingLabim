@@ -96,7 +96,7 @@ namespace ParkingManagement.Models
         public decimal Rate { get { return _Rate; } set { _Rate = value; _RateStr = value.ToString("#0.00"); OnPropertyChanged("Rate"); OnPropertyChanged("RateStr"); } }
         public decimal Amount { get { return _Amount; } set { _Amount = value;  OnPropertyChanged("Amount"); } }
         public decimal Discount { get { return _Discount; } set { _Discount = value; } }
-        public decimal NonTaxable { get { return _NonTaxable; } set { _NonTaxable = value; } }
+        public decimal NonTaxable { get { return _NonTaxable; } set { _NonTaxable = value; OnPropertyChanged("NonTaxable"); } }
         public decimal Taxable { get { return _Taxable; } set { _Taxable = value; } }
         public decimal VAT { get { return _VAT; } set { _VAT = value; OnPropertyChanged("VAT"); } }
         public decimal NetAmount { get { return _NetAmount; } set { _NetAmount = value; OnPropertyChanged("NetAmount"); } }

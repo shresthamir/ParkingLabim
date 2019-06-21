@@ -21,6 +21,7 @@ namespace ParkingManagement.Models
         private string _VoucherInfo;
         private bool _SkipVoucherGeneration;
         private string _RateStr;
+        private bool _NonVat;
 
         public int VoucherId { get { return _VoucherId; } set { _VoucherId = value; OnPropertyChanged("VoucherId"); } }
         public string VoucherName { get { return _VoucherName; } set { _VoucherName = value; OnPropertyChanged("VoucherName"); } }
@@ -33,7 +34,8 @@ namespace ParkingManagement.Models
         public DateTime Start { get { return new DateTime().Add(ValidStart); } set { ValidStart = value.TimeOfDay; OnPropertyChanged("Start"); } }
         public DateTime End { get { return new DateTime().Add(ValidEnd); } set { ValidEnd = value.TimeOfDay; OnPropertyChanged("End"); } }
         public string VoucherInfo { get { return _VoucherInfo; } set { _VoucherInfo = value; OnPropertyChanged("VoucherInfo"); } }
-        public bool SkipVoucherGeneration { get { return _SkipVoucherGeneration; } set { _SkipVoucherGeneration = value; OnPropertyChanged("Skip Voucher Generation"); } }
+        public bool SkipVoucherGeneration { get { return _SkipVoucherGeneration; } set { _SkipVoucherGeneration = value; OnPropertyChanged("SkipVoucherGeneration"); } }
+        public bool NonVat { get { return _NonVat; } set { _NonVat = value; OnPropertyChanged("NonVat"); } }
         public string RateStr
         {
             get { return _RateStr; }
@@ -52,13 +54,13 @@ namespace ParkingManagement.Models
 
         public override bool Save(SqlTransaction tran)
         {
-            string strSaveSql = "INSERT INTO VoucherTypes(VoucherId, VoucherName, VehicleType, Rate, Value, ValidStart, ValidEnd, Validity, VoucherInfo, SkipVoucherGeneration) VALUES (@VoucherId, @VoucherName, @VehicleType, @Rate, @Value, @ValidStart, @ValidEnd, @Validity, @VoucherInfo, @SkipVoucherGeneration)";
+            string strSaveSql = "INSERT INTO VoucherTypes(VoucherId, VoucherName, VehicleType, Rate, Value, ValidStart, ValidEnd, Validity, VoucherInfo, SkipVoucherGeneration, NonVat) VALUES (@VoucherId, @VoucherName, @VehicleType, @Rate, @Value, @ValidStart, @ValidEnd, @Validity, @VoucherInfo, @SkipVoucherGeneration, @NonVat)";
             return tran.Connection.Execute(strSaveSql, this, tran) == 1;
         }
 
         public override bool Update(SqlTransaction tran)
         {
-            string strUpdateSql = "UPDATE VoucherTypes SET VoucherName = @VoucherName, VehicleType = @VehicleType, Rate = @Rate, Value = @Value, ValidStart = @ValidStart, ValidEnd = @ValidEnd, Validity = @Validity, VoucherInfo = @VoucherInfo, SkipVoucherGeneration = @SkipVoucherGeneration WHERE VoucherId = @VoucherId";
+            string strUpdateSql = "UPDATE VoucherTypes SET VoucherName = @VoucherName, VehicleType = @VehicleType, Rate = @Rate, Value = @Value, ValidStart = @ValidStart, ValidEnd = @ValidEnd, Validity = @Validity, VoucherInfo = @VoucherInfo, SkipVoucherGeneration = @SkipVoucherGeneration, NonVat = @NonVat WHERE VoucherId = @VoucherId";
             return tran.Connection.Execute(strUpdateSql, this, tran) == 1;
         }
 

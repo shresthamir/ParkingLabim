@@ -1,23 +1,16 @@
-﻿using ParkingManagement.Library;
+﻿using Dapper;
+using Newtonsoft.Json.Linq;
+using ParkingManagement.Library;
 using ParkingManagement.Library.Helpers;
 using Syncfusion.UI.Xaml.Grid;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Text;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using Dapper;
-using Newtonsoft.Json.Linq;
-using System.Data;
 namespace ParkingManagement.Forms.Reports
 {
     /// <summary>
@@ -77,6 +70,7 @@ namespace ParkingManagement.Forms.Reports
                 PrintPreviewCommand = new RelayCommand(ExecutePrintPreview, CanExecutePrintExport);
                 PrintCommand = new RelayCommand(ExecutePrint, CanExecutePrintExport);
                 LoadData = new RelayCommand(ExecuteLoad);
+                ExportCommand = new RelayCommand(ExecuteExport);
             }
             catch (Exception ex)
             {
@@ -125,13 +119,25 @@ namespace ParkingManagement.Forms.Reports
                 rv = new ReportViewer();
                 string Param = string.Format("{{\"FLG\" : \"{0}\", \"SDATE\" : \"{1}\",  \"EDATE\" : \"{2}\"", FLAG, FromDate.ToString("MM/dd/yyyy"), ToDate.ToString("MM/dd/yyyy"));
                 if (!string.IsNullOrEmpty(TrnUser))
+                {
                     Param += string.Format(", \"USERID\" : \"{0}\"", TrnUser);
+                }
+
                 if (!string.IsNullOrEmpty(ComputerName))
+                {
                     Param += string.Format(", \"HOSTNM\" : \"{0}\"", ComputerName);
+                }
+
                 if (!string.IsNullOrEmpty(EntryForm))
+                {
                     Param += string.Format(", \"FORMNM\" : \"{0}\"", EntryForm);
+                }
+
                 if (!string.IsNullOrEmpty(TrnAction))
+                {
                     Param += string.Format(", \"ACTIONNM\" : \"{0}\"", TrnAction);
+                }
+
                 Param += "}";
 
 
@@ -141,9 +147,14 @@ namespace ParkingManagement.Forms.Reports
 
                 var data = GetDataFromProcedure("sp_UserWLogDetail", Param);
                 if (data != null && data.Count() == 0)
+                {
                     MessageBox.Show("NoData");
+                }
                 else
+                {
                     ReportSource = new ObservableCollection<dynamic>(data);
+                }
+
                 GlobalClass.SetUserActivityLog("Transaction Activities Log", "View", string.Empty, string.Empty, string.Empty);
                 rv.DataContext = this;
                 rv.Show();
@@ -258,6 +269,107 @@ namespace ParkingManagement.Forms.Reports
                 using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
                 {
                     return conn.Query<dynamic>(ProcName, d, commandType: CommandType.StoredProcedure);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(GlobalClass.GetRootException(ex).Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return null;
+            }
+        }
+    }
+
+    class vmFootFallReport : BaseViewModel
+    {
+        ReportViewer rv;
+        private ObservableCollection<dynamic> _ReportSource;
+
+        public ObservableCollection<dynamic> ReportSource { get { return _ReportSource; } set { _ReportSource = value; OnPropertyChanged("ReportSource"); } }
+
+        public vmFootFallReport()
+        {
+            PrintPreviewCommand = new RelayCommand(ExecutePrintPreview, CanExecutePrintExport);
+            PrintCommand = new RelayCommand(ExecutePrint, CanExecutePrintExport);
+            LoadData = new RelayCommand(ExecuteLoad);
+        }
+
+        private void ExecuteExport(object obj)
+        {
+            GlobalClass.ReportName = "Footfall Report";
+            GlobalClass.ReportParams = "";
+            wExportFormat ef = new wExportFormat(rv.Report);
+            ef.ShowDialog();
+        }
+
+        private void ExecutePrintPreview(object obj)
+        {
+            GlobalClass.ReportName = "Footfall Report";
+            GlobalClass.ReportParams = "";
+
+            rv.Report.PrintSettings.PrintPageMargin = new Thickness(30);
+            rv.Report.PrintSettings.AllowColumnWidthFitToPrintPage = false;
+            rv.Report.ShowPrintPreview();
+        }
+        private void ExecutePrint(object obj)
+        {
+            GlobalClass.ReportName = "Footfall Report";
+            GlobalClass.ReportParams = "";
+
+            rv.Report.PrintSettings.PrintPageMargin = new Thickness(30);
+            rv.Report.PrintSettings.AllowColumnWidthFitToPrintPage = false;
+            rv.Report.Print();
+        }
+
+        private bool CanExecutePrintExport(object obj)
+        {
+            return ReportSource != null && ReportSource.Count > 0;
+        }
+
+        private void ExecuteLoad(object obj)
+        {
+            try
+            {
+                rv = new ReportViewer();
+                LoadColumns();
+
+                var data = GetDataFromProcedure("sp_FootfallReport", "");
+                if (data != null && data.Count() == 0)
+                {
+                    MessageBox.Show("NoData");
+                }
+                else
+                {
+                    ReportSource = new ObservableCollection<dynamic>(data);
+                }
+
+                GlobalClass.SetUserActivityLog("Footfall Report", "View", string.Empty, string.Empty, string.Empty);
+                rv.DataContext = this;
+                rv.Show();
+            }
+
+            catch (Exception ex)
+            {
+                MessageBox.Show(GlobalClass.GetRootException(ex).Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+
+            }
+        }
+
+        private void LoadColumns()
+        {
+            rv.Report.Columns.Clear();
+            rv.Report.Columns.Add(new GridTextColumn { HeaderText = "Month", DisplayBinding = new Binding("Month"), Width = 200 });
+            rv.Report.Columns.Add(new GridTextColumn { HeaderText = "Two Wheeler", DisplayBinding = new Binding("Two Wheeler"), Width = 120 });
+            rv.Report.Columns.Add(new GridTextColumn { HeaderText = "Four Wheeler", DisplayBinding = new Binding("Four Wheeler"), Width = 120 });
+        }
+
+
+        public static IEnumerable<dynamic> GetDataFromProcedure(string ProcName, string ParamJSON)
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
+                {
+                    return conn.Query<dynamic>(ProcName, commandType: CommandType.StoredProcedure);
                 }
             }
             catch (Exception ex)

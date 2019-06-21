@@ -53,14 +53,15 @@
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Margin="110 0 0 0"  VerticalAlignment="Bottom"  Text="Vat Excluxive"/>
-                    <TextBlock Margin="30 0 0 0" VerticalAlignment="Bottom" Text="Vat Incluxive"/>
+                    <TextBlock Margin="30 0 0 0" VerticalAlignment="Bottom" Visibility="{Binding VType.NonVat, Converter={StaticResource RevBoolToVisibility}, ConverterParameter='Hidden'}" Text="Vat Incluxive"/>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <Label Content="Rate"></Label>
                     <TextBox Width="100" Text="{Binding VType.RateStr, UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Right"></TextBox>
-                    <TextBox Width="100" Margin="5 0 0 0" Text="{Binding VType.Rate, Converter={StaticResource ToVatInclusive}, StringFormat={}{0:#0.00}}" HorizontalContentAlignment="Right"></TextBox>
+                    <TextBox Width="100" Margin="5 0 0 0" Visibility="{Binding VType.NonVat, Converter={StaticResource RevBoolToVisibility}, ConverterParameter='Hidden'}" Text="{Binding VType.Rate, Converter={StaticResource ToVatInclusive}, StringFormat={}{0:#0.00}}" HorizontalContentAlignment="Right"></TextBox>
+                    <CheckBox Content="Non Vat Item" IsChecked="{Binding VType.NonVat}" VerticalAlignment="Center"/>
 
-                    <Label Content="Value" Margin="110 0 0 0" ></Label>
+                    <Label Content="Value" Margin="15 0 0 0" ></Label>
                     <TextBox Width="100" Text="{Binding VType.Value, Converter={StaticResource NoZero}}" HorizontalAlignment="Right"></TextBox>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">

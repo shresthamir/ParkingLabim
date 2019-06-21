@@ -81,7 +81,7 @@ namespace ParkingManagement.ViewModel
                     SetAction(ButtonAction.InvoiceLoaded);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
             }

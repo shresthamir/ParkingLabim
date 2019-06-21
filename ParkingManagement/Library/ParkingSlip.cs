@@ -7,6 +7,8 @@ using BarcodeLib;
 using System.Drawing;
 using System.Drawing.Printing;
 using ParkingManagement.Models;
+using QRCoder;
+
 namespace ParkingManagement.Library
 {
     public class ParkingSlip
@@ -41,13 +43,19 @@ namespace ParkingManagement.Library
             G.DrawString(CompanyName, new Font(new FontFamily("Segoe UI"), 9), Brushes.Black, new RectangleF(0, i, paperWidth, 17), format);
             i += 17;
 
-            G.DrawString(CompanyAddress, new Font(new FontFamily("Segoe UI"), 9), Brushes.Black, new RectangleF(0, i, paperWidth, 17), format);
+            QRCodeGenerator qrGenerator = new QRCodeGenerator();
+            QRCodeData qrCodeData = qrGenerator.CreateQrCode(PIN.Barcode, QRCodeGenerator.ECCLevel.Q);
+            QRCode qrCode = new QRCode(qrCodeData);
+            Bitmap qrCodeImage = qrCode.GetGraphic(3);
+            G.DrawImage(qrCodeImage, new Point(180, i));
+
+            G.DrawString(CompanyAddress, new Font(new FontFamily("Segoe UI"), 9), Brushes.Black, new RectangleF(0, i, paperWidth -20, 17), format);
             i += 17;
 
-            G.DrawString("Parking Slip", new Font(new FontFamily("Segoe UI Semibold"), 9), Brushes.Black, new RectangleF(0, i, paperWidth, 20), format);
+            G.DrawString("Parking Slip", new Font(new FontFamily("Segoe UI Semibold"), 9), Brushes.Black, new RectangleF(0, i, paperWidth -20, 20), format);
             i += 18;
 
-            G.DrawString(PIN.VType.Description, new Font(new FontFamily("Segoe UI"), 11, FontStyle.Bold), Brushes.Black, new RectangleF(0, i, paperWidth, 18), format);
+            G.DrawString(PIN.VType.Description, new Font(new FontFamily("Segoe UI"), 11, FontStyle.Bold), Brushes.Black, new RectangleF(0, i, paperWidth -20, 18), format);
             i += 20;
             G.DrawString(string.Format("Date : {0} ({1})", PIN.InDate.ToString("MM/dd/yyyy"), PIN.InMiti), new Font(new FontFamily("Segoe UI"), 9), Brushes.Black, new RectangleF(10, i, paperWidth, 18));
             i += 17;
@@ -60,6 +68,8 @@ namespace ParkingManagement.Library
             }
 
             i += 22;
+
+            
 
             Barcode barcode = new Barcode()
             {

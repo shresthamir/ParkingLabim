@@ -1,4 +1,7 @@
-﻿using ParkingManagement.Library;
+﻿using Dapper;
+using Newtonsoft.Json;
+using ParkingManagement.Forms.Transaction;
+using ParkingManagement.Library;
 using ParkingManagement.Library.Helpers;
 using ParkingManagement.Models;
 using RawPrintFunctions;
@@ -8,15 +11,10 @@ using System.Collections.ObjectModel;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Windows;
 using System.Windows.Threading;
-using Dapper;
-using System.Drawing.Printing;
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using ParkingManagement.Forms.Transaction;
-using Newtonsoft.Json;
 
 namespace ParkingManagement.ViewModel
 {
@@ -30,7 +28,7 @@ namespace ParkingManagement.ViewModel
         DateConverter nepDate;
         bool _PartyEnabled;
         DispatcherTimer timer;
-        wStaffBarcode StaffBarcode;
+        Window StaffBarcode;
         ParkingIn _PIN;
         ParkingOut _POUT;
         ObservableCollection<RateMaster> _RSchemes;
@@ -64,7 +62,9 @@ namespace ParkingManagement.ViewModel
                 OnPropertyChanged("TaxInvoice");
                 InvoicePrefix = (value) ? "TI" : "SI";
                 if (_action != ButtonAction.RePrint)
+                {
                     InvoiceNo = GlobalClass.GetInvoiceNo(InvoicePrefix);
+                }
             }
         }
         public bool SaveWithStaffEnabled { get { return _SaveWithStaffEnabled; } set { _SaveWithStaffEnabled = value; OnPropertyChanged("SaveWithStaffEnabled"); } }
@@ -74,10 +74,12 @@ namespace ParkingManagement.ViewModel
         public string InvoicePrefix { get { return _InvoicePrefix; } set { _InvoicePrefix = value; OnPropertyChanged("InvoicePrefix"); } }
         public string CurTime { get { return _CurTime; } set { _CurTime = value; OnPropertyChanged("CurTime"); } }
         public DateTime CurDate { get { return _CurDate; } set { _CurDate = value; OnPropertyChanged("CurDate"); } }
-        public bool PartyEnabled { get { return _PartyEnabled; } set { _PartyEnabled = value; OnPropertyChanged("PartyEnabled"); } }        
+        public bool PartyEnabled { get { return _PartyEnabled; } set { _PartyEnabled = value; OnPropertyChanged("PartyEnabled"); } }
         public List<DiscountScheme> DiscountList { get { return _DiscountList; } set { _DiscountList = value; OnPropertyChanged("DiscountList"); } }
         public RelayCommand OpenStaffBarcodeCommand { get; set; }
         public RelayCommand SaveWithStaffCommand { get; set; }
+        public RelayCommand SaveWithPrepaidCommand { get { return new RelayCommand(SaveWithPrepaid); } }
+
         public RelayCommand RePrintCommand { get { return new RelayCommand(ExecuteRePrint, CanExecuteRePrint); } }
         public RelayCommand LoadInvoice { get { return new RelayCommand(ExecuteLoadInvoice, CanLoadInvoice); } }
         public DiscountScheme SelectedDiscount
@@ -121,7 +123,7 @@ namespace ParkingManagement.ViewModel
                 {
                     MessageBox.Show(ex.GetBaseException().Message, MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 }
-                
+
             }
         }
 
@@ -247,7 +249,9 @@ namespace ParkingManagement.ViewModel
                 POUT.CashAmount = 0;
                 ExecuteSave(null);
                 if (StaffBarcode != null)
+                {
                     StaffBarcode.Close();
+                }
             }
             catch (Exception ex)
             {
@@ -256,10 +260,110 @@ namespace ParkingManagement.ViewModel
             }
         }
 
+
+
+        private void SaveWithPrepaid(object obj)
+        {
+            if (obj == null)
+            {
+                MessageBox.Show("Invalid Card");
+            }
+            if (ValidateKKFC(GlobalClass.PrepaidInfo.GetValue("Url1").ToString(), GlobalClass.PrepaidInfo.GetValue("Url2").ToString(), GlobalClass.PrepaidInfo.GetValue("ClientId").ToString(), GlobalClass.PrepaidInfo.GetValue("ClientSecretKey").ToString(), obj.ToString(), POUT.PID.ToString()))
+            {
+                StaffBarcode.Close();
+                ExecuteSave(null);
+            }
+        }
+
+        bool ValidateKKFC(string Url1, string Url2, string ClientId, string ClientSecretKey, string CardNumber, string TransactionId)
+        {
+            try
+            {
+                var PinRequest = (HttpWebRequest)WebRequest.Create(Url1);
+                var ClinetInfo = Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(new { ClientId, ClientSecretKey }));
+                PinRequest.Method = "POST";
+                PinRequest.ContentType = "application/json";
+                PinRequest.ContentLength = ClinetInfo.Length;
+
+                using (var stream = (PinRequest.GetRequestStream()))
+                {
+                    stream.Write(ClinetInfo, 0, ClinetInfo.Length);
+                }
+                var response = (HttpWebResponse)PinRequest.GetResponse();
+                var result = JsonConvert.DeserializeObject<Newtonsoft.Json.Linq.JObject>(new System.IO.StreamReader(response.GetResponseStream()).ReadToEnd());
+                if(result.GetValue("status").ToString() != "ok")
+                {
+                    MessageBox.Show(result.GetValue("message").ToString(), MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Error);
+                    return false;
+                }
+                var PinNumber = result.GetValue("result").ToString();
+
+                var PaymentRequest = (HttpWebRequest)WebRequest.Create(Url2);
+                var PaymentInfo = Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(new
+                {
+                    ClientId,
+                    ClientSecretKey,
+                    Amount = POUT.CashAmount,
+                    CardNumber,
+                    PinNumber,
+                    TransactionId,
+                    Description = POUT.BILLTO?.ToString(),
+                    TransactionNumber = TransactionId
+                }));
+                PaymentRequest.Method = "POST";
+                PaymentRequest.ContentType = "application/json";
+                PaymentRequest.ContentLength = PaymentInfo.Length;
+
+                using (var stream = (PaymentRequest.GetRequestStream()))
+                {
+                    stream.Write(PaymentInfo, 0, PaymentInfo.Length);
+                }
+                var PaymentResponse = (HttpWebResponse)PaymentRequest.GetResponse();
+                var ResponseMessage = new System.IO.StreamReader(PaymentResponse.GetResponseStream()).ReadToEnd();
+                result = JsonConvert.DeserializeObject<Newtonsoft.Json.Linq.JObject>(ResponseMessage);
+                if (result.GetValue("status").ToString() != "ok")
+                {
+                    MessageBox.Show(result.GetValue("message").ToString(), MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Error);
+                    return false;
+                }
+                POUT.STAFF_BARCODE = PinNumber + ":" + result.GetValue("result").ToString();
+                return true;
+            }
+            catch (WebException ex)
+            {
+                if (ex.Status == WebExceptionStatus.ProtocolError)
+                {
+                    string Response = new System.IO.StreamReader(ex.Response.GetResponseStream()).ReadToEnd();
+                    var res = JsonConvert.DeserializeObject<dynamic>(Response);
+                    MessageBox.Show(res.Message.ToString(), MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Error);
+
+                }
+                else
+                {
+                    MessageBox.Show(ex.GetBaseException().Message, MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.GetBaseException().Message, MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+        }
+
         private void OpenStaffBarcode(object obj)
         {
-            StaffBarcode = new wStaffBarcode() { DataContext = this };
-            StaffBarcode.ShowDialog();
+            if (obj.ToString() == "Staff")
+            {
+                StaffBarcode = new wStaffBarcode() { DataContext = this };
+                StaffBarcode.ShowDialog();
+            }
+            else
+            {
+                StaffBarcode = new wPrepaidCard() { DataContext = this };
+                StaffBarcode.ShowDialog();
+            }
         }
 
         private void ExecutePrint(object obj)
@@ -325,12 +429,16 @@ namespace ParkingManagement.ViewModel
                             return;
                         }
                         else
+                        {
                             POUT.SaveLog(conn);
+                            Vouchers.Clear();
+                            mDiscount = null;
+                        }
                     }
 
                     var PINS = conn.Query<ParkingIn>(string.Format(@"SELECT PID, VehicleType, InDate, InMiti, InTime, PlateNo, Barcode, UID FROM ParkingInDetails 
 WHERE((BARCODE <> '' AND  BARCODE = '{0}') OR(ISNULL(PLATENO, '') <> '' AND ISNULL(PlateNo, '') = '{0}'))
-AND FYID = {1}", obj, GlobalClass.FYID));
+AND FYID = {1} ORDER BY PID DESC", obj, GlobalClass.FYID));
                     if (PINS.Count() <= 0)
                     {
                         MessageBox.Show("Invalid barcode readings.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
@@ -346,7 +454,7 @@ AND FYID = {1}", obj, GlobalClass.FYID));
                         MessageBox.Show("Entity already exited", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
                         PIN.Barcode = string.Empty;
                         return;
-                    }                    
+                    }
                     POUT.Rate_ID = (int)conn.ExecuteScalar("SELECT RATE_ID FROM RATEMASTER WHERE IsDefault = 1");
 
                     DateTime ServerTime = nepDate.GetServerTime();
@@ -386,7 +494,10 @@ AND FYID = {1}", obj, GlobalClass.FYID));
         private void ValidateMember(object obj, SqlConnection conn)
         {
             if (mDiscount != null)
+            {
                 return;
+            }
+
             TimeSpan InTime = DateTime.Parse(PIN.InTime).TimeOfDay;
             TimeSpan OutTime = DateTime.Parse(POUT.OutTime).TimeOfDay;
             decimal DiscountAmount = 0;
@@ -446,7 +557,9 @@ AND FYID = {1}", obj, GlobalClass.FYID));
             POUT.BILLTOADD = m.Address;
 
             if (TimeSpentInEachSession.Any(x => x.SkipValidityPeriod))
+            {
                 mDiscount.SkipInterval = TimeSpentInEachSession.Where(x => x.SkipValidityPeriod).Sum(x => x.TimeSpent);
+            }
 
             int DiscountInterval = scheme.Limit - Interval + mDiscount.SkipInterval;
             foreach (dynamic session in TimeSpentInEachSession.Where(x => x.TimeSpent > 0))
@@ -466,10 +579,13 @@ AND FYID = {1}", obj, GlobalClass.FYID));
                 DiscountHour = 0;
                 DiscountAmount = 0;
             }
-            POUT.CashAmount = POUT.ChargedAmount = POUT.ChargedAmount - mDiscount.DiscountAmount;
+            POUT.CashAmount = POUT.ChargedAmount - mDiscount.DiscountAmount;
             PIN.Barcode = string.Empty;
             if (POUT.CashAmount == 0)
+            {
                 ExecuteSave(null);
+            }
+
             PoleDisplay.WriteToDisplay(POUT.CashAmount, PoleDisplayType.AMOUNT);
         }
 
@@ -533,7 +649,10 @@ AND FYID = {1}", obj, GlobalClass.FYID));
         private void ValidateVoucher(object obj, SqlConnection conn)
         {
             if (Vouchers.Any(x => x.Barcode == obj.ToString()))
+            {
                 return;
+            }
+
             Voucher v = conn.Query<Voucher>("SELECT VoucherNo, Barcode, VoucherId, Value, ExpDate, ValidStart, ValidEnd, ScannedTime FROM ParkingVouchers WHERE Barcode = @Barcode", new { Barcode = obj.ToString() }).FirstOrDefault();
             if (v == null)
             {
@@ -545,7 +664,7 @@ AND FYID = {1}", obj, GlobalClass.FYID));
                 MessageBox.Show("Voucher already redeemed.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 return;
             }
-            else if (!VoucherTypes.Any(x => x.VoucherId == v.VoucherId && x.VehicleType == PIN.VehicleType))
+            else if (!VoucherTypes.Any(x => x.VoucherId == v.VoucherId && (x.VehicleType == 0 || x.VehicleType == PIN.VehicleType)))
             {
                 MessageBox.Show("The Voucher is not valid for current Entrance Type.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 return;
@@ -580,9 +699,11 @@ AND FYID = {1}", obj, GlobalClass.FYID));
             POUT.CashAmount = POUT.ChargedAmount - v.Value;
             PIN.Barcode = string.Empty;
             Vouchers.Add(v);
-
             if (POUT.CashAmount == 0)
+            {
                 ExecuteSave(null);
+            }
+
             PoleDisplay.WriteToDisplay(POUT.CashAmount, PoleDisplayType.AMOUNT);
         }
 
@@ -591,7 +712,10 @@ AND FYID = {1}", obj, GlobalClass.FYID));
             using (SqlCommand cmd = conn.CreateCommand())
             {
                 if (conn.State != ConnectionState.Open)
+                {
                     conn.Open();
+                }
+
                 cmd.CommandText = "sp_Calculate_PCharge";
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@InTime", InTime);
@@ -629,14 +753,18 @@ AND FYID = {1}", obj, GlobalClass.FYID));
                             BillNo = InvoicePrefix + GlobalClass.GetInvoiceNo(InvoicePrefix, tran);
                             Quantity = POUT.ChargedHours;
                             if (Vouchers.Count > 0)
-                                Discount = Vouchers.Sum(x => x.Value);
-                            else if (mDiscount != null)
-                                Discount = mDiscount.DiscountAmount;
-                            else if (POUT.CashAmount< POUT.ChargedAmount)
                             {
-                                Discount = POUT.ChargedAmount - POUT.CashAmount;                                
+                                Discount = Vouchers.Sum(x => x.Value);
                             }
-                            Amount = POUT.ChargedAmount/ (1 + (GlobalClass.VAT / 100));
+                            else if (mDiscount != null)
+                            {
+                                Discount = mDiscount.DiscountAmount;
+                            }
+                            else if (POUT.CashAmount < POUT.ChargedAmount)
+                            {
+                                Discount = POUT.ChargedAmount - POUT.CashAmount;
+                            }
+                            Amount = POUT.ChargedAmount / (1 + (GlobalClass.VAT / 100));
                             Discount = Discount / (1 + (GlobalClass.VAT / 100));
                             Rate = Amount / Quantity;
                             NonTaxable = 0;
@@ -770,7 +898,10 @@ AND FYID = {1}", obj, GlobalClass.FYID));
             string[] hrsMins;
             int hrs = 0, min = 0, TotMins;
             if (string.IsNullOrEmpty(duration) || duration == "N/A")
+            {
                 return 0;
+            }
+
             try
             {
                 if (duration.Contains(" "))
@@ -815,7 +946,8 @@ AND FYID = {1}", obj, GlobalClass.FYID));
                 VoucherTypes = conn.Query<VoucherType>("SELECT VoucherId, VehicleType FROM VoucherTypes").ToList();
                 RSchemes = new ObservableCollection<RateMaster>(conn.Query<RateMaster>("SELECT Rate_ID, RateDescription, IsDefault, [UID] FROM RATEMASTER"));
                 DiscountList = conn.Query<DiscountScheme>("SELECT * FROM DiscountScheme WHERE ExpiryDate >= GETDATE()").ToList();
-                DiscountList.Insert(0, new DiscountScheme {
+                DiscountList.Insert(0, new DiscountScheme
+                {
                     SchemeId = 0,
                     SchemeName = "No Discount",
                     DiscountPercent = 0,
@@ -823,7 +955,7 @@ AND FYID = {1}", obj, GlobalClass.FYID));
                     ExpiryDate = new DateTime(2100, 1, 1),
                     ValidHours = "[{'Start':'00:00:00','End':'23:59:59'}]",
                     ValidOnHolidays = true,
-                    ValidOnWeekends = true                    
+                    ValidOnWeekends = true
                 });
             }
             GlobalClass.DefaultRate = RSchemes.First(x => x.IsDefault);
@@ -844,7 +976,7 @@ AND FYID = {1}", obj, GlobalClass.FYID));
                                     WHERE BillNo = '{0}' AND PS.FYID = {1}", BillNo, GlobalClass.FYID), conn).Rows[0];
 
             }
-            string InWords = GlobalClass.GetNumToWords(conn, Convert.ToDecimal(dr["GrossAmount"]));            
+            string InWords = GlobalClass.GetNumToWords(conn, Convert.ToDecimal(dr["GrossAmount"]));
             string strPrint = string.Empty;
             int PrintLen = 40;
             string Description = dr["Description"].ToString();
@@ -858,7 +990,10 @@ AND FYID = {1}", obj, GlobalClass.FYID));
             strPrint += PAN.PadLeft((PrintLen + PAN.Length) / 2, ' ') + Environment.NewLine;
             strPrint += InvoiceName.PadLeft((PrintLen + InvoiceName.Length) / 2, ' ') + Environment.NewLine;
             if (!string.IsNullOrEmpty(DuplicateCaption))
+            {
                 strPrint += DuplicateCaption.PadLeft((PrintLen + DuplicateCaption.Length) / 2, ' ') + Environment.NewLine;
+            }
+
             strPrint += string.Format("Bill No : {0}    Date : {1}", BillNo.PadRight(7, ' '), dr["TMiti"]) + Environment.NewLine;
             strPrint += string.Format("Vehicle Type : {0} {1}", dr["VType"], string.IsNullOrEmpty(dr["PlateNo"].ToString()) ? string.Empty : "(" + dr["PlateNo"] + ")") + Environment.NewLine;
             strPrint += string.Format("Name    : {0}", dr["BillTo"]) + Environment.NewLine;
@@ -878,7 +1013,10 @@ AND FYID = {1}", obj, GlobalClass.FYID));
             {
                 strPrint += ("Gross Amount : " + GParse.ToDecimal(dr["Amount"]).ToString("#0.00").PadLeft(8, ' ')).PadLeft(PrintLen, ' ') + Environment.NewLine;
                 if (GParse.ToDecimal(dr["Discount"]) > 0)
+                {
                     strPrint += ("Discount : " + GParse.ToDecimal(dr["Discount"]).ToString("#0.00").PadLeft(8, ' ')).PadLeft(PrintLen, ' ') + Environment.NewLine;
+                }
+
                 strPrint += ("Taxable : " + GParse.ToDecimal(dr["Taxable"]).ToString("#0.00").PadLeft(8, ' ')).PadLeft(PrintLen, ' ') + Environment.NewLine;
                 strPrint += ("Non Taxable : " + GParse.ToDecimal(dr["NonTaxable"]).ToString("#0.00").PadLeft(8, ' ')).PadLeft(PrintLen, ' ') + Environment.NewLine;
                 strPrint += ("VAT 13% : " + GParse.ToDecimal(dr["VAT"]).ToString("#0.00").PadLeft(8, ' ')).PadLeft(PrintLen, ' ') + Environment.NewLine;
@@ -897,9 +1035,13 @@ AND FYID = {1}", obj, GlobalClass.FYID));
             strPrint += ((char)29).ToString() + ((char)86).ToString() + ((char)1).ToString();
 
             if (GlobalClass.NoRawPrinter)
+            {
                 new StringPrint(strPrint).Print();
+            }
             else
+            {
                 RawPrinterHelper.SendStringToPrinter(GlobalClass.PrinterName, strPrint, "Receipt");
+            }
         }
 
 
@@ -916,9 +1058,13 @@ AND FYID = {1}", obj, GlobalClass.FYID));
             if (CurTime != DateTime.Now.ToString("hh:mm tt"))
             {
                 if (DateTime.Now.Second > 5)
+                {
                     timer.Interval = new TimeSpan(0, 0, 1);
+                }
                 else
+                {
                     timer.Interval = new TimeSpan(0, 1, 0);
+                }
             }
             CurTime = DateTime.Now.ToString("hh:mm tt");
             CurDate = DateTime.Today;

@@ -221,7 +221,7 @@
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <Label Content="Charged Amount"></Label>
-                            <TextBox Width="150" IsReadOnly="True" IsTabStop="False" FontSize="14" Text="{Binding POUT.ChargedAmount, StringFormat={}{0:#0.00}}" HorizontalContentAlignment="Right"/>
+                            <TextBox Width="150" IsReadOnly="True" IsTabStop="False" FontSize="14" Text="{Binding POUT.CashAmount, StringFormat={}{0:#0.00}}" HorizontalContentAlignment="Right"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Visibility="{x:Static Lib:GlobalClass.DiscountVisible}">
                             <Label Content="Scheme"></Label>
@@ -275,7 +275,8 @@
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Right">
                         <Button Content="Stamp" Style="{StaticResource NewButton}" Width="80" Height="45" Command="{Binding SaveWithStaffCommand}"  CommandParameter="STAMP" IsEnabled="{Binding SaveWithStaffEnabled}" Visibility="{x:Static Lib:GlobalClass.StampVisible}"/>
-                        <Button Content="Staff" Style="{StaticResource NewButton}" Width="80" Height="45" Command="{Binding OpenStaffBarcodeCommand}"  IsEnabled="{Binding SaveWithStaffEnabled}" Visibility="{x:Static Lib:GlobalClass.StaffVisible}"/>
+                        <Button Content="Staff" Style="{StaticResource NewButton}" Width="80" Height="45" Command="{Binding OpenStaffBarcodeCommand}" CommandParameter="Staff"  IsEnabled="{Binding SaveWithStaffEnabled}" Visibility="{x:Static Lib:GlobalClass.StaffVisible}"/>
+                        <Button Content="Prepaid Card" Style="{StaticResource NewButton}" Width="80" Height="45" Command="{Binding OpenStaffBarcodeCommand}" CommandParameter="Prepaid" IsEnabled="{Binding SaveWithStaffEnabled}" Visibility="{x:Static Lib:GlobalClass.PrepaidVisible}"/>
                         <Button Content="Finish" Style="{StaticResource NewButton}" Width="80" Height="45" Command="{Binding SaveCommand}"  helper:CustomFocusManager.IsFocused="{Binding FocusedElement, Converter={StaticResource ShortToBool}, ConverterParameter='1'}"/>
                     </StackPanel>
                 </Grid>

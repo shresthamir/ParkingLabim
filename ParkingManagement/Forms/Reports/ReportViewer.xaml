@@ -108,7 +108,7 @@
 
             <Button Grid.Column="0" Content="Selection"/>
             <Button Grid.Column="1" Content="Find"/>
-            <Button Grid.Column="2" Content="Save to Excel"/>
+            <Button Grid.Column="2" Content="Save to Excel" Command="{Binding ExportCommand}"/>
             <Button Grid.Column="4" Content="Page Setup"/>
             <Button Grid.Column="5" Content="Font Setup"/>
             <Button Grid.Column="7" Content="Hide/UnHide" Command="{Binding FormatCommand}"/>
