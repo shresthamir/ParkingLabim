@@ -18,7 +18,7 @@ using System.Windows.Threading;
 
 namespace ParkingManagement.ViewModel
 {
-    class POutVMTouch : BaseViewModel
+    public class POutVMTouch : BaseViewModel
     {
         enum Focusable
         {
@@ -45,6 +45,7 @@ namespace ParkingManagement.ViewModel
         private List<DiscountScheme> _DiscountList;
         private DiscountScheme _SelectedDiscount;
         private bool IsHoliday;
+        private string _TrnMode="Sales";
 
         public ParkingIn PIN { get { return _PIN; } set { _PIN = value; OnPropertyChanged("PIN"); } }
         public ParkingOut POUT { get { return _POUT; } set { _POUT = value; OnPropertyChanged("POUT"); } }
@@ -53,6 +54,7 @@ namespace ParkingManagement.ViewModel
             get { return _RSchemes; }
             set { _RSchemes = value; OnPropertyChanged("RSchemes"); }
         }
+        
         public bool TaxInvoice
         {
             get { return _TaxInvoice; }
@@ -70,19 +72,20 @@ namespace ParkingManagement.ViewModel
         public bool SaveWithStaffEnabled { get { return _SaveWithStaffEnabled; } set { _SaveWithStaffEnabled = value; OnPropertyChanged("SaveWithStaffEnabled"); } }
         public bool IsEntryMode { get { return _action == ButtonAction.Init || _action == ButtonAction.Selected; } }
         public bool CanChangeInvoiceType { get { return _MustIssueTaxInvoice; } set { _MustIssueTaxInvoice = value; OnPropertyChanged("CanChangeInvoiceType"); } }
+        public string TrnMode { get { return _TrnMode; } set { _TrnMode = value; OnPropertyChanged("TrnMode"); } }
         public string InvoiceNo { get { return _InvoiceNo; } set { _InvoiceNo = value; OnPropertyChanged("InvoiceNo"); } }
         public string InvoicePrefix { get { return _InvoicePrefix; } set { _InvoicePrefix = value; OnPropertyChanged("InvoicePrefix"); } }
         public string CurTime { get { return _CurTime; } set { _CurTime = value; OnPropertyChanged("CurTime"); } }
         public DateTime CurDate { get { return _CurDate; } set { _CurDate = value; OnPropertyChanged("CurDate"); } }
         public bool PartyEnabled { get { return _PartyEnabled; } set { _PartyEnabled = value; OnPropertyChanged("PartyEnabled"); } }
-        public List<DiscountScheme> DiscountList { get { return _DiscountList; } set { _DiscountList = value; OnPropertyChanged("DiscountList"); } }
+        private List<DiscountScheme> DiscountList { get { return _DiscountList; } set { _DiscountList = value; OnPropertyChanged("DiscountList"); } }
         public RelayCommand OpenStaffBarcodeCommand { get; set; }
         public RelayCommand SaveWithStaffCommand { get; set; }
         public RelayCommand SaveWithPrepaidCommand { get { return new RelayCommand(SaveWithPrepaid); } }
 
         public RelayCommand RePrintCommand { get { return new RelayCommand(ExecuteRePrint, CanExecuteRePrint); } }
         public RelayCommand LoadInvoice { get { return new RelayCommand(ExecuteLoadInvoice, CanLoadInvoice); } }
-        public DiscountScheme SelectedDiscount
+        private DiscountScheme SelectedDiscount
         {
             get { return _SelectedDiscount; }
             set
@@ -268,14 +271,21 @@ namespace ParkingManagement.ViewModel
             {
                 MessageBox.Show("Invalid Card");
             }
-            if (ValidateKKFC(GlobalClass.PrepaidInfo.GetValue("Url1").ToString(), GlobalClass.PrepaidInfo.GetValue("Url2").ToString(), GlobalClass.PrepaidInfo.GetValue("ClientId").ToString(), GlobalClass.PrepaidInfo.GetValue("ClientSecretKey").ToString(), obj.ToString(), POUT.PID.ToString()))
+            if (ValidateKKFC(GlobalClass.PrepaidInfo.GetValue("Url1").ToString(), GlobalClass.PrepaidInfo.GetValue("Url2").ToString(), GlobalClass.PrepaidInfo.GetValue("ClientId").ToString(), GlobalClass.PrepaidInfo.GetValue("ClientSecretKey").ToString(), obj.ToString(), POUT.PID.ToString(), TrnMode))
             {
-                StaffBarcode.Close();
-                ExecuteSave(null);
+                if (StaffBarcode != null)
+                {
+                    StaffBarcode.Close();
+                    ExecuteSave(null);
+                }
+                else
+                {
+                    MessageBox.Show("Amount deducted sucessfully.");
+                }
             }
         }
 
-        bool ValidateKKFC(string Url1, string Url2, string ClientId, string ClientSecretKey, string CardNumber, string TransactionId)
+        bool ValidateKKFC(string Url1, string Url2, string ClientId, string ClientSecretKey, string CardNumber, string TransactionId,string TrnMode)
         {
             try
             {
@@ -291,7 +301,7 @@ namespace ParkingManagement.ViewModel
                 }
                 var response = (HttpWebResponse)PinRequest.GetResponse();
                 var result = JsonConvert.DeserializeObject<Newtonsoft.Json.Linq.JObject>(new System.IO.StreamReader(response.GetResponseStream()).ReadToEnd());
-                if(result.GetValue("status").ToString() != "ok")
+                if (result.GetValue("status").ToString() != "ok")
                 {
                     MessageBox.Show(result.GetValue("message").ToString(), MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Error);
                     return false;
@@ -308,7 +318,9 @@ namespace ParkingManagement.ViewModel
                     PinNumber,
                     TransactionId,
                     Description = POUT.BILLTO?.ToString(),
-                    TransactionNumber = TransactionId
+                    TransactionNumber = TransactionId,
+                    TrnMode,
+                    remarks=POUT.Remarks
                 }));
                 PaymentRequest.Method = "POST";
                 PaymentRequest.ContentType = "application/json";
@@ -361,6 +373,8 @@ namespace ParkingManagement.ViewModel
             }
             else
             {
+                DiscountScheme discountScheme=DiscountList.Where(x => x.DiscountPercent == 25).FirstOrDefault();
+                this.SelectedDiscount = discountScheme;
                 StaffBarcode = new wPrepaidCard() { DataContext = this };
                 StaffBarcode.ShowDialog();
             }

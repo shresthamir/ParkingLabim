@@ -23,10 +23,16 @@ namespace ParkingManagement.Forms.Transaction
     /// </summary>
     public partial class ucTouchParkingOut : UserControl
     {
+        public POutVMTouch ViewModel { get; set; }
         public ucTouchParkingOut()
         {
             InitializeComponent();
-            this.DataContext = new POutVMTouch();
+            this.DataContext= ViewModel = new POutVMTouch();
+            Loaded += UserControl_Loaded;
+        }
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            ViewModel.TrnMode = "Sales";
         }
 
         private void txtBarcode_PreviewLostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)

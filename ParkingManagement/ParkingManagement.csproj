@@ -81,10 +81,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="BarcodeLib">
-      <HintPath>..\..\Library\BarcodeLib.dll</HintPath>
+      <HintPath>..\..\..\..\Users\Amir\Desktop\bishaka Programming\Library\BarcodeLib.dll</HintPath>
     </Reference>
     <Reference Include="Dapper">
-      <HintPath>..\..\Library\Dapper.dll</HintPath>
+      <HintPath>..\..\..\..\Users\Amir\Desktop\bishaka Programming\Library\Dapper.dll</HintPath>
+    </Reference>
+    <Reference Include="ExtendedComboBox">
+      <HintPath>..\..\..\UpdatePackage\ExtendedComboBox.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Expression.Interactions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -92,7 +95,7 @@
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="Microsoft.Windows.Shell">
-      <HintPath>..\..\Library\Microsoft.Windows.Shell.dll</HintPath>
+      <HintPath>..\..\..\..\Users\Amir\Desktop\bishaka Programming\Library\Microsoft.Windows.Shell.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\..\..\Library DLLs\Newtonsoft.Json.dll</HintPath>
@@ -103,43 +106,38 @@
       <HintPath>..\packages\QRCoder.1.3.5\lib\net40\QRCoder.dll</HintPath>
     </Reference>
     <Reference Include="RawPrintFunctions">
-      <HintPath>..\..\Library\RawPrintFunctions.dll</HintPath>
+      <HintPath>..\..\..\..\Users\Amir\Desktop\bishaka Programming\Library\RawPrintFunctions.dll</HintPath>
     </Reference>
     <Reference Include="ReachFramework" />
     <Reference Include="Syncfusion.Compression.Base">
-      <HintPath>..\..\..\..\Library\Syncfusion\Syncfusion 4.5\Syncfusion.Compression.Base.dll</HintPath>
+      <HintPath>..\..\..\..\Users\Amir\Desktop\bishaka Programming\IMS - Ticketing Software\ParkingManagement\bin\x86\Debug\Syncfusion.Compression.Base.dll</HintPath>
     </Reference>
-    <Reference Include="Syncfusion.Core, Version=13.3400.0.7, Culture=neutral, PublicKeyToken=632609b4d040f6b4, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Library\Syncfusion\Syncfusion 4.5\Syncfusion.Core.dll</HintPath>
+    <Reference Include="Syncfusion.Core">
+      <HintPath>..\..\..\..\Users\Amir\Desktop\bishaka Programming\IMS - Ticketing Software\ParkingManagement\bin\x86\Debug\Syncfusion.Core.dll</HintPath>
     </Reference>
     <Reference Include="Syncfusion.Data.WPF">
-      <HintPath>..\..\..\..\Library\Syncfusion\Syncfusion.Data.WPF.dll</HintPath>
+      <HintPath>..\..\..\..\Users\Amir\Desktop\bishaka Programming\IMS - Ticketing Software\ParkingManagement\bin\x86\Debug\Syncfusion.Data.WPF.dll</HintPath>
     </Reference>
-    <Reference Include="Syncfusion.Pdf.Base, Version=13.3400.0.7, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Library\Syncfusion\Syncfusion 4.5\Syncfusion.Pdf.Base.dll</HintPath>
+    <Reference Include="Syncfusion.Pdf.Base">
+      <HintPath>..\..\..\..\Users\Amir\Desktop\bishaka Programming\IMS - Ticketing Software\ParkingManagement\bin\x86\Debug\Syncfusion.Pdf.Base.dll</HintPath>
     </Reference>
-    <Reference Include="Syncfusion.PdfViewer.WPF, Version=13.3400.0.7, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Library\Syncfusion\Syncfusion 4.5\Syncfusion.PdfViewer.WPF.dll</HintPath>
+    <Reference Include="Syncfusion.PdfViewer.WPF">
+      <HintPath>..\..\..\..\Users\Amir\Desktop\bishaka Programming\IMS - Ticketing Software\ParkingManagement\bin\x86\Debug\Syncfusion.PdfViewer.WPF.dll</HintPath>
     </Reference>
     <Reference Include="Syncfusion.SfGrid.WPF">
-      <HintPath>..\..\..\..\Library\Syncfusion\Syncfusion.SfGrid.WPF.dll</HintPath>
+      <HintPath>..\..\..\..\Users\Amir\Desktop\bishaka Programming\IMS - Ticketing Software\ParkingManagement\bin\x86\Debug\Syncfusion.SfGrid.WPF.dll</HintPath>
     </Reference>
-    <Reference Include="Syncfusion.SfGridConverter.WPF, Version=13.3400.0.7, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Library\Syncfusion\Syncfusion 4.5\Syncfusion.SfGridConverter.WPF.dll</HintPath>
+    <Reference Include="Syncfusion.SfGridConverter.WPF">
+      <HintPath>..\..\..\..\Users\Amir\Desktop\bishaka Programming\IMS - Ticketing Software\ParkingManagement\bin\x86\Debug\Syncfusion.SfGridConverter.WPF.dll</HintPath>
     </Reference>
-    <Reference Include="Syncfusion.SfInput.WPF, Version=15.3450.0.26, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\Syncfusion\Essential Studio\15.3.0.26\Assemblies\4.5\Syncfusion.SfInput.WPF.dll</HintPath>
+    <Reference Include="Syncfusion.SfInput.WPF">
+      <HintPath>..\..\..\..\Users\Amir\Desktop\bishaka Programming\IMS - Ticketing Software\ParkingManagement\bin\x86\Debug\Syncfusion.SfInput.WPF.dll</HintPath>
     </Reference>
     <Reference Include="Syncfusion.Shared.WPF">
-      <HintPath>..\..\..\..\Library\Syncfusion\Syncfusion.Shared.WPF.dll</HintPath>
+      <HintPath>..\..\..\..\Users\Amir\Desktop\bishaka Programming\IMS - Ticketing Software\ParkingManagement\bin\x86\Debug\Syncfusion.Shared.WPF.dll</HintPath>
     </Reference>
     <Reference Include="Syncfusion.XlsIO.Base">
-      <HintPath>..\..\..\..\Library\Syncfusion\Syncfusion.XlsIO.Base.dll</HintPath>
+      <HintPath>..\..\..\..\Users\Amir\Desktop\bishaka Programming\IMS - Ticketing Software\ParkingManagement\bin\x86\Debug\Syncfusion.XlsIO.Base.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -167,19 +165,19 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="WPFCustomToolKit">
-      <HintPath>..\..\Library\WPFCustomToolKit.dll</HintPath>
+      <HintPath>..\..\..\..\Users\Amir\Desktop\bishaka Programming\Library\WPFCustomToolKit.dll</HintPath>
     </Reference>
     <Reference Include="Xceed.Wpf.AvalonDock">
-      <HintPath>..\..\Library\Xceed.Wpf.AvalonDock.dll</HintPath>
+      <HintPath>..\..\..\..\Users\Amir\Desktop\bishaka Programming\Library\Xceed.Wpf.AvalonDock.dll</HintPath>
     </Reference>
     <Reference Include="Xceed.Wpf.AvalonDock.Themes.Metro">
-      <HintPath>..\..\Library\Xceed.Wpf.AvalonDock.Themes.Metro.dll</HintPath>
+      <HintPath>..\..\..\..\Users\Amir\Desktop\bishaka Programming\Library\Xceed.Wpf.AvalonDock.Themes.Metro.dll</HintPath>
     </Reference>
     <Reference Include="Xceed.Wpf.Toolkit">
-      <HintPath>..\..\Library\Xceed.Wpf.Toolkit.dll</HintPath>
+      <HintPath>..\..\..\..\Users\Amir\Desktop\bishaka Programming\Library\Xceed.Wpf.Toolkit.dll</HintPath>
     </Reference>
     <Reference Include="Zen.Barcode">
-      <HintPath>..\..\Library\Zen.Barcode.dll</HintPath>
+      <HintPath>..\..\..\..\Users\Amir\Desktop\bishaka Programming\Library\Zen.Barcode.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -223,6 +221,10 @@
     <Compile Include="Forms\Reports\ReportViewer.xaml.cs">
       <DependentUpon>ReportViewer.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Reports\ucCardDiscountReport.xaml.cs">
+      <DependentUpon>ucCardDiscountReport.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Forms\Reports\ucVoucherDiscountReport.xaml.cs">
       <DependentUpon>ucVoucherDiscountReport.xaml</DependentUpon>
     </Compile>
@@ -237,6 +239,9 @@
     </Compile>
     <Compile Include="Forms\Transaction\CashSettlement.xaml.cs">
       <DependentUpon>CashSettlement.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Transaction\Deduction.xaml.cs">
+      <DependentUpon>Deduction.xaml</DependentUpon>
     </Compile>
     <Compile Include="Forms\Transaction\Denomination.xaml.cs">
       <DependentUpon>Denomination.xaml</DependentUpon>
@@ -303,6 +308,7 @@
     <Compile Include="ViewModel\ComplementaryVoucherGeneratorViewModel.cs" />
     <Compile Include="ViewModel\CreditNoteVoucherWiseViewModel.cs" />
     <Compile Include="ViewModel\CreditNoteViewModel.cs" />
+    <Compile Include="ViewModel\DeductionViewModel.cs" />
     <Compile Include="ViewModel\HolidayViewModel.cs" />
     <Compile Include="ViewModel\DiscountSchemeViewModel.cs" />
     <Compile Include="ViewModel\MembershipSchemeViewModel.cs" />
@@ -397,6 +403,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Forms\Reports\ucCardDiscountReport.xaml">
+      <SubType>Designer</SubType>
+      <Generator>XamlIntelliSenseFileGenerator</Generator>
+    </Page>
     <Page Include="Forms\Reports\ucVoucherDiscountReport.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -422,6 +432,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Forms\Transaction\CashSettlement.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Forms\Transaction\Deduction.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

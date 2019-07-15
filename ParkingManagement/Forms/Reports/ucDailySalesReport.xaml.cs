@@ -164,37 +164,72 @@ namespace ParkingManagement.Forms.Reports
             //(this.DataContext as vmDailySales).Sort(e);
         }
 
-       //void SetGroupHeader(DataGrid dg, params StatFields[] fields)
-       // {
-       //     GroupStyle gs = new GroupStyle();
-       //     Style s = new Style(typeof(GroupItem));
+        private void DateSelectionThisMonth_Click(object sender, RoutedEventArgs e)
+        {
+            txtFDate.SelectedDate = DateTime.Parse(DateTime.Today.Month.ToString().PadLeft(2, '0') + "/01/" + DateTime.Today.Year);
+            txtTDate.SelectedDate = DateTime.Today;
+            LoadReport();
+        }
+
+       
+
+        private void DateSelectionThisWeek_Click(object sender, RoutedEventArgs e)
+        {
+            txtFDate.SelectedDate = DateTime.Today.Subtract(new TimeSpan(7, 0, 0, 0, 0));
+            txtTDate.SelectedDate= DateTime.Today;
+            LoadReport();
+
+        }
+
+        private void LoadReport()
+        {
+            dgDailySales.Columns.Clear();
+            string SQL = string.Empty; ;
+            if (cmdSummary.SelectedIndex == 0)
+            {
+                SQL = string.Format(@"SELECT SUM(ChargedAmount) Decimal1,SUM(CashAmount) Decimal2 FROM ParkingOutDetails S
+                                            INNER JOIN Users U ON U.[UID] = S.[UID] WHERE (S.OuTDATE BETWEEN '{0}' AND '{1}')",
+                                            txtFDate.SelectedDate.Value.ToString("MM/dd/yyyy"), txtTDate.SelectedDate.Value.ToString("MM/dd/yyyy"));
+               
+                //dgDailySales.Columns.Add(new DataGridTextColumn { Header = "Charged Amount", Binding = new Binding("Decimal1") { StringFormat = "#0.00" }, Width = 150, CellStyle = NumericColumn });//CellContentStringFormat = "{0:#0.00}",
+                //dgDailySales.Columns.Add(new DataGridTextColumn { Header = "Amount", Binding = new Binding("Decimal2") { StringFormat = "#0.00" }, Width = 150, CellStyle = NumericColumn });//CellContentStringFormat = "{0:#0.00}",
+
+            }
+            ViewModel.LoadSummaryReport(SQL);
 
 
-       //     ControlTemplate ct = new ControlTemplate(typeof(GroupItem));
-       //     var ex = new FrameworkElementFactory(typeof(Expander));
-            
-       //     StackPanel sp = new StackPanel() { Orientation = Orientation.Horizontal };
+        }
+        //void SetGroupHeader(DataGrid dg, params StatFields[] fields)
+        // {
+        //     GroupStyle gs = new GroupStyle();
+        //     Style s = new Style(typeof(GroupItem));
 
-       //     foreach (DataGridColumn dc in dg.Columns)
-       //     {
-       //         DataGridCell cell = new DataGridCell();
-       //         cell.Width = dc.Width.Value;
-       //         if(fields.Any(x=>x.FieldName.ToUpper()==dc.Header.ToString().ToUpper()))
-       //         {
-       //             var field = fields.FirstOrDefault(x => x.FieldName.ToUpper() == dc.Header.ToString().ToUpper());
-       //             cell.Content = field.Content;
-       //         }
-       //         sp.Children.Add(cell);
-       //     }
-       //     ex.SetValue(Expander.HeaderTemplateProperty,sp);
-       //     Expander exe = new Expander();
-            
-       //     ct.VisualTree = ex;
-       //     s.Setters.Add(new Setter { Property = ContentTemplateProperty, Value = ct });
-       //     gs.ContainerStyle=s;
-       //     dg.GroupStyle.Add(gs);
 
-       // }
+        //     ControlTemplate ct = new ControlTemplate(typeof(GroupItem));
+        //     var ex = new FrameworkElementFactory(typeof(Expander));
+
+        //     StackPanel sp = new StackPanel() { Orientation = Orientation.Horizontal };
+
+        //     foreach (DataGridColumn dc in dg.Columns)
+        //     {
+        //         DataGridCell cell = new DataGridCell();
+        //         cell.Width = dc.Width.Value;
+        //         if(fields.Any(x=>x.FieldName.ToUpper()==dc.Header.ToString().ToUpper()))
+        //         {
+        //             var field = fields.FirstOrDefault(x => x.FieldName.ToUpper() == dc.Header.ToString().ToUpper());
+        //             cell.Content = field.Content;
+        //         }
+        //         sp.Children.Add(cell);
+        //     }
+        //     ex.SetValue(Expander.HeaderTemplateProperty,sp);
+        //     Expander exe = new Expander();
+
+        //     ct.VisualTree = ex;
+        //     s.Setters.Add(new Setter { Property = ContentTemplateProperty, Value = ct });
+        //     gs.ContainerStyle=s;
+        //     dg.GroupStyle.Add(gs);
+
+        // }
 
 
     }

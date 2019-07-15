@@ -76,7 +76,7 @@ namespace ParkingManagement.Library
                 if (File.Exists(Environment.SystemDirectory + "\\ParkingDBSetting.dat"))
                 {
                     dynamic connProps = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(File.ReadAllText(Environment.SystemDirectory + "\\ParkingDBSetting.dat"));
-                    DataConnectionString = string.Format("SERVER = {0}; DATABASE = {1}; UID = {2}; PWD = {3}", Encrypt(connProps.DataSource.ToString()), Encrypt(connProps.InitialCatalog.ToString()), Encrypt(connProps.UserID.ToString()), Encrypt(connProps.Password.ToString()));
+                    DataConnectionString = string.Format("SERVER = {0}; DATABASE = {1}; UID = {2}; PWD = {3};", Encrypt(connProps.DataSource.ToString()), Encrypt(connProps.InitialCatalog.ToString()), Encrypt(connProps.UserID.ToString()), Encrypt(connProps.Password.ToString()));
                     Terminal = Encrypt(connProps.Terminal.ToString());
                 }
                 using (SqlConnection cnmain = new SqlConnection(DataConnectionString))
