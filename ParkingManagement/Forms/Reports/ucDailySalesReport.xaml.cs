@@ -185,8 +185,7 @@ namespace ParkingManagement.Forms.Reports
         {
             dgDailySales.Columns.Clear();
             string SQL = string.Empty; ;
-            if (cmdSummary.SelectedIndex == 0)
-            {
+            
                 SQL = string.Format(@"SELECT SUM(ChargedAmount) Decimal1,SUM(CashAmount) Decimal2 FROM ParkingOutDetails S
                                             INNER JOIN Users U ON U.[UID] = S.[UID] WHERE (S.OuTDATE BETWEEN '{0}' AND '{1}')",
                                             txtFDate.SelectedDate.Value.ToString("MM/dd/yyyy"), txtTDate.SelectedDate.Value.ToString("MM/dd/yyyy"));
@@ -194,7 +193,6 @@ namespace ParkingManagement.Forms.Reports
                 //dgDailySales.Columns.Add(new DataGridTextColumn { Header = "Charged Amount", Binding = new Binding("Decimal1") { StringFormat = "#0.00" }, Width = 150, CellStyle = NumericColumn });//CellContentStringFormat = "{0:#0.00}",
                 //dgDailySales.Columns.Add(new DataGridTextColumn { Header = "Amount", Binding = new Binding("Decimal2") { StringFormat = "#0.00" }, Width = 150, CellStyle = NumericColumn });//CellContentStringFormat = "{0:#0.00}",
 
-            }
             ViewModel.LoadSummaryReport(SQL);
 
 

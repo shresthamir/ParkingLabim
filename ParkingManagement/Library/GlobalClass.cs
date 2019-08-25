@@ -135,7 +135,7 @@ namespace ParkingManagement.Library
                 //return ConnBuilder.ConnectionString;
             }
         }
-
+        public static int StickerVoucher { get; internal set; }
         public static string GetTConnectionString(string TUser, string TPassword)
         {
             SqlConnectionStringBuilder ConnBuilder = new SqlConnectionStringBuilder(DataConnectionString);
