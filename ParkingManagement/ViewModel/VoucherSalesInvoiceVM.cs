@@ -17,11 +17,25 @@ using System.Threading;
 using ParkingManagement.Forms;
 using BarcodeStickerPrinter;
 using System.Net;
+using System.Configuration;
+
 
 namespace ParkingManagement.ViewModel
 {
     class VoucherSalesInvoiceVM : BaseViewModel
     {
+        int PaperWidthMM = Convert.ToInt32(ConfigurationManager.AppSettings["PaperWidthMM"]);
+        int LabelWidthMM = Convert.ToInt32(ConfigurationManager.AppSettings["LabelWidthMM"]);
+        int LabelHeightMM = Convert.ToInt32(ConfigurationManager.AppSettings["LabelHeightMM"]);
+        int PrintSpeed = Convert.ToInt32(ConfigurationManager.AppSettings["PrintSpeed"]);
+        string Sensor = ConfigurationManager.AppSettings["Sensor"];
+        int VerticalGapMM = Convert.ToInt32(ConfigurationManager.AppSettings["VerticalGapMM"]);
+        string OffsetMM = ConfigurationManager.AppSettings["OffsetMM"];
+        int HorizontalGapMM = Convert.ToInt32(ConfigurationManager.AppSettings["HorizontalGapMM"]);
+        int LeftMarginMM = Convert.ToInt32(ConfigurationManager.AppSettings["LeftMarginMM"]);
+        int TopMarginMM = Convert.ToInt32(ConfigurationManager.AppSettings["TopMarginMM"]);
+        string Density = ConfigurationManager.AppSettings["Density"];
+
         enum Focusable
         {
             Invoice = 0,
@@ -565,7 +579,8 @@ namespace ParkingManagement.ViewModel
             using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
             {
                 var Vouchers = conn.Query<Voucher>("SELECT VoucherNo, V.Description VoucherName, PV.VoucherId, Barcode, PV.Value, VT.voucherInfo VoucherText FROM ParkingVouchers PV JOIN VoucherTypes VT ON PV.VoucherId = VT.VoucherId JOIN VehicleType V on vt.VehicleType = v.VTypeID WHERE BillNo = @BillNo AND FYID = @FYID" + Condition, new { BillNo = BillNo, FYID = GlobalClass.FYID });
-                StickerPrinter sp = new StickerPrinter(GlobalClass.StickerPrinter, 108, 34, 20, 4, "0", 3, 0, "0", 3, 0, "7");
+                //StickerPrinter sp = new StickerPrinter(GlobalClass.StickerPrinter, 108, 34, 20, 4, "0", 2, 0, "0", 0, 10, "7");
+                StickerPrinter sp = new StickerPrinter(GlobalClass.StickerPrinter, PaperWidthMM, LabelWidthMM, LabelHeightMM, PrintSpeed, Sensor, VerticalGapMM, HorizontalGapMM, OffsetMM, LeftMarginMM, TopMarginMM, Density);
                 sp.PrintSticker(Vouchers.Select(x => new BarcodeObject { Barcode = x.Barcode, Value = x.Value.ToString("Rs #0.00"), VehicleType = x.VoucherName, voucherText = x.VoucherText }).ToArray(), 3);
             }
         }
