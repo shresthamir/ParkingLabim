@@ -51,7 +51,7 @@
                     <StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <Label Width="80" Content = "From Date" ></Label>
-                            <DatePicker  x:Name="txtFDate" Height="28" ></DatePicker>
+                            <DatePicker x:Name="txtFDate" Height="28" ></DatePicker>
 
                             <Label Width="80" Margin="20 0 0 0" Content = "From Miti"></Label>
                             <TextBox x:Name="txtFMiti" Height="28" Width="120" Text="{Binding ElementName=txtFDate, Path=SelectedDate, Converter={StaticResource DateToMiti}}" ></TextBox>

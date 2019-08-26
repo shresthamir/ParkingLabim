@@ -49,9 +49,9 @@ namespace ParkingManagement.Forms.Reports
 
 
 
-                
+                txtFDate.SelectedDate = DateTime.Now;
                 txtTDate.SelectedDate = nepDate.GetLastDateOfBSMonth(DateTime.Today);
-                txtFDate.SelectedDate = nepDate.GetFirstDateOfBSMonth(DateTime.Today);
+                //txtFDate.SelectedDate = nepDate.GetFirstDateOfBSMonth(DateTime.Today);
 
                 dgDailySales.Columns.Add(new DataGridTextColumn { Header = "In", Binding = new Binding("Date1"), Width = 150 });
                 dgDailySales.Columns.Add(new DataGridTextColumn { Header = "Out", Binding = new Binding("Date2"), Width = 150, }); // CellContentStringFormat = "{0:MM/dd/yyyy hh:mm tt}",
