@@ -40,5 +40,11 @@ namespace ParkingManagement.Forms.Transaction
                     e.Handled = true;
             }
         }
+
+        private void CheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+                    
+            
+        }
     }
 }

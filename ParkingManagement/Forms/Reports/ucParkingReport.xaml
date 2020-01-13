@@ -18,6 +18,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="100"/>
             <RowDefinition/>
+            <RowDefinition Height="40"/>
         </Grid.RowDefinitions>
        
         <Border BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" BorderThickness="2">
@@ -94,5 +95,13 @@
             </DataGrid.GroupStyle>
 
         </DataGrid>
+        <Border Grid.Row="2" BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" BorderThickness="2">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Total Hours: "/>
+                <TextBlock x:Name="TotalHours" Text="{Binding TotalHours}"/>
+            </StackPanel>
+        </Border>
+
+           
     </Grid>
 </UserControl>

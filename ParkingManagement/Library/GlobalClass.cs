@@ -26,6 +26,7 @@ namespace ParkingManagement.Library
         public static string CompanyAddress;
         public static string CompanyPan;
         public static decimal VAT = 13;
+        public static decimal VATCONRATE = 1.13m;
         public static User User;
         public static string PrinterName = "POS80";
         public static PrintQueue printer;
@@ -53,6 +54,10 @@ namespace ParkingManagement.Library
         public static string AppDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\IMS\\Parking";
         public static decimal AbbTaxInvoiceLimit = 5000;
         internal static bool NoRawPrinter;
+        internal static string StickerPrinter = "TSC TTP-244 Pro";
+        internal static int StickerVoucher = 1;
+
+        public static string RentalAPI;
 
         public static string ReportName { get; set; }
         public static string ReportParams { get; set; }
@@ -135,7 +140,7 @@ namespace ParkingManagement.Library
                 //return ConnBuilder.ConnectionString;
             }
         }
-        public static int StickerVoucher { get; internal set; }
+        //public static int StickerVoucher  = 1;
         public static string GetTConnectionString(string TUser, string TPassword)
         {
             SqlConnectionStringBuilder ConnBuilder = new SqlConnectionStringBuilder(DataConnectionString);

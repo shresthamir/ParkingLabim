@@ -15,13 +15,14 @@ using Excel = Microsoft.Office.Interop.Excel;
 using System.Data.OleDb;
 
 namespace ParkingManagement.ViewModel
+
 {
     class MemberViewModel : BaseViewModel
     {
         Forms.wImportMembers wImport;
         private string _ExcelFilePath;
         private ObservableCollection<Member> _ImportMemberList;
-        private Member _member;
+        private Member _Member;
         private ObservableCollection<Member> _MemberList;
         private Member _SelectedMember;
         private ObservableCollection<MembershipScheme> _SchemeList;
@@ -29,7 +30,7 @@ namespace ParkingManagement.ViewModel
         private int _OldRecord;
         private int _NewRecord;
 
-        public Member member { get { return _member; } set { _member = value; OnPropertyChanged("member"); } }
+        public Member Member { get { return _Member; } set { _Member = value; OnPropertyChanged("Member"); } }
         public Member SelectedMember { get { return _SelectedMember; } set { _SelectedMember = value; OnPropertyChanged("SelectedMember"); } }
         public ObservableCollection<Member> MemberList { get { return _MemberList; } set { _MemberList = value; OnPropertyChanged("MemberList"); } }
         public ObservableCollection<MembershipScheme> SchemeList { get { return _SchemeList; } set { _SchemeList = value; OnPropertyChanged("SchemeList"); } }
@@ -71,7 +72,7 @@ namespace ParkingManagement.ViewModel
                         {
                             if(!string.IsNullOrEmpty(m.Error))
                             {
-                                if (MessageBox.Show(string.Format("Error On {0}({1}) : {2}. Do you want to skip this member and continue??", m.MemberName, m.MemberId, m.Error), MessageBoxCaption, MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
+                                if (MessageBox.Show(string.Format("Error On {0}({1}) : {2}. Do you want to skip this Member and continue??", m.MemberName, m.MemberId, m.Error), MessageBoxCaption, MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
                                     return;
                                 else
                                     continue;
@@ -160,11 +161,11 @@ namespace ParkingManagement.ViewModel
                     conn.Open();
                     using (SqlTransaction tran = conn.BeginTransaction())
                     {
-                        member.Delete(tran);
+                        Member.Delete(tran);
                         tran.Commit();
                     }
                 }
-                MemberList.Remove(MemberList.First(x => x.MemberId == member.MemberId));
+                MemberList.Remove(MemberList.First(x => x.MemberId == Member.MemberId));
                 MessageBox.Show("Member Successfully Deleted.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Information);
                 UndoMethod(null);
             }
@@ -186,7 +187,7 @@ namespace ParkingManagement.ViewModel
             {
                 if (SelectedMember != null)
                 {
-                    member = new Member()
+                    Member = new Member()
                     {
                         MemberId = SelectedMember.MemberId,
                         MemberName = SelectedMember.MemberName,
@@ -213,7 +214,7 @@ namespace ParkingManagement.ViewModel
             try
             {
                 UndoMethod(null);
-                member.PropertyChanged += Member_PropertyChanged;
+                Member.PropertyChanged += Member_PropertyChanged;
                 SetAction(ButtonAction.New);
             }
             catch (Exception ex)
@@ -226,23 +227,23 @@ namespace ParkingManagement.ViewModel
 
         private void Member_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "SchemeId" && member.SchemeId > 0)
+            if (e.PropertyName == "SchemeId" && Member.SchemeId > 0)
             {
-                member.ExpiryDate = member.ActivationDate.AddDays(SchemeList.FirstOrDefault(x => x.SchemeId == member.SchemeId).ValidityPeriod);
+                Member.ExpiryDate = Member.ActivationDate.AddDays(SchemeList.FirstOrDefault(x => x.SchemeId == Member.SchemeId).ValidityPeriod);
             }
         }
 
         protected void SaveMethod(object obj)
         {
-            if (!string.IsNullOrEmpty(member.Error))
+            if (!string.IsNullOrEmpty(Member.Error))
             {
-                MessageBox.Show(member.Error, MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                MessageBox.Show(Member.Error, MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 return;
             }
             if (_action == ButtonAction.New)
-                Save(member);
+                Save(Member);
             else if (_action == ButtonAction.Edit)
-                UpdateMember(member);
+                UpdateMember(Member);
         }
 
         private void Save(object obj)
@@ -256,20 +257,20 @@ namespace ParkingManagement.ViewModel
                     conn.Open();
                     using (SqlTransaction tran = conn.BeginTransaction())
                     {
-                        member.Save(tran);
+                        Member.Save(tran);
                         tran.Commit();
                     }
                 }
                 MemberList.Add(new Member()
                 {
-                    MemberId = member.MemberId,
-                    MemberName = member.MemberName,
-                    Address = member.Address,
-                    Mobile = member.Mobile,
-                    ActivationDate = member.ActivationDate,
-                    ExpiryDate = member.ExpiryDate,
-                    SchemeId = member.SchemeId,
-                    Barcode = member.Barcode
+                    MemberId = Member.MemberId,
+                    MemberName = Member.MemberName,
+                    Address = Member.Address,
+                    Mobile = Member.Mobile,
+                    ActivationDate = Member.ActivationDate,
+                    ExpiryDate = Member.ExpiryDate,
+                    SchemeId = Member.SchemeId,
+                    Barcode = Member.Barcode
                 });
                 MessageBox.Show("Member successfully saved.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Information);
                 UndoMethod(null);
@@ -293,17 +294,17 @@ namespace ParkingManagement.ViewModel
                     conn.Open();
                     using (SqlTransaction tran = conn.BeginTransaction())
                     {
-                        member.Update(tran);
+                        Member.Update(tran);
                         tran.Commit();
                     }
                 }
-                SelectedMember.MemberName = member.MemberName;
-                SelectedMember.Address = member.Address;
-                SelectedMember.Mobile = member.Mobile;
-                SelectedMember.ActivationDate = member.ActivationDate;
-                SelectedMember.ExpiryDate = member.ExpiryDate;
-                SelectedMember.SchemeId = member.SchemeId;
-                SelectedMember.Barcode = member.Barcode;
+                SelectedMember.MemberName = Member.MemberName;
+                SelectedMember.Address = Member.Address;
+                SelectedMember.Mobile = Member.Mobile;
+                SelectedMember.ActivationDate = Member.ActivationDate;
+                SelectedMember.ExpiryDate = Member.ExpiryDate;
+                SelectedMember.SchemeId = Member.SchemeId;
+                SelectedMember.Barcode = Member.Barcode;
                 MessageBox.Show("Member Successfully Updated.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Information);
                 UndoMethod(null);
             }
@@ -320,7 +321,7 @@ namespace ParkingManagement.ViewModel
             try
             {
                 SelectedMember = null;
-                member = new Member();
+                Member = new Member();
                 SetAction(ButtonAction.Init);
             }
             catch (Exception ex)

@@ -140,6 +140,7 @@
       <HintPath>..\..\..\..\Users\Amir\Desktop\bishaka Programming\IMS - Ticketing Software\ParkingManagement\bin\x86\Debug\Syncfusion.XlsIO.Base.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.Linq" />
     <Reference Include="System.Drawing" />
@@ -296,6 +297,7 @@
     <Compile Include="Library\Helpers\SyncFunctions.cs" />
     <Compile Include="Library\PoleDisplay.cs" />
     <Compile Include="Library\ValueConverter\RadioButtonTrueFalseConveter.cs" />
+    <Compile Include="Models\Customer.cs" />
     <Compile Include="Models\DiscountScheme.cs" />
     <Compile Include="Models\Holiday.cs" />
     <Compile Include="Models\Members.cs" />
@@ -304,6 +306,7 @@
     <Compile Include="Models\ParkingSales.cs" />
     <Compile Include="Models\Staff.cs" />
     <Compile Include="Models\SyncModels.cs" />
+    <Compile Include="Models\tblRentalInfo.cs" />
     <Compile Include="Models\VoucherType.cs" />
     <Compile Include="ViewModel\ComplementaryVoucherGeneratorViewModel.cs" />
     <Compile Include="ViewModel\CreditNoteVoucherWiseViewModel.cs" />
@@ -772,6 +775,12 @@
       <Isolated>False</Isolated>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BarcodeStickerPrinter\BarcodeStickerPrinter.vbproj">
+      <Project>{2391769d-a85b-4acd-a5b0-11389d3e0d95}</Project>
+      <Name>BarcodeStickerPrinter</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

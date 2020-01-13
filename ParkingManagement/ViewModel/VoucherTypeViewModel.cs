@@ -20,12 +20,17 @@ namespace ParkingManagement.ViewModel
         VoucherType _SelectedVType;
         ObservableCollection<VoucherType> _VTypeList;
         ObservableCollection<VehicleType> _VehicleTypeList;
+        private bool _IsPercentMode = false;
 
         public VoucherType VType { get { return _VType; } set { _VType = value; OnPropertyChanged("VType"); } }
         public VoucherType SelectedVType { get { return _SelectedVType; } set { _SelectedVType = value; OnPropertyChanged("SelectedVType"); } }
+        public bool IsPercentMode { get { return _IsPercentMode; } set { _IsPercentMode = value; OnPropertyChanged("IsPercentMode"); OnPercentModeChanged(); } }
+
+       
+
         public ObservableCollection<VoucherType> VTypeList { get { return _VTypeList; } set { _VTypeList = value; OnPropertyChanged("VTypeList"); } }
         public ObservableCollection<VehicleType> VehicleTypeList { get { return _VehicleTypeList; } set { _VehicleTypeList = value; OnPropertyChanged("VehicleTypeList"); } }
-
+        
 
         public VoucherTypeViewModel()
         {
@@ -35,7 +40,7 @@ namespace ParkingManagement.ViewModel
             {
                 using (SqlConnection Conn = new SqlConnection(GlobalClass.TConnectionString))
                 {
-                    string strSql = @"SELECT VoucherId, VoucherName, VehicleType, Rate, Value, Validity, ValidStart, ValidEnd, VoucherInfo, SkipVoucherGeneration, ISNULL(NonVat, 0) NonVat FROM VoucherTypes";
+                    string strSql = @"SELECT VoucherId, VoucherName, VehicleType, Rate, Value,ValuePercent, Validity, ValidStart, ValidEnd, VoucherInfo, SkipVoucherGeneration, ISNULL(NonVat, 0) NonVat FROM VoucherTypes";
                     VTypeList = new ObservableCollection<VoucherType>(Conn.Query<VoucherType>(strSql));
                     strSql = @"SELECT VTypeID, [Description] FROM VehicleType";
                     VehicleTypeList = new ObservableCollection<VehicleType>(Conn.Query<VehicleType>(strSql));
@@ -53,8 +58,18 @@ namespace ParkingManagement.ViewModel
             {
                 MessageBox.Show(ex.Message, MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Error);
             }
-        }       
-
+        }
+        private void OnPercentModeChanged()
+        {
+            if (IsPercentMode)
+            {
+                VType.Value = 0;
+            }
+            else
+            {
+                VType.ValuePercent = 0;
+            }
+        }
         private bool CanExecuteLoad(object obj)
         {
             return (_action != ButtonAction.New && VType.VoucherId == 0 && string.IsNullOrEmpty(VType.VoucherName));
@@ -148,6 +163,7 @@ namespace ParkingManagement.ViewModel
                                 Rate = VType.Rate,
                                 RateStr = VType.RateStr,
                                 Value = VType.Value,
+                                ValuePercent= VType.ValuePercent,
                                 ValidStart = VType.ValidStart,
                                 ValidEnd = VType.ValidEnd,
                                 Validity = VType.Validity,
@@ -202,6 +218,7 @@ namespace ParkingManagement.ViewModel
                             Voucher.Rate = VType.Rate;
                             Voucher.RateStr = VType.RateStr;
                             Voucher.Value = VType.Value;
+                            Voucher.ValuePercent = VType.ValuePercent;
                             Voucher.ValidStart = VType.ValidStart;
                             Voucher.ValidEnd = VType.ValidEnd;
                             Voucher.Validity = VType.Validity;

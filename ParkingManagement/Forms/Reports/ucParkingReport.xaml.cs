@@ -1,4 +1,5 @@
-﻿using ParkingManagement.Library;
+﻿using Dapper;
+using ParkingManagement.Library;
 using ParkingManagement.Library.Helpers;
 using ParkingManagement.Library.ValueConverter;
 using ParkingManagement.Models;
@@ -6,19 +7,9 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data.SqlClient;
-using System.Globalization;
-using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Dapper;
 namespace ParkingManagement.Forms.Reports
 {
     /// <summary>
@@ -40,7 +31,7 @@ namespace ParkingManagement.Forms.Reports
             {
                 txtFDate.SelectedDate = nepDate.CADDate(txtFMiti.Text);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 MessageBox.Show("Invalid BS Date", "Daily Cash Collection Report", MessageBoxButton.OK, MessageBoxImage.Error);
             }
@@ -57,10 +48,10 @@ namespace ParkingManagement.Forms.Reports
             {
                 txtFDate.SelectedDate = nepDate.CADDate(txtTMiti.Text);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 MessageBox.Show("Invalid BS Date", "Daily Cash Collection Report", MessageBoxButton.OK, MessageBoxImage.Error);
-            }           
+            }
         }
         public ucParkingReport()
         {
@@ -72,14 +63,14 @@ namespace ParkingManagement.Forms.Reports
             txtTDate.SelectedDate = DateTime.Today;
             txtFDate.SelectedDate = DateTime.Today;
 
-            dgDailySales.Columns.Add(new DataGridTextColumn { Header = "In", Binding = new Binding("Date1"){StringFormat = "MM/dd/yyyy hh:mm:ss tt"}, Width = 150 });
-            dgDailySales.Columns.Add(new DataGridTextColumn { Header = "Out", Binding = new Binding("Date2"){StringFormat = "MM/dd/yyyy hh:mm:ss tt"}, Width = 150 });
+            dgDailySales.Columns.Add(new DataGridTextColumn { Header = "In", Binding = new Binding("Date1") { StringFormat = "MM/dd/yyyy hh:mm:ss tt" }, Width = 150 });
+            dgDailySales.Columns.Add(new DataGridTextColumn { Header = "Out", Binding = new Binding("Date2") { StringFormat = "MM/dd/yyyy hh:mm:ss tt" }, Width = 150 });
             dgDailySales.Columns.Add(new DataGridTextColumn { Header = "Interval", Binding = new Binding("Column3"), Width = 100 });
             dgDailySales.Columns.Add(new DataGridTextColumn { Header = "Vehicle Type", Binding = new Binding("Column4"), Width = 100 });
             dgDailySales.Columns.Add(new DataGridTextColumn { Header = "Rate", Binding = new Binding("Column6"), Width = 200 });
             dgDailySales.Columns.Add(new DataGridTextColumn { Header = "Party", Binding = new Binding("Column5"), Width = 150 });
             dgDailySales.Columns.Add(new DataGridTextColumn { Header = "User", Binding = new Binding("Column7"), Width = 200 });
-            dgDailySales.Columns.Add(new DataGridTextColumn { Header = "Charged Amount", Binding = new Binding("Decimal1"){StringFormat = "#0.00"}, Width = 150, CellStyle = NumericColumn });
+            dgDailySales.Columns.Add(new DataGridTextColumn { Header = "Charged Amount", Binding = new Binding("Decimal1") { StringFormat = "#0.00" }, Width = 150, CellStyle = NumericColumn });
             dgDailySales.Columns.Add(new DataGridTextColumn { Header = "Amount", Binding = new Binding("Decimal2") { StringFormat = "#0.00" }, Width = 150, CellStyle = NumericColumn });
 
             this.DataContext = ViewModel = new vmParkingReports();
@@ -157,12 +148,12 @@ namespace ParkingManagement.Forms.Reports
                     ViewModel.LoadSummaryReport(txtFDate.SelectedDate.Value, txtTDate.SelectedDate.Value, SQL);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
         }
-           
+
 
         private void Print_Click(object sender, RoutedEventArgs e)
         {
@@ -177,9 +168,11 @@ namespace ParkingManagement.Forms.Reports
     class vmParkingReports : BaseViewModel
     {
         private ObservableCollection<DataItem> _ReportSource;
+        private TimeSpan _TotalHours;
+
         //public CollectionViewSource cvs { get { return _cvs; } set { _cvs = value; OnPropertyChanged("cvs"); } }
         public ObservableCollection<DataItem> ReportSource { get { return _ReportSource; } set { _ReportSource = value; OnPropertyChanged("ReportSource"); } }
-
+        public TimeSpan TotalHours { get { return _TotalHours; } set { _TotalHours = value; OnPropertyChanged("TotalHours"); } }
         public vmParkingReports()
         {
 
@@ -224,6 +217,13 @@ namespace ParkingManagement.Forms.Reports
                 using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
                 {
                     ReportSource = new ObservableCollection<DataItem>(conn.Query<DataItem>(SQL, new { FDATE = FDate, TDATE = TDate }));
+                    int TotalIntervalInMinutes = 0;
+                    foreach (var item in ReportSource)
+                    {
+                        TotalIntervalInMinutes += getMinutes(item.Column5);
+                    }
+                    //TotalHours = TotalIntervalInMinutes / 60;
+                    TotalHours = TimeSpan.FromMinutes(TotalIntervalInMinutes);
                 }
             }
             catch (Exception ex)
@@ -232,9 +232,54 @@ namespace ParkingManagement.Forms.Reports
             }
 
         }
+        int getMinutes(string duration)
+        {
+            string[] hrsMins;
+            int hrs = 0, min = 0, TotMins;
+            if (string.IsNullOrEmpty(duration) || duration == "N/A")
+            {
+                return 0;
+            }
+
+            try
+            {
+                if (duration.Contains(" "))
+                {
+                    hrsMins = duration.Split(' ');
+                    if (hrsMins.Length == 2)
+                    {
+                        hrs = GParse.ToInteger(hrsMins[0].Replace("Hrs", string.Empty));
+                        min = GParse.ToInteger(hrsMins[1].Replace("Min", string.Empty));
+                    }
+                    else if (hrsMins.Length == 4)
+                    {
+                        hrs = GParse.ToInteger(hrsMins[0]);
+                        min = GParse.ToInteger(hrsMins[2]);
+                    }
+                }
+                else if (duration.Contains("Hrs"))
+                {
+                    hrs = GParse.ToInteger(duration.Replace("Hrs", string.Empty));
+                    min = 0;
+                }
+                else
+                {
+                    hrs = 0;
+                    min = GParse.ToInteger(duration.Replace("Min", string.Empty));
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
+            TotMins = hrs * 60 + min;
+            return TotMins;
+
+        }
     }
 
-   
+
 
 
 }

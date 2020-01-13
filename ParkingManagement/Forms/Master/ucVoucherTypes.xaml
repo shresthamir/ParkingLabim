@@ -62,7 +62,9 @@
                     <CheckBox Content="Non Vat Item" IsChecked="{Binding VType.NonVat}" VerticalAlignment="Center"/>
 
                     <Label Content="Value" Margin="15 0 0 0" ></Label>
-                    <TextBox Width="100" Text="{Binding VType.Value, Converter={StaticResource NoZero}}" HorizontalAlignment="Right"></TextBox>
+                    <TextBox Width="100" Text="{Binding VType.Value, Converter={StaticResource NoZero} }" Visibility="{Binding IsPercentMode, Converter={StaticResource RevBoolToVisibility}}" HorizontalAlignment="Right"></TextBox>
+                    <TextBox Width="100" Text="{Binding VType.ValuePercent, Converter={StaticResource NoZero}}" Visibility="{Binding IsPercentMode, Converter={StaticResource BoolToVisibility}}" HorizontalAlignment="Right"></TextBox>
+                    <CheckBox VerticalAlignment="Center" IsChecked="{Binding IsPercentMode}" Margin="5 0 0 0" Width="50" Content="%"/>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <Label Content="Begin Time"></Label>
@@ -86,6 +88,7 @@
                 <DataGridTextColumn Binding="{Binding VoucherName}" Header="Voucher Name" Width="250"/>
                 <DataGridTextColumn Binding="{Binding Rate, StringFormat={}{0:#0.00}}" Header="Rate" Width="100"/>
                 <DataGridTextColumn Binding="{Binding Value}" Header="Value" Width="100"/>
+                <DataGridTextColumn Binding="{Binding ValuePercent}" Header="ValuePercent" Width="100"/>
                 <DataGridTextColumn Binding="{Binding ValidStart}" Header="Begin Time" Width="100"/>
                 <DataGridTextColumn Binding="{Binding ValidEnd}" Header="End Time" Width="100"/>
                 <DataGridTextColumn Binding="{Binding Validity}" Header="Validity" Width="100"/>

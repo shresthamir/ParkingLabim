@@ -22,12 +22,14 @@ namespace ParkingManagement.Models
         private bool _SkipVoucherGeneration;
         private string _RateStr;
         private bool _NonVat;
+        private decimal _ValuePercent;
 
         public int VoucherId { get { return _VoucherId; } set { _VoucherId = value; OnPropertyChanged("VoucherId"); } }
         public string VoucherName { get { return _VoucherName; } set { _VoucherName = value; OnPropertyChanged("VoucherName"); } }
         public byte VehicleType { get { return _VehicleType; } set { _VehicleType = value; OnPropertyChanged("VehicleType"); } }
         public decimal Rate { get { return _Rate; } set { _Rate = value; _RateStr = value.ToString("#0.00"); OnPropertyChanged("Rate"); OnPropertyChanged("RateStr"); } }
         public decimal Value { get { return _Value; } set { _Value = value; OnPropertyChanged("Value"); } }
+        public decimal ValuePercent { get { return _ValuePercent; } set { _ValuePercent = value;  OnPropertyChanged("ValuePercent"); } }
         public int Validity { get { return _Validity; } set { _Validity = value; OnPropertyChanged("Validity"); } }
         public TimeSpan ValidStart { get { return _ValidStart; } set { _ValidStart = value; OnPropertyChanged("ValidStart"); } }
         public TimeSpan ValidEnd { get { return _ValidEnd; } set { _ValidEnd = value; OnPropertyChanged("ValidEnd"); } }
@@ -54,13 +56,13 @@ namespace ParkingManagement.Models
 
         public override bool Save(SqlTransaction tran)
         {
-            string strSaveSql = "INSERT INTO VoucherTypes(VoucherId, VoucherName, VehicleType, Rate, Value, ValidStart, ValidEnd, Validity, VoucherInfo, SkipVoucherGeneration, NonVat) VALUES (@VoucherId, @VoucherName, @VehicleType, @Rate, @Value, @ValidStart, @ValidEnd, @Validity, @VoucherInfo, @SkipVoucherGeneration, @NonVat)";
+            string strSaveSql = "INSERT INTO VoucherTypes(VoucherId, VoucherName, VehicleType, Rate, Value,ValuePercent, ValidStart, ValidEnd, Validity, VoucherInfo, SkipVoucherGeneration, NonVat) VALUES (@VoucherId, @VoucherName, @VehicleType, @Rate, @Value,@ValuePercent, @ValidStart, @ValidEnd, @Validity, @VoucherInfo, @SkipVoucherGeneration, @NonVat)";
             return tran.Connection.Execute(strSaveSql, this, tran) == 1;
         }
 
         public override bool Update(SqlTransaction tran)
         {
-            string strUpdateSql = "UPDATE VoucherTypes SET VoucherName = @VoucherName, VehicleType = @VehicleType, Rate = @Rate, Value = @Value, ValidStart = @ValidStart, ValidEnd = @ValidEnd, Validity = @Validity, VoucherInfo = @VoucherInfo, SkipVoucherGeneration = @SkipVoucherGeneration, NonVat = @NonVat WHERE VoucherId = @VoucherId";
+            string strUpdateSql = "UPDATE VoucherTypes SET VoucherName = @VoucherName, VehicleType = @VehicleType, Rate = @Rate, Value = @Value,ValuePercent=@ValuePercent, ValidStart = @ValidStart, ValidEnd = @ValidEnd, Validity = @Validity, VoucherInfo = @VoucherInfo, SkipVoucherGeneration = @SkipVoucherGeneration, NonVat = @NonVat WHERE VoucherId = @VoucherId";
             return tran.Connection.Execute(strUpdateSql, this, tran) == 1;
         }
 
@@ -78,9 +80,11 @@ namespace ParkingManagement.Models
         public string BillNo { get; set; }
         public int Sno { get; set; }
         public string VoucherName { get; set; }
+        public string VoucherText { get; set; }
         public string Barcode { get; set; }
         public int VoucherId { get; set; }
         public decimal Value { get; set; }
+        public decimal ValuePercent { get; set; }
         public DateTime ExpDate { get; set; }
         public TimeSpan ValidStart { get; set; }
         public TimeSpan ValidEnd { get; set; }
@@ -89,9 +93,9 @@ namespace ParkingManagement.Models
 
         public override bool Save(SqlTransaction tran)
         {
-            string strSave = @"INSERT INTO ParkingVouchers (VoucherNo, BillNo, Sno, VoucherName, Barcode, VoucherId, Value, ExpDate, ValidStart, ValidEnd, FYID) 
+            string strSave = @"INSERT INTO ParkingVouchers (VoucherNo, BillNo, Sno, VoucherName, Barcode, VoucherId, Value,ValuePercent, ExpDate, ValidStart, ValidEnd, FYID) 
                                     OUTPUT Inserted.VoucherNo
-                                    VALUES ((SELECT ISNULL(MAX(VoucherNo),0) + 1 FROM ParkingVouchers), @BillNo, @Sno, @VoucherName, @Barcode, @VoucherId, @Value, @ExpDate, @ValidStart, @ValidEnd, @FYID)";
+                                    VALUES ((SELECT ISNULL(MAX(VoucherNo),0) + 1 FROM ParkingVouchers), @BillNo, @Sno, @VoucherName, @Barcode, @VoucherId, @Value,@ValuePercent, @ExpDate, @ValidStart, @ValidEnd, @FYID)";
             VoucherNo = tran.Connection.ExecuteScalar<int>(strSave, this, tran);
             return VoucherNo > 0;
         }

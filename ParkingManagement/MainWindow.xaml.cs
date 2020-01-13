@@ -90,7 +90,7 @@ namespace ParkingManagement
                                     model = SyncFunctions.getBillReturnObject(bill.VCHRNO);
                                 model.datetimeClient = DateTime.Now;
                                 model.isrealtime = false;
-                                SyncFunctions.SyncSalesReturnData(model);
+                                //SyncFunctions.SyncSalesReturnData(model);
                             }
                             else
                             {
@@ -589,6 +589,15 @@ GROUP BY ENTERED_BY";
             if (FormType != null)
             {
                 ConstructorInfo Cinfo = FormType.GetConstructor(Type.EmptyTypes);
+                try
+                {
+                    Cinfo.Invoke(null);
+                }
+                catch (Exception ex)
+                {
+
+                    throw;
+                }
                 return Cinfo.Invoke(null);
                 //if (FormType.BaseType == typeof(UserControl))
                 //{

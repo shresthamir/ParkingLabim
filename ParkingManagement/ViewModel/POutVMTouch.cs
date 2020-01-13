@@ -45,7 +45,7 @@ namespace ParkingManagement.ViewModel
         private List<DiscountScheme> _DiscountList;
         private DiscountScheme _SelectedDiscount;
         private bool IsHoliday;
-        private string _TrnMode="Sales";
+        private string _TrnMode = "Sales";
 
         public ParkingIn PIN { get { return _PIN; } set { _PIN = value; OnPropertyChanged("PIN"); } }
         public ParkingOut POUT { get { return _POUT; } set { _POUT = value; OnPropertyChanged("POUT"); } }
@@ -54,7 +54,7 @@ namespace ParkingManagement.ViewModel
             get { return _RSchemes; }
             set { _RSchemes = value; OnPropertyChanged("RSchemes"); }
         }
-        
+
         public bool TaxInvoice
         {
             get { return _TaxInvoice; }
@@ -285,7 +285,7 @@ namespace ParkingManagement.ViewModel
             }
         }
 
-        bool ValidateKKFC(string Url1, string Url2, string ClientId, string ClientSecretKey, string CardNumber, string TransactionId,string TrnMode)
+        bool ValidateKKFC(string Url1, string Url2, string ClientId, string ClientSecretKey, string CardNumber, string TransactionId, string TrnMode)
         {
             try
             {
@@ -320,7 +320,7 @@ namespace ParkingManagement.ViewModel
                     Description = POUT.BILLTO?.ToString(),
                     TransactionNumber = TransactionId,
                     TrnMode,
-                    remarks=POUT.Remarks
+                    remarks = POUT.Remarks
                 }));
                 PaymentRequest.Method = "POST";
                 PaymentRequest.ContentType = "application/json";
@@ -373,7 +373,7 @@ namespace ParkingManagement.ViewModel
             }
             else
             {
-                DiscountScheme discountScheme=DiscountList.Where(x => x.DiscountPercent == 25).FirstOrDefault();
+                DiscountScheme discountScheme = DiscountList.Where(x => x.DiscountPercent == 25).FirstOrDefault();
                 this.SelectedDiscount = discountScheme;
                 StaffBarcode = new wPrepaidCard() { DataContext = this };
                 StaffBarcode.ShowDialog();
@@ -423,6 +423,8 @@ namespace ParkingManagement.ViewModel
             }
         }
         private void ExecuteLoad(object obj)
+
+
         {
             try
             {
@@ -667,7 +669,7 @@ AND FYID = {1} ORDER BY PID DESC", obj, GlobalClass.FYID));
                 return;
             }
 
-            Voucher v = conn.Query<Voucher>("SELECT VoucherNo, Barcode, VoucherId, Value, ExpDate, ValidStart, ValidEnd, ScannedTime FROM ParkingVouchers WHERE Barcode = @Barcode", new { Barcode = obj.ToString() }).FirstOrDefault();
+            Voucher v = conn.Query<Voucher>("SELECT VoucherNo, Barcode, VoucherId, Value,ValuePercent, ExpDate, ValidStart, ValidEnd, ScannedTime FROM ParkingVouchers WHERE Barcode = @Barcode", new { Barcode = obj.ToString() }).FirstOrDefault();
             if (v == null)
             {
                 MessageBox.Show("Invalid Voucher", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
@@ -709,8 +711,17 @@ AND FYID = {1} ORDER BY PID DESC", obj, GlobalClass.FYID));
                 }
             }
             SaveWithStaffEnabled = false;
-            v.Value = (POUT.ChargedAmount > v.Value) ? v.Value : POUT.ChargedAmount;
-            POUT.CashAmount = POUT.ChargedAmount - v.Value;
+
+            if (v.ValuePercent > 0)
+            {
+                v.Value = POUT.CashAmount * v.ValuePercent / 100;
+                v.Value = (POUT.CashAmount > v.Value) ? v.Value : POUT.CashAmount;
+            }
+            else
+            {
+                v.Value = (POUT.CashAmount > v.Value) ? v.Value : POUT.CashAmount;
+            }
+            POUT.CashAmount = POUT.CashAmount - v.Value;
             PIN.Barcode = string.Empty;
             Vouchers.Add(v);
             if (POUT.CashAmount == 0)
