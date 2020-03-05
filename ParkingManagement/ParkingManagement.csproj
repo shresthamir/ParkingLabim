@@ -86,6 +86,12 @@
     <Reference Include="Dapper">
       <HintPath>..\..\..\..\Users\Amir\Desktop\bishaka Programming\Library\Dapper.dll</HintPath>
     </Reference>
+    <Reference Include="ExcelDataReader">
+      <HintPath>..\..\..\..\Users\Amir\source\repos\ImsPosCurrent\PosBackEnd\LibraryDll\ExcelDataReader.dll</HintPath>
+    </Reference>
+    <Reference Include="ExcelDataReader.DataSet">
+      <HintPath>..\..\..\..\Users\Amir\source\repos\ImsPosCurrent\PosBackEnd\LibraryDll\ExcelDataReader.DataSet.dll</HintPath>
+    </Reference>
     <Reference Include="ExtendedComboBox">
       <HintPath>..\..\..\UpdatePackage\ExtendedComboBox.dll</HintPath>
     </Reference>
@@ -144,6 +150,8 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Data.Linq" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Printing" />
     <Reference Include="System.Windows.Controls.Ribbon, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -186,6 +194,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Forms\DataUtility\RegisterDailyCard.xaml.cs">
+      <DependentUpon>RegisterDailyCard.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Forms\DataUtility\wDataBackup.xaml.cs">
       <DependentUpon>wDataBackup.xaml</DependentUpon>
     </Compile>
@@ -298,6 +309,8 @@
     <Compile Include="Library\PoleDisplay.cs" />
     <Compile Include="Library\ValueConverter\RadioButtonTrueFalseConveter.cs" />
     <Compile Include="Models\Customer.cs" />
+    <Compile Include="Models\DailyCard.cs" />
+    <Compile Include="Models\Device.cs" />
     <Compile Include="Models\DiscountScheme.cs" />
     <Compile Include="Models\Holiday.cs" />
     <Compile Include="Models\Members.cs" />
@@ -317,11 +330,16 @@
     <Compile Include="ViewModel\MembershipSchemeViewModel.cs" />
     <Compile Include="ViewModel\MemberViewModel.cs" />
     <Compile Include="ViewModel\ParkingEntranceCloseViewModel.cs" />
+    <Compile Include="ViewModel\RegisterDailyCardViewModel.cs" />
     <Compile Include="ViewModel\VoucherSalesInvoiceVM.cs" />
     <Compile Include="ViewModel\POutWithoutSlipVM.cs" />
     <Compile Include="ViewModel\StaffViewModel.cs" />
     <Compile Include="ViewModel\VoucherTypeViewModel.cs" />
     <Compile Include="ViewModel\vmCashSettlement.cs" />
+    <Page Include="Forms\DataUtility\RegisterDailyCard.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Forms\DataUtility\wDataBackup.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -770,6 +788,15 @@
       <Guid>{0002E157-0000-0000-C000-000000000046}</Guid>
       <VersionMajor>5</VersionMajor>
       <VersionMinor>3</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="zkemkeeper">
+      <Guid>{FE9DED34-E159-408E-8490-B720A5E632C7}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
       <Lcid>0</Lcid>
       <WrapperTool>tlbimp</WrapperTool>
       <Isolated>False</Isolated>
