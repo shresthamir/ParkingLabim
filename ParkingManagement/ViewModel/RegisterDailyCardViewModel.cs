@@ -5,13 +5,11 @@ using ParkingManagement.Library;
 using ParkingManagement.Library.Helpers;
 using ParkingManagement.Models;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
@@ -20,21 +18,6 @@ namespace ParkingManagement.ViewModel
 {
     public class RegisterDailyCardViewModel : BaseViewModel
     {
-        public int dwTMachineNumber = 0;
-        public string dwEnrollNumber = "";
-        public int dwEnrollNumberInt = 0;
-        public int dwEMachineNumber = 0;
-        public int dwVerifyMode = 0;
-        public int dwInOutMode = 0;
-        public int dwYear = 0;
-        public int dwMonth = 0;
-        public int dwDay = 0;
-        public int dwHour = 0;
-        public int dwMinute = 0;
-        public int dwSecond = 0;
-        public int dwWorkCode = 0;
-
-
         private ObservableCollection<Device> _Device;
         private ObservableCollection<DailyCard> _DailyCard;
         private CollectionViewSource _ViewSource;
@@ -46,7 +29,6 @@ namespace ParkingManagement.ViewModel
         public ObservableCollection<DailyCard> DailyCardList { get { return _DailyCard; } set { _DailyCard = value; OnPropertyChanged("DailyCardList"); } }
         public RelayCommand BrowseCommand { get; set; }
         public RelayCommand UploadCommand { get; set; }
-        public RelayCommand ReadLogDateCommand { get; set; }
 
         public RegisterDailyCardViewModel()
         {
@@ -54,7 +36,6 @@ namespace ParkingManagement.ViewModel
             GetDeviceList();
             BrowseCommand = new RelayCommand(ExecuteBrowse);
             UploadCommand = new RelayCommand(ExecuteUpload);
-            ReadLogDateCommand = new RelayCommand(ReadLogDate);
         }
 
         private async void ExecuteUpload(object obj)
@@ -131,9 +112,9 @@ namespace ParkingManagement.ViewModel
                         }
                     }
                 }
-               
+
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 //throw;
             }
@@ -149,7 +130,9 @@ namespace ParkingManagement.ViewModel
                 if (!string.IsNullOrEmpty(cardNumber))
                 {
                     if (!DailyCardList.Any(x => x.CardNumber == cardNumber))
+                    {
                         DailyCardList.Add(new DailyCard { CardNumber = cardNumber, Device1 = 0, Device2 = 0, Device3 = 0 });
+                    }
                 }
             }
 
@@ -163,22 +146,16 @@ namespace ParkingManagement.ViewModel
             }
         }
 
-        private void ReadLogDate(object obj)
-        {
 
-            var zkem = new zkemkeeper.CZKEM();
-            if (zkem.Connect_Net("192.168.125.233", 4370))
+        string GetInvoiceNo(string VNAME, SqlTransaction tran)
+        {
+            string invoice = tran.Connection.ExecuteScalar<string>("SELECT CurNo FROM tblSequence WHERE VNAME = @VNAME AND FYID = @FYID", new { VNAME = VNAME, FYID = GlobalClass.FYID }, tran);
+            if (string.IsNullOrEmpty(invoice))
             {
-                if (zkem.ReadAllGLogData(zkem.MachineNumber))
-                {
-                    RegisterDailyCardViewModel ld = new RegisterDailyCardViewModel();
-                    while (zkem.GetGeneralLogData(zkem.MachineNumber, ref ld.dwTMachineNumber, ref ld.dwEnrollNumberInt, ref ld.dwEMachineNumber, ref ld.dwVerifyMode, ref ld.dwInOutMode, ref ld.dwYear, ref ld.dwMonth, ref ld.dwDay, ref ld.dwHour, ref ld.dwMinute))
-                    {
-                        if (ld.dwEnrollNumberInt > short.MaxValue || ld.dwEnrollNumberInt < short.MinValue)
-                            continue;
-                    }
-                }
+                tran.Connection.Execute("INSERT INTO tblSequence(VNAME, FYID, CurNo) VALUES(@VNAME, @FYID, 1)", new { VNAME = VNAME, FYID = GlobalClass.FYID }, tran);
+                invoice = "1";
             }
+            return invoice;
         }
         public static DataTable getExcelDataToDataTable()
         {

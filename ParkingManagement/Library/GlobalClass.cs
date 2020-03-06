@@ -12,12 +12,12 @@ using System.Text;
 using System.Windows;
 namespace ParkingManagement.Library
 {
-    struct PSlipTerms
+    public struct PSlipTerms
     {
         public string Description { get; set; }
         public byte Height { get; set; }
     }
-    static class GlobalClass
+    public static class GlobalClass
     {
         public static string DataConnectionString = "SERVER=IMS-D1\\SQL2017; DATABASE=PARKINGDB;UID=SA;PWD=tebahal";
         public static string Terminal = "001";

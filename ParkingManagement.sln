@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParkingManagement", "Parkin
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "BarcodeStickerPrinter", "BarcodeStickerPrinter\BarcodeStickerPrinter.vbproj", "{2391769D-A85B-4ACD-A5B0-11389D3E0D95}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccessControlDownloader", "AccessControlDownloader\AccessControlDownloader.csproj", "{854A636B-A0A9-48ED-B8F1-9210CBA454D0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,6 +63,22 @@ Global
 		{2391769D-A85B-4ACD-A5B0-11389D3E0D95}.Release|x64.Build.0 = Release|x64
 		{2391769D-A85B-4ACD-A5B0-11389D3E0D95}.Release|x86.ActiveCfg = Release|x86
 		{2391769D-A85B-4ACD-A5B0-11389D3E0D95}.Release|x86.Build.0 = Release|x86
+		{854A636B-A0A9-48ED-B8F1-9210CBA454D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{854A636B-A0A9-48ED-B8F1-9210CBA454D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{854A636B-A0A9-48ED-B8F1-9210CBA454D0}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{854A636B-A0A9-48ED-B8F1-9210CBA454D0}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{854A636B-A0A9-48ED-B8F1-9210CBA454D0}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{854A636B-A0A9-48ED-B8F1-9210CBA454D0}.Debug|x64.Build.0 = Debug|Any CPU
+		{854A636B-A0A9-48ED-B8F1-9210CBA454D0}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{854A636B-A0A9-48ED-B8F1-9210CBA454D0}.Debug|x86.Build.0 = Debug|Any CPU
+		{854A636B-A0A9-48ED-B8F1-9210CBA454D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{854A636B-A0A9-48ED-B8F1-9210CBA454D0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{854A636B-A0A9-48ED-B8F1-9210CBA454D0}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{854A636B-A0A9-48ED-B8F1-9210CBA454D0}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{854A636B-A0A9-48ED-B8F1-9210CBA454D0}.Release|x64.ActiveCfg = Release|Any CPU
+		{854A636B-A0A9-48ED-B8F1-9210CBA454D0}.Release|x64.Build.0 = Release|Any CPU
+		{854A636B-A0A9-48ED-B8F1-9210CBA454D0}.Release|x86.ActiveCfg = Release|Any CPU
+		{854A636B-A0A9-48ED-B8F1-9210CBA454D0}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

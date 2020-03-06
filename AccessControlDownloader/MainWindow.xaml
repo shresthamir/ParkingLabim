@@ -1,13 +1,13 @@
-﻿<Window x:Class="ParkingManagement.Forms.DataUtility.RegisterDailyCard"
+﻿<Window x:Class="AccessControlDownloader.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:ParkingManagement.Forms.DataUtility"
+        xmlns:local="clr-namespace:AccessControlDownloader"
         mc:Ignorable="d"
-        Title="Register Daily Card" Height="350" Width="500">
+        Title="MainWindow" Height="350" Width="500">
     <Border Padding="5">
-        <Grid >
+        <Grid Height="309" VerticalAlignment="Bottom" >
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
@@ -20,11 +20,11 @@
                 <!--<ColumnDefinition Width="Auto"/>-->
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="Excel File" Margin="5 0 5 0"  VerticalAlignment="Center" FontWeight="SemiBold"/>
+            <!--<TextBlock Text="Excel File" Margin="5 0 5 0"  VerticalAlignment="Center" FontWeight="SemiBold"/>
             <TextBox Grid.Column="1" x:Name="txtFileName" Width="200" Height="28"/>
             <Button Grid.Column="2" x:Name="ExcelUpload" Content="Browse" Command="{Binding BrowseCommand}" Height="28" Margin="5 0 5 0" Width="100"/>
-            <Button Grid.Column="3" x:Name="StartSync" Content="Upload" Command="{Binding UploadCommand}" Margin="5 0 5 0" Width="100"/>
-            <!--<Button Grid.Column="4" x:Name="ReadLogDate" Content="ReadLogDate" Command="{Binding ReadLogDateCommand}" Margin="5 0 5 0" Width="100"/>-->
+            <Button Grid.Column="3" x:Name="StartSync" Content="Upload" Command="{Binding UploadCommand}" Margin="5 0 5 0" Width="100"/>-->
+            <Button Grid.Column="4" x:Name="ReadLogDate" Content="ReadLogDate" Command="{Binding ReadLogDateCommand}" Margin="5 0 5 0" Width="100"/>
             <DataGrid Margin="0 5 0 0" Grid.Row="1" Grid.ColumnSpan="5" MinHeight="250" x:Name="CardDataGrid" ItemsSource="{Binding DailyCardList}" AutoGenerateColumns="False" HorizontalAlignment="Center" IsReadOnly="True" VerticalAlignment="Top">
                 <DataGrid.Columns>
                     <DataGridTextColumn Width="100" Header="Card Number" Binding="{Binding CardNumber}" />

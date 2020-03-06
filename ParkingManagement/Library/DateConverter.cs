@@ -8,7 +8,7 @@ using System.Windows;
 using Dapper;
 namespace ParkingManagement.Library
 {
-    class DateConverter
+    public class DateConverter
     {
         private string ConnStr;
 
