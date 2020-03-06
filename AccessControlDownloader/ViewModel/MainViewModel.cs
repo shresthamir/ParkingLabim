@@ -8,6 +8,7 @@ using System.ComponentModel;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Windows;
+using System.Windows.Threading;
 
 namespace AccessControlDownloader.ViewModel
 {
@@ -24,13 +25,50 @@ namespace AccessControlDownloader.ViewModel
 
         public RelayCommand ReadLogDateCommand { get; set; }
         public ObservableCollection<Device> DeviceList { get { return _Device; } set { _Device = value; OnPropertyChanged("DeviceList"); } }
+        public DateTime DateToday { get { return _DateToday; } set { _DateToday = value; OnPropertyChanged("DateToday"); } }
 
         public MainViewModel()
         {
             ReadLogDateCommand = new RelayCommand(ExecuteReadLog);
             GetAdminUser();
             GetDeviceList();
+            StartTimer();
+
         }
+
+        public void StartTimer()
+        {
+            DispatcherTimer dispatchTimer = new DispatcherTimer();
+            dispatchTimer.Tick += new EventHandler(DispatchTime_Tick);
+            dispatchTimer.Interval = new TimeSpan(0, 0, 30); // checks inactivity every 1 seconds.
+            dispatchTimer.Start();
+        }
+
+        private int timerSec = 0;
+        private void DispatchTime_Tick(object sender, EventArgs e)
+        {
+            try
+            {
+                //var idleTime = IdleTimeDetector.GetIdleTimeInfo();
+                //if (idleTime.IdleTime.TotalSeconds >= 100)
+                //{
+
+                //}
+
+                //if (timerSec == 60)
+                //{
+
+                //}
+                //timerSec++;
+                DateToday = DateTime.Now;
+                ExecuteReadLog(null);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message.ToString());
+            }
+        }
+
         private void GetDeviceList()
         {
             using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
@@ -66,6 +104,7 @@ namespace AccessControlDownloader.ViewModel
         public int dwSecond = 0;
         public int dwWorkCode = 0;
         private ObservableCollection<Device> _Device;
+        private DateTime _DateToday;
 
         private void ExecuteReadLog(object obj)
         {
@@ -107,8 +146,8 @@ namespace AccessControlDownloader.ViewModel
         {
             ParkingIn Parking = new ParkingIn();
 
-            var maxcardId=GetMaxCardId();
-            if(ld.dwEnrollNumberInt<= maxcardId)
+            var maxcardId = GetMaxCardId();
+            if (ld.dwEnrollNumberInt <= maxcardId)
             {
                 Parking.PID = Convert.ToInt32(GetInvoiceNo("PID", tran));
                 Parking.FYID = GlobalClass.FYID;
@@ -123,7 +162,7 @@ namespace AccessControlDownloader.ViewModel
                 Parking.InMiti = nepDate.CBSDate(Parking.InDate);
                 Parking.VehicleType = GetVechicleTypeByDeviceId(device.DeviceId);
 
-                var alreadyExist = tran.Connection.QueryFirstOrDefault<ParkingIn>($"Select * from parkingindetails where fyid=@fyid and vehicletype=@vehicletype and indate=@indate and inmiti=@inmiti and intime=@intime",Parking,tran);
+                var alreadyExist = tran.Connection.QueryFirstOrDefault<ParkingIn>($"Select * from parkingindetails where fyid=@fyid and vehicletype=@vehicletype and indate=@indate and inmiti=@inmiti and intime=@intime", Parking, tran);
                 if (alreadyExist == null)
                 {
                     string strSQL = @"INSERT INTO ParkingInDetails(PID, FYID, VehicleType, InDate, InTime, PlateNo, Barcode, [UID], InMiti, SESSION_ID)
@@ -132,7 +171,7 @@ namespace AccessControlDownloader.ViewModel
 
                     tran.Connection.Execute("UPDATE tblSequence SET CurNo = CurNo + 1 WHERE VNAME = 'PID' AND FYID = " + GlobalClass.FYID, transaction: tran);
                 }
-                
+
             }
             else
             {

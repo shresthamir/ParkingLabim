@@ -20,6 +20,7 @@
                 <!--<ColumnDefinition Width="Auto"/>-->
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
+            <Label Grid.Column="3" Width="150" Content="{Binding DateToday}" Background="AliceBlue"/>
             <!--<TextBlock Text="Excel File" Margin="5 0 5 0"  VerticalAlignment="Center" FontWeight="SemiBold"/>
             <TextBox Grid.Column="1" x:Name="txtFileName" Width="200" Height="28"/>
             <Button Grid.Column="2" x:Name="ExcelUpload" Content="Browse" Command="{Binding BrowseCommand}" Height="28" Margin="5 0 5 0" Width="100"/>
