@@ -4,36 +4,68 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AccessControlDownloader"
+        xmlns:system="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="500">
-    <Border Padding="5">
-        <Grid Height="309" VerticalAlignment="Bottom" >
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-                <!--<ColumnDefinition Width="Auto"/>-->
-                <ColumnDefinition/>
-            </Grid.ColumnDefinitions>
-            <Label Grid.Column="3" Width="150" Content="{Binding DateToday}" Background="AliceBlue"/>
-            <!--<TextBlock Text="Excel File" Margin="5 0 5 0"  VerticalAlignment="Center" FontWeight="SemiBold"/>
-            <TextBox Grid.Column="1" x:Name="txtFileName" Width="200" Height="28"/>
-            <Button Grid.Column="2" x:Name="ExcelUpload" Content="Browse" Command="{Binding BrowseCommand}" Height="28" Margin="5 0 5 0" Width="100"/>
-            <Button Grid.Column="3" x:Name="StartSync" Content="Upload" Command="{Binding UploadCommand}" Margin="5 0 5 0" Width="100"/>-->
-            <Button Grid.Column="4" x:Name="ReadLogDate" Content="ReadLogDate" Command="{Binding ReadLogDateCommand}" Margin="5 0 5 0" Width="100"/>
-            <DataGrid Margin="0 5 0 0" Grid.Row="1" Grid.ColumnSpan="5" MinHeight="250" x:Name="CardDataGrid" ItemsSource="{Binding DailyCardList}" AutoGenerateColumns="False" HorizontalAlignment="Center" IsReadOnly="True" VerticalAlignment="Top">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Width="100" Header="Card Number" Binding="{Binding CardNumber}" />
-                    <DataGridTextColumn Width="100" Header="Device1" Binding="{Binding Device1}" />
-                    <DataGridTextColumn Width="100" Header="Device2" Binding="{Binding Device2}" />
-                    <DataGridTextColumn Width="300" Header="Device3" Binding="{Binding Device3}" />
-                </DataGrid.Columns>
-            </DataGrid>
-        </Grid>
+        Title="MainWindow" WindowStyle="None" ResizeMode="NoResize" WindowState="Maximized">
+    <Border Padding="5" Background="AliceBlue">
+        <StackPanel VerticalAlignment="top">
+            <StackPanel Margin="20">
+                <TextBox Text="Access Control Device Syncer" HorizontalAlignment="Center" FontWeight="Bold" Background="AliceBlue"/>
+            </StackPanel>
+            <DockPanel Margin="0,30,0,0">
+                <Label Grid.Column="0" Width="150" Content="{Binding DateToday}" HorizontalAlignment="Left"/>
+                <Button HorizontalAlignment="Right" Grid.Column="1" x:Name="ReadLogDate" Content="ReadLogDate" Command="{Binding ReadLogDateCommand}" Margin="5 0 5 0" Width="100"/>
+            </DockPanel>
+            <StackPanel >
+                <ItemsControl ItemsSource="{Binding DeviceList}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <UniformGrid Columns="6" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="GhostWhite" BorderBrush="Gainsboro" BorderThickness="1"  Width="170" Height="170">
+                                <Button x:Name="myButton" Margin="5">
+                                    <Grid x:Name="GrdItem" Margin="5">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition/>
+                                            <RowDefinition Height="20"/>
+                                            <RowDefinition Height="1"/>
+                                        </Grid.RowDefinitions>
+                                        <StackPanel>
+                                            <Image Height="80" Width="80" Source="{Binding ImageSource}"/>
+                                            <Border Grid.Row="1" BorderBrush="Black" BorderThickness="1"/>
+                                            <TextBlock Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Bottom" Foreground="black" FontWeight="Bold" FontSize="30" Text="{Binding Devicename}"/>
+                                        </StackPanel>
+                                        <!--<Button x:Name="myButton" FontWeight="Bold" FontSize="20" Content="{Binding Devicename}" Height="150" Width="150" Foreground="White" />-->
+                                    </Grid>
+                                </Button>
+                            </Border>
+
+                            <DataTemplate.Triggers>
+                                <Trigger Property="ItemsControl.AlternationIndex" Value="1">
+                                    <Setter Property="Background" Value="LightGray" TargetName="myButton"/>
+                                </Trigger>
+
+                                <DataTrigger Binding="{Binding Status}" Value="true">
+                                    <Setter Property="Background" Value="#228B22" TargetName="myButton"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Status}" Value="false">
+                                    <Setter Property="Background" Value="#CC4F26" TargetName="myButton"/>
+                                </DataTrigger>
+                            </DataTemplate.Triggers>
+                        </DataTemplate>
+
+                    </ItemsControl.ItemTemplate>
+
+                    <!--<system:String>Item #1</system:String>
+                    <system:String>Item #2</system:String>
+                    <system:String>Item #3</system:String>
+                    <system:String>Item #4</system:String>
+                    <system:String>Item #5</system:String>-->
+                </ItemsControl>
+            </StackPanel>
+        </StackPanel>
     </Border>
 </Window>

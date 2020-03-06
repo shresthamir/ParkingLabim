@@ -32,7 +32,7 @@ namespace AccessControlDownloader.ViewModel
             ReadLogDateCommand = new RelayCommand(ExecuteReadLog);
             GetAdminUser();
             GetDeviceList();
-            StartTimer();
+            //StartTimer();
 
         }
 
@@ -73,7 +73,13 @@ namespace AccessControlDownloader.ViewModel
         {
             using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
             {
-                DeviceList = new ObservableCollection<Device>(conn.Query<Device>("select * from DeviceList"));
+                DeviceList = new ObservableCollection<Device>(conn.Query<Device>("select  * from DeviceList D join vehicletype V on D.vehicletype=V.vtypeid"));
+                foreach (Device vtype in DeviceList)
+                {
+                    if (vtype.ButtonImage == null)
+                        continue;
+                    vtype.ImageSource = Imaging.BinaryToImage(vtype.ButtonImage);
+                }
             }
         }
         private void GetAdminUser()
@@ -113,6 +119,8 @@ namespace AccessControlDownloader.ViewModel
                 var zkem = new zkemkeeper.CZKEM();
                 if (zkem.Connect_Net(device.DeviceIp, device.DevicePort))
                 {
+                    device.Status = true;
+
                     if (zkem.ReadAllGLogData(zkem.MachineNumber))
                     {
                         MainViewModel ld = new MainViewModel();
@@ -138,7 +146,7 @@ namespace AccessControlDownloader.ViewModel
                 }
                 else
                 {
-                    MessageBox.Show($"Couldn't connect to device {device.Devicename}!", "Access control Syncer", MessageBoxButton.OK, MessageBoxImage.Information);
+                    device.Status = false;
                 }
             }
         }
@@ -175,7 +183,7 @@ namespace AccessControlDownloader.ViewModel
             }
             else
             {
-                MessageBox.Show($"CardId: {ld.dwEnrollNumberInt} is not present in database!");
+                //MessageBox.Show($"CardId: {ld.dwEnrollNumberInt} is not present in database!");
             }
         }
 
