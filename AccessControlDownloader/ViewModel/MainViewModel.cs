@@ -1,4 +1,5 @@
-﻿using Dapper;
+﻿using AccessControlDownloader.Helper;
+using Dapper;
 using ParkingManagement.Library;
 using ParkingManagement.Library.Helpers;
 using ParkingManagement.Models;
@@ -7,7 +8,10 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Net;
+using System.Net.NetworkInformation;
 using System.Windows;
+using System.Windows.Media;
 using System.Windows.Threading;
 
 namespace AccessControlDownloader.ViewModel
@@ -32,20 +36,39 @@ namespace AccessControlDownloader.ViewModel
             ReadLogDateCommand = new RelayCommand(ExecuteReadLog);
             GetAdminUser();
             GetDeviceList();
-            //StartTimer();
+            //CheckDeviceStatus();
+            StartTimer();
+        }
 
+        private void CheckDeviceStatus()
+        {
+            foreach (var device in DeviceList)
+            {
+                var zkem = new zkemkeeper.CZKEM();
+                if (zkem.Connect_Net(device.DeviceIp, device.DevicePort))
+                {
+                    //device.Status = true;
+                    device.GridBackground = new SolidColorBrush(Color.FromArgb(255, 255, 139, 0));
+                }
+                else
+                {
+                    //device.Status = false;
+                    device.GridBackground = new SolidColorBrush(Color.FromArgb(255, 255, 109, 0));
+
+                }
+            }
         }
 
         public void StartTimer()
         {
             DispatcherTimer dispatchTimer = new DispatcherTimer();
             dispatchTimer.Tick += new EventHandler(DispatchTime_Tick);
-            dispatchTimer.Interval = new TimeSpan(0, 0, 30); // checks inactivity every 1 seconds.
+            dispatchTimer.Interval = new TimeSpan(0, 0, 1); 
             dispatchTimer.Start();
         }
 
         private int timerSec = 0;
-        private void DispatchTime_Tick(object sender, EventArgs e)
+        private async void DispatchTime_Tick(object sender, EventArgs e)
         {
             try
             {
@@ -55,13 +78,15 @@ namespace AccessControlDownloader.ViewModel
 
                 //}
 
-                //if (timerSec == 60)
-                //{
-
-                //}
-                //timerSec++;
+                if (timerSec == 60)
+                {
+                    ExecuteReadLog(null);
+                    timerSec = 0;
+                }
+                timerSec++;
                 DateToday = DateTime.Now;
-                ExecuteReadLog(null);
+                //CheckDeviceStatus();
+
             }
             catch (Exception ex)
             {
@@ -114,12 +139,18 @@ namespace AccessControlDownloader.ViewModel
 
         private void ExecuteReadLog(object obj)
         {
+
             foreach (var device in DeviceList)
             {
                 var zkem = new zkemkeeper.CZKEM();
+
+               
+
                 if (zkem.Connect_Net(device.DeviceIp, device.DevicePort))
                 {
                     device.Status = true;
+                    device.GridBackground = new SolidColorBrush(Colors.LightGreen);
+
 
                     if (zkem.ReadAllGLogData(zkem.MachineNumber))
                     {
@@ -147,6 +178,8 @@ namespace AccessControlDownloader.ViewModel
                 else
                 {
                     device.Status = false;
+                    device.GridBackground = new SolidColorBrush(Colors.Red);
+
                 }
             }
         }

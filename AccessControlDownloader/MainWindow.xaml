@@ -7,43 +7,80 @@
         xmlns:system="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
         Title="MainWindow" WindowStyle="None" ResizeMode="NoResize" WindowState="Maximized">
-    <Border Padding="5" Background="AliceBlue">
+    <Border Padding="5" BorderThickness="2">
+        <Border.Background>
+            <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                <GradientStop Color="#8cccfb" Offset="0.306"/>
+                <GradientStop Color="#8cccfb "/>
+                <GradientStop Color="#8cccfb " Offset="0.422"/>
+                <GradientStop Color="White" Offset="1"/>
+            </LinearGradientBrush>
+        </Border.Background>
+        <Border.BitmapEffect>
+            <DropShadowBitmapEffect/>
+        </Border.BitmapEffect>
         <StackPanel VerticalAlignment="top">
-            <StackPanel Margin="20">
-                <TextBox Text="Access Control Device Syncer" HorizontalAlignment="Center" FontWeight="Bold" Background="AliceBlue"/>
-            </StackPanel>
-            <DockPanel Margin="0,30,0,0">
+            <!--<StackPanel Margin="20">
+                <TextBox Text="Access Control Device Syncer" HorizontalAlignment="Center" FontWeight="Bold" Background="#19717C" Foreground="White" Padding="10"/>
+            </StackPanel>-->
+            <!--<DockPanel Margin="0,30,0,0">
                 <Label Grid.Column="0" Width="150" Content="{Binding DateToday}" HorizontalAlignment="Left"/>
                 <Button HorizontalAlignment="Right" Grid.Column="1" x:Name="ReadLogDate" Content="ReadLogDate" Command="{Binding ReadLogDateCommand}" Margin="5 0 5 0" Width="100"/>
-            </DockPanel>
+            </DockPanel>-->
             <StackPanel >
                 <ItemsControl ItemsSource="{Binding DeviceList}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <UniformGrid Columns="6" />
+                            <UniformGrid Columns="2" />
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Border Background="GhostWhite" BorderBrush="Gainsboro" BorderThickness="1"  Width="170" Height="170">
-                                <Button x:Name="myButton" Margin="5">
-                                    <Grid x:Name="GrdItem" Margin="5">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition/>
-                                            <RowDefinition Height="20"/>
-                                            <RowDefinition Height="1"/>
-                                        </Grid.RowDefinitions>
-                                        <StackPanel>
-                                            <Image Height="80" Width="80" Source="{Binding ImageSource}"/>
-                                            <Border Grid.Row="1" BorderBrush="Black" BorderThickness="1"/>
-                                            <TextBlock Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Bottom" Foreground="black" FontWeight="Bold" FontSize="30" Text="{Binding Devicename}"/>
-                                        </StackPanel>
-                                        <!--<Button x:Name="myButton" FontWeight="Bold" FontSize="20" Content="{Binding Devicename}" Height="150" Width="150" Foreground="White" />-->
-                                    </Grid>
-                                </Button>
+                            <Border BorderBrush="Gainsboro" BorderThickness="1"  Width="645" Height="80" Margin="15" Padding="10" CornerRadius="10">
+                                <Border.Background>
+                                    <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                                        <GradientStop Color="#A7D9E2" Offset="0.306"/>
+                                        <GradientStop Color="#A7D9E2"/>
+                                        <GradientStop Color="#A7D9E2" Offset="0.422"/>
+                                        <GradientStop Color="White" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Border.Background>
+                                <Border.BitmapEffect>
+                                    <DropShadowBitmapEffect/>
+                                </Border.BitmapEffect>
+                                <Grid x:Name="GrdItem" Margin="0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition/>
+                                    </Grid.RowDefinitions>
+                                    <Image Grid.Column="0" Height="50" Width="80" Source="{Binding ImageSource}" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Column="1" HorizontalAlignment="Center" Foreground="black" VerticalAlignment="Center" FontWeight="Bold" FontSize="25" Text="{Binding Devicename}"/>
+                                    <Viewbox Height="28" Grid.Column="2" HorizontalAlignment="Right">
+                                        <RadioButton x:Name="myButton" HorizontalAlignment="Right" VerticalAlignment="Center" FontWeight="Bold" Background="{Binding GridBackground}" Content="Status">
+                                            <RadioButton.Style>
+                                                <Style TargetType="RadioButton">
+                                                    <Setter Property="Background" Value="#CC4F26" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Status}" Value="True">
+                                                            <Setter Property="Background" Value="LightGreen" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding Status}" Value="False">
+                                                            <Setter Property="Background" Value="#CC4F26" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </RadioButton.Style>
+                                        </RadioButton>
+                                    </Viewbox>
+                                    <!--<Button x:Name="myButton" FontWeight="Bold" FontSize="20" Content="{Binding Devicename}" Height="150" Width="150" Foreground="White" />-->
+                                </Grid>
                             </Border>
 
-                            <DataTemplate.Triggers>
+                            <!--<DataTemplate.Triggers>
                                 <Trigger Property="ItemsControl.AlternationIndex" Value="1">
                                     <Setter Property="Background" Value="LightGray" TargetName="myButton"/>
                                 </Trigger>
@@ -54,7 +91,7 @@
                                 <DataTrigger Binding="{Binding Status}" Value="false">
                                     <Setter Property="Background" Value="#CC4F26" TargetName="myButton"/>
                                 </DataTrigger>
-                            </DataTemplate.Triggers>
+                            </DataTemplate.Triggers>-->
                         </DataTemplate>
 
                     </ItemsControl.ItemTemplate>

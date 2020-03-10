@@ -12,7 +12,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Data;
 
 namespace ParkingManagement.ViewModel
 {
@@ -20,7 +19,7 @@ namespace ParkingManagement.ViewModel
     {
         private ObservableCollection<Device> _Device;
         private ObservableCollection<DailyCard> _DailyCard;
-        private CollectionViewSource _ViewSource;
+        private string ipaddress;
 
         //public CollectionViewSource ViewSource { get { return _ViewSource; } set { _ViewSource = value; OnPropertyChanged("ViewSource"); } }
 
@@ -36,6 +35,21 @@ namespace ParkingManagement.ViewModel
             GetDeviceList();
             BrowseCommand = new RelayCommand(ExecuteBrowse);
             UploadCommand = new RelayCommand(ExecuteUpload);
+            //var zkem = new zkemkeeper.CZKEM();
+            //zkem.ClearAdministrators(zkem.MachineNumber);
+            //if (zkem.Connect_Net("192.168.125.233", 4370))
+            //{
+            //    zkem.GetDeviceIP(zkem.MachineNumber, ref ipaddress);
+
+            //    zkem.SetDeviceIP(zkem.MachineNumber, "192.168.125.234");
+            //    zkem.GetDeviceIP(zkem.MachineNumber, ref ipaddress);
+            //}
+            //else
+            //{
+
+            //}
+
+
         }
 
         private async void ExecuteUpload(object obj)
@@ -47,8 +61,18 @@ namespace ParkingManagement.ViewModel
                     int maxCardId = await GetCardIdFromDb();
 
                     var zkem = new zkemkeeper.CZKEM();
+
+
                     if (zkem.Connect_Net(device.DeviceIp, device.DevicePort))
                     {
+
+                        //zkem.GetDeviceIP(zkem.MachineNumber, ref ipaddress);
+
+                        //zkem.SetDeviceIP(zkem.MachineNumber, "192.168.125.234");
+                        //zkem.GetDeviceIP(zkem.MachineNumber, ref ipaddress);
+
+
+
                         foreach (var card in DailyCardList)
                         {
                             using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
@@ -60,21 +84,50 @@ namespace ParkingManagement.ViewModel
                                     zkem.SetStrCardNumber(card.CardNumber);
                                     zkem.SetUserInfo(zkem.MachineNumber, maxCardId, card.CardNumber, "", 0, true);
                                     maxCardId++;
-                                    if (device.DeviceId == 1)
-                                    {
-                                        card.Device1 = 1;
-                                    }
-                                    else if (device.DeviceId == 2)
-                                    {
-                                        card.Device2 = 1;
-                                    }
-                                    else if (device.DeviceId == 3)
-                                    {
-                                        card.Device3 = 1;
-                                    }
+
+
+                                    card.DeviceList.Where(x => x.DeviceId == device.DeviceId).ToList().ForEach(x => x.Status = true);
+
+                                    //if (device.DeviceId == 1)
+                                    //{
+                                    //    card.Device1 = 1;
+                                    //}
+                                    //else if (device.DeviceId == 2)
+                                    //{
+                                    //    card.Device2 = 1;
+                                    //}
+                                    //else if (device.DeviceId == 3)
+                                    //{
+                                    //    card.Device3 = 1;
+                                    //}
+                                }
+                                else
+                                {
+                                    card.CardId = res.FirstOrDefault().CardId;
+                                    zkem.SetStrCardNumber(card.CardNumber);
+                                    zkem.SetUserInfo(zkem.MachineNumber, card.CardId, card.CardNumber, "", 0, true);
+
+                                    card.DeviceList.Where(x => x.DeviceId == device.DeviceId).ToList().ForEach(x => x.Status = true);
+
+                                    //if (device.DeviceId == 1)
+                                    //{
+                                    //    card.Device1 = 1;
+                                    //}
+                                    //else if (device.DeviceId == 2)
+                                    //{
+                                    //    card.Device2 = 1;
+                                    //}
+                                    //else if (device.DeviceId == 3)
+                                    //{
+                                    //    card.Device3 = 1;
+                                    //}
                                 }
                             }
                         }
+                    }
+                    else
+                    {
+                        MessageBox.Show($"Connecting to device {device.Devicename} failed!", "Daily Card Registraion", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                     }
                 }
                 SaveToDb(DailyCardList);
@@ -86,6 +139,8 @@ namespace ParkingManagement.ViewModel
             }
 
         }
+
+
 
         private async Task<int> GetCardIdFromDb()
         {
@@ -131,7 +186,7 @@ namespace ParkingManagement.ViewModel
                 {
                     if (!DailyCardList.Any(x => x.CardNumber == cardNumber))
                     {
-                        DailyCardList.Add(new DailyCard { CardNumber = cardNumber, Device1 = 0, Device2 = 0, Device3 = 0 });
+                        DailyCardList.Add(new DailyCard { CardNumber = cardNumber, DeviceList = DeviceList });
                     }
                 }
             }
