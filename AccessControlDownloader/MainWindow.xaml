@@ -53,13 +53,15 @@
                                         <ColumnDefinition/>
                                         <ColumnDefinition/>
                                         <ColumnDefinition/>
+                                        <ColumnDefinition/>
                                     </Grid.ColumnDefinitions>
                                     <Grid.RowDefinitions>
                                         <RowDefinition/>
                                     </Grid.RowDefinitions>
                                     <Image Grid.Column="0" Height="50" Width="80" Source="{Binding ImageSource}" HorizontalAlignment="Left" VerticalAlignment="Center"/>
                                     <TextBlock Grid.Column="1" HorizontalAlignment="Center" Foreground="black" VerticalAlignment="Center" FontWeight="Bold" FontSize="25" Text="{Binding Devicename}"/>
-                                    <Viewbox Height="28" Grid.Column="2" HorizontalAlignment="Right">
+                                    <TextBlock Grid.Column="2" HorizontalAlignment="Center" Foreground="black" VerticalAlignment="Center" FontWeight="Bold" FontSize="25"><Run Text="{Binding EnteredVehicle}" /> <Run Text="Vehicles Entered" FontSize="16" /></TextBlock>
+                                    <Viewbox Height="28" Grid.Column="3" HorizontalAlignment="Right">
                                         <RadioButton x:Name="myButton" HorizontalAlignment="Right" VerticalAlignment="Center" FontWeight="Bold" Background="{Binding GridBackground}" Content="Status">
                                             <RadioButton.Style>
                                                 <Style TargetType="RadioButton">

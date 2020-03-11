@@ -139,12 +139,15 @@ namespace AccessControlDownloader.ViewModel
 
         private void ExecuteReadLog(object obj)
         {
-
             foreach (var device in DeviceList)
             {
                 var zkem = new zkemkeeper.CZKEM();
+                using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
+                {
+                    var totalEnteredVechicle=conn.ExecuteScalar<int>($"SELECT count(*) FROM PARKINGINDETAILS p join devicelist d on p.vehicletype=d.vehicletype  where deviceid='{device.DeviceId}' and convert(date, indate) = convert(date, getdate())");
+                    DeviceList.Where(x => x.VehicleType == device.VehicleType).ToList().ForEach(x => x.EnteredVehicle = totalEnteredVechicle);
+                }
 
-               
 
                 if (zkem.Connect_Net(device.DeviceIp, device.DevicePort))
                 {
@@ -171,6 +174,7 @@ namespace AccessControlDownloader.ViewModel
                                     SaveLogsToDb(ld, tran, device);
                                 }
                                 tran.Commit();
+                                zkem.ClearGLog(zkem.MachineNumber);
                             }
                         }
                     }

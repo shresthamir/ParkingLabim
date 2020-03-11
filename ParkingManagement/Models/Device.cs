@@ -16,7 +16,7 @@ namespace ParkingManagement.Models
         private BitmapImage _ImageSource;
         private byte[] _ButtonImage;
         private SolidColorBrush _gridBackground = new SolidColorBrush(Colors.Red);
-
+        private int _EnteredVehicle;
 
         public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged(string propname)
@@ -33,6 +33,7 @@ namespace ParkingManagement.Models
         public int VehicleType { get; set; }
         public int IsMemberDevice { get; set; }
 
+        public int EnteredVehicle { get { return _EnteredVehicle; } set { _EnteredVehicle = value; OnPropertyChanged("EnteredVehicle"); } }
         public bool Status { get { return _Status; } set { _Status = value; OnPropertyChanged("Status"); } }
 
         public BitmapImage ImageSource { get { return _ImageSource; } set { _ImageSource = value; OnPropertyChanged("ImageSource"); } }
