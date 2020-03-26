@@ -28,6 +28,7 @@ namespace ParkingManagement.ViewModel
         private int _RecordCount;
         private int _OldRecord;
         private int _NewRecord;
+        private ObservableCollection<Device> _Device;
 
         public Member member { get { return _member; } set { _member = value; OnPropertyChanged("member"); } }
         public Member SelectedMember { get { return _SelectedMember; } set { _SelectedMember = value; OnPropertyChanged("SelectedMember"); } }
@@ -38,6 +39,8 @@ namespace ParkingManagement.ViewModel
         public int ImportCount { get { return _RecordCount; } set { _RecordCount = value; OnPropertyChanged("ImportCount"); } }
         public int NewRecords { get { return _NewRecord; } set { _NewRecord = value; OnPropertyChanged("NewRecords"); } }
         public int OldRecords { get { return _OldRecord; } set { _OldRecord = value; OnPropertyChanged("OldRecords"); } }
+        public ObservableCollection<Device> DeviceList { get { return _Device; } set { _Device = value; OnPropertyChanged("DeviceList"); } }
+
 
         public RelayCommand BrowseCommand { get { return new RelayCommand(BrowseFile); } }
         public RelayCommand FinishCommand { get { return new RelayCommand(FinishImport); } }
@@ -256,6 +259,7 @@ namespace ParkingManagement.ViewModel
                     conn.Open();
                     using (SqlTransaction tran = conn.BeginTransaction())
                     {
+                        SaveToAccessControlDevice();
                         member.Save(tran);
                         tran.Commit();
                     }
@@ -282,6 +286,50 @@ namespace ParkingManagement.ViewModel
                 MessageBox.Show(ex.Message, MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
+        private void SaveToAccessControlDevice()
+        {
+            try
+            {
+                foreach (var device in DeviceList)
+                {
+
+                    var zkem = new zkemkeeper.CZKEM();
+
+                    if (device.IsMemberDevice==1)
+                    {
+                        if (zkem.Connect_Net(device.DeviceIp, device.DevicePort))
+                        {
+
+                            //zkem.GetDeviceIP(zkem.MachineNumber, ref ipaddress);
+
+                            //zkem.SetDeviceIP(zkem.MachineNumber, "192.168.125.234");
+                            //zkem.GetDeviceIP(zkem.MachineNumber, ref ipaddress);
+
+                            if (member != null)
+                            {
+                                //card.CardId = res.FirstOrDefault().CardId;
+                                zkem.SetStrCardNumber(member.Barcode);
+                                zkem.SetUserInfo(zkem.MachineNumber, member.MemberId, member.Barcode, "", 0, true);
+
+                                //card.DeviceList.Where(x => x.DeviceId == device.DeviceId).ToList().ForEach(x => x.Status = true);
+                            }
+                        }
+                        else
+                        {
+                            MessageBox.Show($"Connecting to device {device.Devicename} failed!", "Daily Card Registraion", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                        }
+                    }
+                    
+                }
+               
+            }
+            catch(Exception ex)
+            {
+
+            }
+        }
+
         private void UpdateMember(object obj)
         {
             try
@@ -293,6 +341,7 @@ namespace ParkingManagement.ViewModel
                     conn.Open();
                     using (SqlTransaction tran = conn.BeginTransaction())
                     {
+                        SaveToAccessControlDevice();
                         member.Update(tran);
                         tran.Commit();
                     }

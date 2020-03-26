@@ -11,9 +11,9 @@ using ParkingManagement.Library;
 
 namespace ParkingManagement.Models
 {
-    class Member : BaseModel, IDataErrorInfo
+    public class Member : BaseModel, IDataErrorInfo
     {
-        private string _MemberId;
+        private int _MemberId;
         private string _MemberName;
         private string _Address = string.Empty;
         private string _Mobile;
@@ -22,7 +22,7 @@ namespace ParkingManagement.Models
         private DateTime _ExpiryDate;
         private string _Barcode;
 
-        public string MemberId { get { return _MemberId; } set { _MemberId = value; OnPropertyChanged("MemberId"); } }
+        public int MemberId { get { return _MemberId; } set { _MemberId = value; OnPropertyChanged("MemberId"); } }
         public string Barcode { get { return _Barcode; } set { _Barcode = value; OnPropertyChanged("Barcode"); } }
         public string MemberName { get { return _MemberName; } set { _MemberName = value; OnPropertyChanged("MemberName"); } }
         public string Address { get { return _Address; } set { _Address = value; OnPropertyChanged("Address"); } }
@@ -34,12 +34,14 @@ namespace ParkingManagement.Models
 
         public override bool Save(SqlTransaction tran)
         {
-            return tran.Connection.Execute("INSERT INTO Members(MemberId, MemberName, Address, Mobile, SchemeId, ActivationDate, ExpiryDate, Barcode) VALUES (@MemberId, @MemberName, @Address, @Mobile, @SchemeId, @ActivationDate, @ExpiryDate, @Barcode)", this, tran) == 1;
+            //return tran.Connection.Execute("INSERT INTO Members(MemberId, MemberName, Address, Mobile, SchemeId, ActivationDate, ExpiryDate, Barcode) VALUES (@MemberId, @MemberName, @Address, @Mobile, @SchemeId, @ActivationDate, @ExpiryDate, @Barcode)", this, tran) == 1;
+            return tran.Connection.Execute("INSERT INTO Members(MemberId, MemberName, Address, Mobile, SchemeId,Barcode) VALUES (@MemberId, @MemberName, @Address, @Mobile, @SchemeId, @Barcode)", this, tran) == 1;
         }
 
         public override bool Update(SqlTransaction tran)
         {
-            return tran.Connection.Execute("Update Members SET MemberName = @MemberName, Address = @Address, Mobile = @Mobile, SchemeId = @SchemeId, ActivationDate = @ActivationDate, ExpiryDate = @ExpiryDate, Barcode = @Barcode WHERE MemberId = @MemberId", this, tran) == 1;
+            //return tran.Connection.Execute("Update Members SET MemberName = @MemberName, Address = @Address, Mobile = @Mobile, SchemeId = @SchemeId, ActivationDate = @ActivationDate, ExpiryDate = @ExpiryDate, Barcode = @Barcode WHERE MemberId = @MemberId", this, tran) == 1;
+            return tran.Connection.Execute("Update Members SET MemberName = @MemberName, Address = @Address, Mobile = @Mobile, SchemeId = @SchemeId, Barcode = @Barcode WHERE MemberId = @MemberId", this, tran) == 1;
         }
 
         public override bool Delete(SqlTransaction tran)
@@ -52,7 +54,8 @@ namespace ParkingManagement.Models
         {
             get
             {
-                if (string.IsNullOrEmpty(MemberId))
+                //if (string.IsNullOrEmpty(MemberId))
+                if (MemberId==0)
                     return "Member Id cannot be empty";
                 else if (string.IsNullOrEmpty(Barcode))
                     return "Barcode cannot be empty";
@@ -62,8 +65,8 @@ namespace ParkingManagement.Models
                     return "Member Name cannot be empty";
                 //else if (string.IsNullOrEmpty(Mobile))
                 //    return "Mobile No cannot be empty";
-                else if (ExpiryDate < ActivationDate)
-                    return "ExpiryDate cannot be earilier than Activation Date";
+                //else if (ExpiryDate < ActivationDate)
+                //    return "ExpiryDate cannot be earilier than Activation Date";
                 else if (SchemeId == 0)
                     return "Scheme cannot be empty.";
                 return string.Empty;
@@ -83,7 +86,8 @@ namespace ParkingManagement.Models
                             Result = "Member Name cannot be empty";
                         break;
                     case "MemberId":
-                        if (string.IsNullOrEmpty(MemberId))
+                        //if (string.IsNullOrEmpty(MemberId))
+                        if (MemberId==0)
                             Result = "Member Id cannot be empty";
                         break;
                     case "Barcode":
@@ -96,10 +100,10 @@ namespace ParkingManagement.Models
                         if (string.IsNullOrEmpty(Mobile))
                             Result = "Mobile No cannot be empty";
                         break;
-                    case "ExpiryDate":
-                        if (ExpiryDate < ActivationDate)
-                            Result = "ExpiryDate cannot be earilier than Activation Date";
-                        break;
+                    //case "ExpiryDate":
+                    //    if (ExpiryDate < ActivationDate)
+                    //        Result = "ExpiryDate cannot be earilier than Activation Date";
+                        //break;
                     case "SchemeId":
                         if (SchemeId == 0)
                             Result = "Scheme cannot be empty.";
@@ -116,7 +120,7 @@ namespace ParkingManagement.Models
         public string BillNo { get; set; }
         public byte FYID { get; set; }
         public int PID { get; set; }
-        public string MemberId { get; set; }
+        public int MemberId { get; set; }
         public int SchemeId { get; set; }
         public decimal Interval { get; set; }
         public decimal DiscountAmount { get; set; }

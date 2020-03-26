@@ -8,11 +8,11 @@ using System.Data.SqlClient;
 using Dapper;
 namespace ParkingManagement.Models
 {
-    class TParkingSales : BaseModel
+    public class TParkingSales : BaseModel
     {
         private string _BillNo;
         private byte _FYID;
-        private DateTime _TDate;
+        private DateTime _TDate = DateTime.Now;
         private string _TMiti;
         private string _TTime;
         private string _Description;
@@ -32,6 +32,8 @@ namespace ParkingManagement.Models
         private int _SESSION_ID;
         private int _PID;
         private bool _TRNMODE = true;
+        private DateTime _ExpiryDate;
+
         public string BillNo { get { return _BillNo; } set { _BillNo = value; } }
         public byte FYID { get { return _FYID; } set { _FYID = value; } }
         public DateTime TDate { get { return _TDate; } set { _TDate = value; } }
@@ -54,13 +56,14 @@ namespace ParkingManagement.Models
         public int SESSION_ID { get { return _SESSION_ID; } set { _SESSION_ID = value; } }
         public int PID { get { return _PID; } set { _PID = value; } }
         public bool TRNMODE { get { return _TRNMODE; } set { _TRNMODE = value; OnPropertyChanged("TRNMODE"); } }
+        public DateTime ExpiryDate { get { return _ExpiryDate; } set { _ExpiryDate = value; OnPropertyChanged("ExpiryDate"); } }
 
         public override bool Save(SqlTransaction tran)
         {
             string strSQL = string.Format
                              (
-                                 @"INSERT INTO ParkingSales (BillNo, FYID, TDate, TMiti, TTime, [Description], BillTo, BILLTOADD, BILLTOPAN, Amount, Discount, NonTaxable, Taxable, VAT, GrossAmount, RefBillNo, TaxInvoice, Remarks, UID, SESSION_ID, PID, TRNMODE) 
-                                    VALUES (@BillNo, @FYID, @TDate, @TMiti, @TTime, @Description, @BillTo, @BILLTOADD, @BILLTOPAN, @Amount, @Discount, @NonTaxable, @Taxable, @VAT, @GrossAmount, @RefBillNo, @TaxInvoice, @Remarks, @UID, @SESSION_ID, @PID, @TRNMODE)"
+                                 @"INSERT INTO ParkingSales (BillNo, FYID, TDate, TMiti, TTime, [Description], BillTo, BILLTOADD, BILLTOPAN, Amount, Discount, NonTaxable, Taxable, VAT, GrossAmount, RefBillNo, TaxInvoice, Remarks, UID, SESSION_ID, PID, TRNMODE,ExpiryDate) 
+                                    VALUES (@BillNo, @FYID, @TDate, @TMiti, @TTime, @Description, @BillTo, @BILLTOADD, @BILLTOPAN, @Amount, @Discount, @NonTaxable, @Taxable, @VAT, @GrossAmount, @RefBillNo, @TaxInvoice, @Remarks, @UID, @SESSION_ID, @PID, @TRNMODE,@ExpiryDate)"
                              );
             return tran.Connection.Execute(strSQL, this, tran) == 1;
         }
@@ -68,7 +71,7 @@ namespace ParkingManagement.Models
 
 
 
-    class TParkingSalesDetails : BaseModel
+    public class TParkingSalesDetails : BaseModel
     {
         private string _BillNo;
         private byte _FYID;
@@ -91,6 +94,7 @@ namespace ParkingManagement.Models
         public byte FYID { get { return _FYID; } set { _FYID = value; } }
         public char PType { get { return _PType; } set { _PType = value; } }
         public int ProdId { get { return _ProdId; } set { _ProdId = value; OnPropertyChanged("ProdId"); } }
+
         public string Description { get { return _Description; } set { _Description = value; OnPropertyChanged("Description"); } }
         public decimal Quantity { get { return _Quantity; } set { _Quantity = value; _QuantityStr = value.ToString("#.###"); OnPropertyChanged("Quantity"); OnPropertyChanged("QuantityStr"); } }
         public decimal Rate { get { return _Rate; } set { _Rate = value; _RateStr = value.ToString("#0.00"); OnPropertyChanged("Rate"); OnPropertyChanged("RateStr"); } }

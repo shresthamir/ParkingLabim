@@ -27,7 +27,7 @@
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="50"></RowDefinition>
-                <RowDefinition Height="180"></RowDefinition>
+                <RowDefinition Height="220"></RowDefinition>
                 <RowDefinition Height="1*"></RowDefinition>
             </Grid.RowDefinitions>
             <Border Grid.Row="0" Style="{StaticResource GradientBackground}">
@@ -120,7 +120,10 @@
                                 <TextBox Text="{Binding Scheme.Limit, Converter={StaticResource NoZero}}" Height="25" Width="120" Margin="5" HorizontalContentAlignment="Right" ToolTip="Duration in mins per day."/>
                                 <Label Content="Mins" Width="50"></Label>
                             </StackPanel>
-
+                            <StackPanel Orientation="Horizontal" Margin="5 0" >
+                                <Label Content="Rate" />
+                                <TextBox Text="{Binding Scheme.Rate, Converter={StaticResource NoZero}}" Height="25" Width="120" Margin="5"/>
+                            </StackPanel>
                         </StackPanel>
                     </StackPanel>
                 </Grid>
@@ -132,6 +135,7 @@
                     <DataGridTextColumn Header="Validity (Days)"  Binding="{Binding ValidityPeriod}" Width="130"/>
                     <DataGridTextColumn Header="Limit (Mins)"  Binding="{Binding Limit}" Width="110"/>
                     <DataGridTextColumn Header="Discount (%)"  Binding="{Binding Discount}" Width="110"/>
+                    <DataGridTextColumn Header="Rate"  Binding="{Binding Rate}" Width="110"/>
                     <DataGridTextColumn Header="Valid on Weekends"  Binding="{Binding ValidOnWeekends}" Width="130"/>
                     <DataGridTextColumn Header="Valid on Holidays"  Binding="{Binding ValidOnHolidays}" Width="130"/>
                 </DataGrid.Columns>

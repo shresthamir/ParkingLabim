@@ -46,9 +46,12 @@ namespace ParkingManagement.ViewModel
         private DiscountScheme _SelectedDiscount;
         private bool IsHoliday;
         private string _TrnMode="Sales";
+        private ObservableCollection<Device> _Device;
 
         public ParkingIn PIN { get { return _PIN; } set { _PIN = value; OnPropertyChanged("PIN"); } }
         public ParkingOut POUT { get { return _POUT; } set { _POUT = value; OnPropertyChanged("POUT"); } }
+        public ObservableCollection<Device> DeviceList { get { return _Device; } set { _Device = value; OnPropertyChanged("DeviceList"); } }
+
         public ObservableCollection<RateMaster> RSchemes
         {
             get { return _RSchemes; }
@@ -823,7 +826,7 @@ AND FYID = {1} ORDER BY PID DESC", obj, GlobalClass.FYID));
                                 NetAmount = POUT.CashAmount,
                             };
                             PSalesDetails.Save(tran);
-
+                            ReActivateCard();
                             conn.Execute("UPDATE tblSequence SET CurNo = CurNo + 1 WHERE VNAME = @VNAME AND FYID = @FYID", new { VNAME = InvoicePrefix, FYID = GlobalClass.FYID }, transaction: tran);
                             GlobalClass.SetUserActivityLog(tran, "Exit", "New", VCRHNO: BillNo, WorkDetail: "Bill No : " + BillNo);
                             SyncFunctions.LogSyncStatus(tran, BillNo, GlobalClass.FYNAME);
@@ -873,6 +876,29 @@ AND FYID = {1} ORDER BY PID DESC", obj, GlobalClass.FYID));
                 MessageBox.Show(ex.Message, MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+        private void ReActivateCard()
+        {
+            foreach (var device in DeviceList)
+            {
+                var zkem = new zkemkeeper.CZKEM();
+                if (zkem.Connect_Net(device.DeviceIp, device.DevicePort))
+                {
+                    var cardId = GetEnrolledIdByCardNumber(PIN.Barcode);
+                   
+                    //TODO: Activate from device
+                }
+            }
+        }
+
+        private string GetEnrolledIdByCardNumber(string barcode)
+        {
+            using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
+            {
+                var cardId = conn.Query<string>($"select cardid from dailycards where cardnumber='{barcode}'");
+                return cardId.FirstOrDefault();
+            }
+        }
+
         private void ExecuteUndo(object obj)
         {
             if (_action == ButtonAction.Selected)

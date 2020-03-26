@@ -18,15 +18,15 @@ using ParkingManagement.Forms;
 
 namespace ParkingManagement.ViewModel
 {
-    class VoucherSalesInvoiceVM : BaseViewModel
+    public class VoucherSalesInvoiceVM : BaseViewModel
     {
-        enum Focusable
+        public enum Focusable
         {
             Invoice = 0,
             VoucherType = 1,
             Customer = 2
         }
-        DateConverter nepDate;
+        public DateConverter nepDate;
         DispatcherTimer timer;
         string _CurTime;
         DateTime _CurDate;
@@ -147,6 +147,7 @@ namespace ParkingManagement.ViewModel
         {
             if (e.PropertyName == "Rate" || e.PropertyName == "Quantity")
                 VSDetail.Amount = VSDetail.Rate * VSDetail.Quantity;
+
         }
 
         private void ExecuteLoadInvoice(object obj)
@@ -247,6 +248,8 @@ namespace ParkingManagement.ViewModel
             InvoiceNo = GetInvoiceNo(InvoicePrefix);
             SetAction(ButtonAction.New);
             FocusedElement = (short)Focusable.Customer;
+            VSDetail.PropertyChanged += VSDetail_PropertyChanged;
+
         }
 
 

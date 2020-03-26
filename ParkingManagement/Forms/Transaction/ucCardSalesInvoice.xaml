@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="ParkingManagement.Forms.Transaction.ucVoucherSalesInvoice"
+﻿<UserControl x:Class="ParkingManagement.Forms.Transaction.ucCardSalesInvoice"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -17,7 +17,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="60"/>
             <RowDefinition Height="50"/>
-            <RowDefinition Height="200"/>
+            <RowDefinition Height="130"/>
             <RowDefinition/>
             <RowDefinition Height="40"/>
         </Grid.RowDefinitions>
@@ -128,11 +128,11 @@
                         <RadioButton IsChecked="{Binding VSales.TRNMODE}" Content="Cash" VerticalAlignment="Center"></RadioButton>
                         <RadioButton Grid.Column="1" IsChecked="{Binding VSales.TRNMODE, Converter={StaticResource ReverseBool}}" Content="Credit" VerticalAlignment="Center"></RadioButton>
                         <Label Grid.Row="1" Content="Customer Name"/>
-                        <ComboBox Grid.Row="1" Grid.Column="1" IsEditable="True" ItemsSource="{Binding CustomerList}" SelectedItem="{Binding SelectedCustomer}" DisplayMemberPath="Name" Text="{Binding VSales.BillTo}"  helper:CustomFocusManager.IsFocused="{Binding FocusedElement, Converter={StaticResource ShortToBool}, ConverterParameter='2'}"></ComboBox>
-                        <Label Content="Address" Grid.Row="2" Margin="2 5 0 0" VerticalAlignment="Top" />
+                        <ComboBox Grid.Row="1" Grid.Column="1" IsEditable="True" ItemsSource="{Binding MemberList}" SelectedItem="{Binding SelectedMember}" DisplayMemberPath="MemberName" Text="{Binding VSales.BillTo}"  helper:CustomFocusManager.IsFocused="{Binding FocusedElement, Converter={StaticResource ShortToBool}, ConverterParameter='2'}"></ComboBox>
+                        <!--<Label Content="Address" Grid.Row="2" Margin="2 5 0 0" VerticalAlignment="Top" />
                         <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding VSales.BILLTOADD}" Height="50" GotFocus="TextBox_GotFocus" TextWrapping="WrapWithOverflow" ></TextBox>
                         <Label Content="PAN" Grid.Row="3"/>
-                        <TextBox Grid.Column="1" Grid.Row="3" Text="{Binding VSales.BILLTOPAN}" GotFocus="TextBox_GotFocus" PreviewTextInput="TextBox_PreviewTextInput" ></TextBox>
+                        <TextBox Grid.Column="1" Grid.Row="3" Text="{Binding VSales.BILLTOPAN}" GotFocus="TextBox_GotFocus" PreviewTextInput="TextBox_PreviewTextInput" ></TextBox>-->
                     </Grid>
                 </Border>
                 <Border Style="{StaticResource PlainBackground}" Grid.Column="1">
@@ -154,11 +154,11 @@
                             <RowDefinition Height="35"/>
                         </Grid.RowDefinitions>
                         <Label Content="Product" />
-                        <ComboBox Grid.ColumnSpan="4" ItemsSource="{Binding VTypeList}" DisplayMemberPath="VoucherName" SelectedValuePath="VoucherId" SelectedValue="{Binding VSDetail.ProdId}" SelectedItem="{Binding SelectedVoucherType}"  Grid.Column="1" FontSize="14"
+                        <ComboBox Grid.ColumnSpan="4" ItemsSource="{Binding SchemeList}" DisplayMemberPath="SchemeName" SelectedValuePath="SchemeId" SelectedValue="{Binding VSDetail.ProdId}" SelectedItem="{Binding SelectedScheme}" IsSynchronizedWithCurrentItem="True" Grid.Column="1" FontSize="14"
                                   helper:CustomFocusManager.IsFocused="{Binding FocusedElement, Converter={StaticResource ShortToBool}, ConverterParameter='1'}"></ComboBox>
 
 
-                        <Label Grid.Row="1" Content="Rate"/>
+                        <!--<Label Grid.Row="1" Content="Rate"/>
                         <TextBox Grid.Row="1" Grid.Column="1" Height="28" Text="{Binding VSDetail.RateStr, UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Right"/>
 
                         <Label Grid.Row="2" Content="Quantity"/>
@@ -168,21 +168,21 @@
                         <TextBox Grid.Row="2" Grid.Column="4" Grid.ColumnSpan="1" Text="{Binding VSDetail.Amount, Converter={StaticResource NoZero}}" HorizontalContentAlignment="Right" IsReadOnly="True" Focusable="False"/>
 
                         <Label Grid.Row="3" Grid.Column="0"  Content="Remarks"/>
-                        <TextBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="4" Text="{Binding VSDetail.Remarks, UpdateSourceTrigger=PropertyChanged}" />
-                        <Label Grid.Row="4" Content="Activation Date"></Label>
-                    <DatePicker VerticalAlignment="Center" Grid.Row="4" Grid.Column="1" IsEnabled="{Binding EntryPanelEnabled}"  Text="{Binding member.ActivationDate, Mode=TwoWay, ValidatesOnDataErrors=True}">
+                        <TextBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="4" Text="{Binding VSDetail.Remarks, UpdateSourceTrigger=PropertyChanged}" />-->
+                        <Label Grid.Row="1" Content="Activation Date"></Label>
+                        <DatePicker VerticalAlignment="Center" Grid.Row="1" Grid.Column="1" IsEnabled="False" Text="{Binding VSales.TDate, Mode=TwoWay, ValidatesOnDataErrors=True}">
                         <DatePicker.Resources>
                             <Style TargetType="Button"/>
                         </DatePicker.Resources>
                     </DatePicker>
 
-                    <Label Grid.Row="5" Grid.Column="3" Content="Expiry Date"></Label>
-                    <DatePicker VerticalAlignment="Center"  Grid.Row="5" Grid.Column="4" IsEnabled="{Binding EntryPanelEnabled}"  Text="{Binding member.ExpiryDate,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}">
+                    <Label Grid.Row="1" Grid.Column="3" Content="Expiry Date"></Label>
+                        <DatePicker VerticalAlignment="Center"  Grid.Row="1" Grid.Column="4" IsEnabled="{Binding EntryPanelEnabled}"  Text="{Binding VSales.ExpiryDate,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}">
                         <DatePicker.Resources>
                             <Style TargetType="Button"/>
                         </DatePicker.Resources>
                     </DatePicker>
-                        <Button Grid.Row="5" Grid.Column="5" HorizontalAlignment="Left" Style="{DynamicResource NewButton}" Command="{Binding AddVoucherCommand}" Content="Add" Width="60" Height="28" Margin="5 0 0 0"></Button>
+                        <Button Grid.Row="2" Grid.Column="5" HorizontalAlignment="Left" Style="{DynamicResource NewButton}" Command="{Binding AddVoucherCommand}" Content="Add" Width="60" Height="28" Margin="5 0 0 0"></Button>
                     </Grid>
                 </Border>
             </Grid>
@@ -190,7 +190,7 @@
         </Border>
         <DataGrid Grid.Row="3" ItemsSource="{Binding VSDetailList}" AutoGenerateColumns="False" IsReadOnly="True" CanUserResizeColumns="False" CellStyle="{DynamicResource DataGridCellStyle1}">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Voucher Name" Binding="{Binding Description}" MinWidth="300" Width="30*" />
+                <DataGridTextColumn Header="Scheme Name" Binding="{Binding Description}" MinWidth="300" Width="30*" />
                 <DataGridTextColumn CellStyle="{DynamicResource NumericDataGridCell}"  Header="Rate" Binding="{Binding Rate, StringFormat={}{0:#,##,##0.00}}" MinWidth="125" Width="12.5*"/>
                 <DataGridTextColumn CellStyle="{DynamicResource NumericDataGridCell}" Header="Quantity" Binding="{Binding Quantity, StringFormat={}{0:#,##,##0.00}}" MinWidth="125" Width="12.5*"/>
                 <DataGridTextColumn CellStyle="{DynamicResource NumericDataGridCell}" Header="Gross Amount" Binding="{Binding Amount, StringFormat={}{0:#,##,##0.00}}" MinWidth="150" Width="15*"/>

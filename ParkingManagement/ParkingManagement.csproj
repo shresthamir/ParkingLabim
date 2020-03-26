@@ -225,6 +225,9 @@
       <DependentUpon>ucCardDiscountReport.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Forms\Reports\ucMembershipExpiryReport.xaml.cs">
+      <DependentUpon>ucMembershipExpiryReport.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Reports\ucVoucherDiscountReport.xaml.cs">
       <DependentUpon>ucVoucherDiscountReport.xaml</DependentUpon>
     </Compile>
@@ -261,6 +264,9 @@
     <Compile Include="Forms\Transaction\ucCreditNoteVoucherWise.xaml.cs">
       <DependentUpon>ucCreditNoteVoucherWise.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Transaction\ucCardSalesInvoice.xaml.cs">
+      <DependentUpon>ucCardSalesInvoice.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Transaction\ucVoucherSalesInvoice.xaml.cs">
       <DependentUpon>ucVoucherSalesInvoice.xaml</DependentUpon>
     </Compile>
@@ -296,6 +302,7 @@
     <Compile Include="Library\Helpers\SyncFunctions.cs" />
     <Compile Include="Library\PoleDisplay.cs" />
     <Compile Include="Library\ValueConverter\RadioButtonTrueFalseConveter.cs" />
+    <Compile Include="Models\Device.cs" />
     <Compile Include="Models\DiscountScheme.cs" />
     <Compile Include="Models\Holiday.cs" />
     <Compile Include="Models\Members.cs" />
@@ -305,6 +312,7 @@
     <Compile Include="Models\Staff.cs" />
     <Compile Include="Models\SyncModels.cs" />
     <Compile Include="Models\VoucherType.cs" />
+    <Compile Include="ViewModel\CardSalesInvoiceViewModel.cs" />
     <Compile Include="ViewModel\ComplementaryVoucherGeneratorViewModel.cs" />
     <Compile Include="ViewModel\CreditNoteVoucherWiseViewModel.cs" />
     <Compile Include="ViewModel\CreditNoteViewModel.cs" />
@@ -407,6 +415,10 @@
       <SubType>Designer</SubType>
       <Generator>XamlIntelliSenseFileGenerator</Generator>
     </Page>
+    <Page Include="Forms\Reports\ucMembershipExpiryReport.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Forms\Reports\ucVoucherDiscountReport.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -468,6 +480,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Forms\Transaction\ucCreditNoteVoucherWise.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Forms\Transaction\ucCardSalesInvoice.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -767,6 +783,15 @@
       <Guid>{0002E157-0000-0000-C000-000000000046}</Guid>
       <VersionMajor>5</VersionMajor>
       <VersionMinor>3</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="zkemkeeper">
+      <Guid>{FE9DED34-E159-408E-8490-B720A5E632C7}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
       <Lcid>0</Lcid>
       <WrapperTool>tlbimp</WrapperTool>
       <Isolated>False</Isolated>

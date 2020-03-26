@@ -8,7 +8,7 @@ using System.Data.SqlClient;
 using Dapper;
 namespace ParkingManagement.Models
 {
-    class VoucherType : BaseModel
+    public class VoucherType : BaseModel
     {
         private int _VoucherId;
         private string _VoucherName;

@@ -10,7 +10,7 @@ using System.Data.SqlClient;
 using Dapper;
 namespace ParkingManagement.Models
 {
-    class MembershipScheme : BaseModel
+    public class MembershipScheme : BaseModel
     {
         private int _SchemeId;
         private string _SchemeName;
@@ -20,6 +20,7 @@ namespace ParkingManagement.Models
         private decimal _Discount;
         private int _Limit;
         private ObservableCollection<ValidHour> _ValidHoursList;
+        private decimal _Rate;
 
         public int SchemeId { get { return _SchemeId; } set { _SchemeId = value; OnPropertyChanged("SchemeId"); } }
         public string SchemeName { get { return _SchemeName; } set { _SchemeName = value; OnPropertyChanged("SchemeName"); } }
@@ -30,15 +31,16 @@ namespace ParkingManagement.Models
         public int Limit { get { return _Limit; } set { _Limit = value; OnPropertyChanged("Limit"); } }
         public string ValidHours { get { return JsonConvert.SerializeObject(ValidHoursList); } set { ValidHoursList = JsonConvert.DeserializeObject<ObservableCollection<ValidHour>>(value); } }
         public ObservableCollection<ValidHour> ValidHoursList { get { return _ValidHoursList; } set { _ValidHoursList = value; OnPropertyChanged("ValidHoursList"); } }
+        public decimal Rate { get { return _Rate; } set { _Rate = value; OnPropertyChanged("Rate"); } }
 
         public override bool Save(SqlTransaction tran)
         {
-            return tran.Connection.Execute("INSERT INTO MembershipScheme(SchemeId, SchemeName, ValidOnWeekends, ValidOnHolidays, ValidityPeriod, Discount, Limit, ValidHours) VALUES (@SchemeId, @SchemeName, @ValidOnWeekends, @ValidOnHolidays, @ValidityPeriod, @Discount, @Limit, @ValidHours)", this, tran) == 1;
+            return tran.Connection.Execute("INSERT INTO MembershipScheme(SchemeId, SchemeName, ValidOnWeekends, ValidOnHolidays, ValidityPeriod, Discount, Limit, ValidHours,Rate) VALUES (@SchemeId, @SchemeName, @ValidOnWeekends, @ValidOnHolidays, @ValidityPeriod, @Discount, @Limit, @ValidHours,@Rate)", this, tran) == 1;
         }
 
         public override bool Update(SqlTransaction tran)
         {
-            return tran.Connection.Execute("UPDATE MembershipScheme SET SchemeName = @SchemeName, ValidOnWeekends = @ValidOnWeekends, ValidOnHolidays = @ValidOnHolidays, ValidityPeriod  = @ValidityPeriod, Discount = @Discount, Limit = @Limit, ValidHours = @ValidHours WHERE SchemeId = @SchemeId", this, tran) == 1;
+            return tran.Connection.Execute("UPDATE MembershipScheme SET SchemeName = @SchemeName, ValidOnWeekends = @ValidOnWeekends, ValidOnHolidays = @ValidOnHolidays, ValidityPeriod  = @ValidityPeriod, Discount = @Discount, Limit = @Limit, ValidHours = @ValidHours,Rate=@Rate WHERE SchemeId = @SchemeId", this, tran) == 1;
         }
 
         public override bool Delete(SqlTransaction tran)
@@ -47,7 +49,7 @@ namespace ParkingManagement.Models
         }
     }
 
-    class ValidHour : BaseModel
+    public class ValidHour : BaseModel
     {
         private TimeSpan _Start;
         private TimeSpan _End;
