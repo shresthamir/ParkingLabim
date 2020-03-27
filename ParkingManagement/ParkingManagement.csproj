@@ -86,6 +86,14 @@
     <Reference Include="Dapper">
       <HintPath>..\..\..\..\Users\Amir\Desktop\bishaka Programming\Library\Dapper.dll</HintPath>
     </Reference>
+    <Reference Include="ExcelDataReader, Version=3.4.0.0, Culture=neutral, PublicKeyToken=93517dbe6a4012fa, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\UpdatePackage\ExcelDataReader.dll</HintPath>
+    </Reference>
+    <Reference Include="ExcelDataReader.DataSet, Version=3.4.0.0, Culture=neutral, PublicKeyToken=93517dbe6a4012fa, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\UpdatePackage\ExcelDataReader.DataSet.dll</HintPath>
+    </Reference>
     <Reference Include="ExtendedComboBox">
       <HintPath>..\..\..\UpdatePackage\ExtendedComboBox.dll</HintPath>
     </Reference>
@@ -185,6 +193,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Forms\DataUtility\RegisterDailyCard.xaml.cs">
+      <DependentUpon>RegisterDailyCard.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Forms\DataUtility\wDataBackup.xaml.cs">
       <DependentUpon>wDataBackup.xaml</DependentUpon>
     </Compile>
@@ -302,6 +313,7 @@
     <Compile Include="Library\Helpers\SyncFunctions.cs" />
     <Compile Include="Library\PoleDisplay.cs" />
     <Compile Include="Library\ValueConverter\RadioButtonTrueFalseConveter.cs" />
+    <Compile Include="Models\DailyCard.cs" />
     <Compile Include="Models\Device.cs" />
     <Compile Include="Models\DiscountScheme.cs" />
     <Compile Include="Models\Holiday.cs" />
@@ -322,11 +334,16 @@
     <Compile Include="ViewModel\MembershipSchemeViewModel.cs" />
     <Compile Include="ViewModel\MemberViewModel.cs" />
     <Compile Include="ViewModel\ParkingEntranceCloseViewModel.cs" />
+    <Compile Include="ViewModel\RegisterDailyCardViewModel.cs" />
     <Compile Include="ViewModel\VoucherSalesInvoiceVM.cs" />
     <Compile Include="ViewModel\POutWithoutSlipVM.cs" />
     <Compile Include="ViewModel\StaffViewModel.cs" />
     <Compile Include="ViewModel\VoucherTypeViewModel.cs" />
     <Compile Include="ViewModel\vmCashSettlement.cs" />
+    <Page Include="Forms\DataUtility\RegisterDailyCard.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Forms\DataUtility\wDataBackup.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

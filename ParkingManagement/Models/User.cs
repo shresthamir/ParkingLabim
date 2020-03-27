@@ -11,7 +11,7 @@ using System.Collections.ObjectModel;
 namespace ParkingManagement.Models
 {
 
-    class User : BaseModel
+    public class User : BaseModel
     {
         #region members
         int _UserID;
