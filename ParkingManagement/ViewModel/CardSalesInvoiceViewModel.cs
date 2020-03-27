@@ -176,7 +176,7 @@ namespace ParkingManagement.ViewModel
                     }
                     //if (!string.IsNullOrEmpty(VSales.BillNo))
                     //{
-                    //    PrintBill(VSales.BillNo, true);
+                    PrintBill(VSales.BillNo, true);
                     //    if (GenerateVoucher)
                     //    {
                     //        vp.Show();
@@ -194,6 +194,74 @@ namespace ParkingManagement.ViewModel
                 MessageBox.Show(ex.Message, MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
+        async void PrintBill(string BillNo, bool IsNew = false)
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
+                {
+                    string PType = conn.ExecuteScalar<string>("SELECT PType From ParkingSales PS JOIN ParkingSalesDetails PSD ON PS.BillNo = PSD.BillNo AND PS.FYID = PSD.FYID WHERE PS.BillNo = @BillNo AND PS.FYID = @FYID", new { BillNo = BillNo, FYID = GlobalClass.FYID });
+                    if (string.IsNullOrEmpty(PType))
+                    {
+                        MessageBox.Show("Invalid Invoice No", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                        return;
+                    }
+                    else if (PType == "P")
+                    {
+                        MessageBox.Show("Entrance Invoice cannot be loaded in this interface.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                        return;
+                    }
+
+                    var vSales = conn.Query<TParkingSales>("SELECT BillNo, FYID, TDate, TMiti, TTime, UserName [Description], BillTo, BILLTOADD, BILLTOPAN, Amount, Discount, NonTaxable, Taxable, VAT, GrossAmount, RefBillNo, TaxInvoice, Remarks, PS.UID, SESSION_ID, PID FROM ParkingSales PS JOIN Users U ON PS.UID = U.UID WHERE BillNo = @BillNo AND FYID = @FYID", new { BillNo = BillNo, FYID = GlobalClass.FYID }).FirstOrDefault();
+                    var vSDetailList = new List<TParkingSalesDetails>(
+                                        conn.Query<TParkingSalesDetails>("SELECT BillNo, FYID, PTYPE, ProdId, [Description], Quantity, Rate, Amount, Discount, NonTaxable, Taxable, VAT, NetAmount, Remarks FROM ParkingSalesDetails WHERE BillNo = @BillNo AND FYID = @FYID", new { BillNo = BillNo, FYID = GlobalClass.FYID }));
+                    string InWords = GlobalClass.GetNumToWords(conn, vSales.GrossAmount);
+
+                    string DuplicateCaption = (IsNew) ? String.Empty : GlobalClass.GetReprintCaption(BillNo);
+                    var pslip = new BillPrint
+                    {
+                        CompanyName = GlobalClass.CompanyName,
+                        CompanyAddress = GlobalClass.CompanyAddress,
+                        CompanyPan = GlobalClass.CompanyPan,
+                        PSales = vSales,
+                        PSDetails = vSDetailList,
+                        InWords = InWords,
+                        DuplicateCaption = DuplicateCaption
+                    };
+                    if (IsNew)
+                    {
+                        pslip.InvoiceTitle = "TAX INVOICE";
+                        pslip.Print();
+                        pslip.InvoiceTitle = "INVOIVE";
+                        pslip.Print();
+                    }
+                    //else
+                    //{
+                    //    pslip.InvoiceTitle = "INVOIVE";
+                    //    pslip.Print();
+                    //    GlobalClass.SavePrintLog(BillNo, null, DuplicateCaption);
+                    //    GlobalClass.SetUserActivityLog("Voucher Sales Invoice", "Re-Print", WorkDetail: string.Empty, VCRHNO: BillNo, Remarks: "Reprinted : " + DuplicateCaption);
+                    //    if (MessageBox.Show("Would you like to reprint Vouchers as well?", MessageBoxCaption, MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                    //    {
+                    //        VoucherSelection vs = conn.Query<VoucherSelection>("SELECT MIN(VoucherNo) VNOFrom, MAX(VoucherNo) VNOTo FROM ParkingVouchers WHERE BillNo = @BillNo AND FYID = @FYID", new { BillNo = BillNo, FYID = GlobalClass.FYID }).FirstOrDefault();
+                    //        wVoucherSelect wVS = new wVoucherSelect() { DataContext = vs };
+                    //        wVS.ShowDialog();
+
+                    //        vp = new wVoucherPrintProgress() { DataContext = this };
+                    //        vp.Show();
+                    //        await PrintVouchers(BillNo, false, vs);
+                    //        vp.Close();
+                    //    }
+                    //}
+                }
+            }
+            catch (Exception Ex)
+            {
+                MessageBox.Show(GlobalClass.GetRootException(Ex).Message, MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
         string GetInvoiceNo(string VNAME)
         {
             using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
