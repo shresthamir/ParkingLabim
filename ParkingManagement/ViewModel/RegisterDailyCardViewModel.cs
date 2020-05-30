@@ -62,6 +62,20 @@ namespace ParkingManagement.ViewModel
 
                     var zkem = new zkemkeeper.CZKEM();
 
+                    device.DeviceIp = device.DeviceIp.Trim();
+                    bool isValidIpA = UniversalStatic.ValidateIP(device.DeviceIp);
+                    if (!isValidIpA)
+                    {
+                        MessageBox.Show($"The Device with IP: {device.DeviceIp} has invalid IP!!");
+                        continue;
+                    }
+
+                    isValidIpA = UniversalStatic.PingTheDevice(device.DeviceIp);
+                    if (!isValidIpA)
+                    {
+                        MessageBox.Show($"The device at " + device.DeviceIp + ":" + device.DevicePort + " did not respond!!");
+                        continue;
+                    }
 
                     if (zkem.Connect_Net(device.DeviceIp, device.DevicePort))
                     {
@@ -131,7 +145,7 @@ namespace ParkingManagement.ViewModel
                     }
                 }
                 SaveToDb(DailyCardList);
-                MessageBox.Show("Cards Uploaded Sucessfully!", "Daily Card Registraion", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Operation completed!", "Daily Card Registraion", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)
             {

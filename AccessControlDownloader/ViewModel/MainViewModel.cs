@@ -1,4 +1,6 @@
-﻿using Dapper;
+﻿using AccessControlDownloader.Helper;
+using Dapper;
+using ParkingManagement.Enums;
 using ParkingManagement.Library;
 using ParkingManagement.Library.Helpers;
 using ParkingManagement.Models;
@@ -141,7 +143,8 @@ namespace AccessControlDownloader.ViewModel
         {
             try
             {
-                foreach (var device in DeviceList)
+                var vehicletype = (int)DeviceType.Entry;
+                foreach (var device in DeviceList.Where(x => x.DeviceType == (int)DeviceType.Entry))
                 {
                     var zkem = new zkemkeeper.CZKEM();
                     using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
@@ -149,7 +152,24 @@ namespace AccessControlDownloader.ViewModel
                         var totalEnteredVechicle = conn.ExecuteScalar<int>($"SELECT count(*) FROM PARKINGINDETAILS p join devicelist d on p.vehicletype=d.vehicletype  where deviceid='{device.DeviceId}' and convert(date, indate) = convert(date, getdate())");
                         DeviceList.Where(x => x.VehicleType == device.VehicleType).ToList().ForEach(x => x.EnteredVehicle = totalEnteredVechicle);
                     }
+                    device.DeviceIp = device.DeviceIp.Trim();
+                    bool isValidIpA = UniversalStatic.ValidateIP(device.DeviceIp);
+                    if (!isValidIpA)
+                    {
+                        device.Status = false;
+                        device.GridBackground = new SolidColorBrush(Colors.Red);
+                        return;
+                        //throw new Exception("The Device IP is invalid !!");
+                    }
 
+                    isValidIpA = UniversalStatic.PingTheDevice(device.DeviceIp);
+                    if (!isValidIpA)
+                    {
+                        device.Status = false;
+                        device.GridBackground = new SolidColorBrush(Colors.Red);
+                        return;
+                        //throw new Exception("The device at " + device.DeviceIp + ":" + device.DevicePort + " did not respond!!");
+                    }
 
                     if (zkem.Connect_Net(device.DeviceIp, device.DevicePort))
                     {
@@ -174,8 +194,11 @@ namespace AccessControlDownloader.ViewModel
                                         }
 
                                         SaveLogsToDb(ld, tran, device);
-                                        DeActivateEnteredCard(ld.dwEnrollNumberInt);
-
+                                        //DeActivateEnteredCard(ld.dwEnrollNumberInt);
+                                        if (CheckIfMemberCard(ld.dwEnrollNumberInt, tran))
+                                        {
+                                            zkem.EnableUser(zkem.MachineNumber, ld.dwEnrollNumberInt, zkem.MachineNumber, 10, false);//To Deactivate member card
+                                        }
                                     }
                                     tran.Commit();
                                     zkem.ClearGLog(zkem.MachineNumber);
@@ -196,6 +219,18 @@ namespace AccessControlDownloader.ViewModel
                 MessageBox.Show(ex.ToString(), "AccessControlSync", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
         }
+
+        private bool CheckIfMemberCard(int cardNumber, SqlTransaction tran)
+        {
+            var isMember = tran.Connection.QueryFirstOrDefault<ParkingIn>(@"select * from DailyCards c join Members m on c.CardNumber=m.BARCODE where cardid=@cardNumber
+", new { cardNumber }, tran);
+            if (isMember == null)
+            {
+                return false;
+            }
+            return true;
+        }
+
         private void SaveLogsToDb(MainViewModel ld, SqlTransaction tran, Device device)
         {
             ParkingIn Parking = new ParkingIn();
@@ -211,7 +246,7 @@ namespace AccessControlDownloader.ViewModel
                 Parking.SESSION_ID = 1;
                 var logDate = new DateTime(ld.dwYear, ld.dwMonth, ld.dwDay, ld.dwHour, ld.dwMinute, ld.dwSecond);
                 Parking.InDate = new DateTime(ld.dwYear, ld.dwMonth, ld.dwDay);
-                Parking.InTime = logDate.ToString("HH:mm:ss");
+                Parking.InTime = logDate.ToString("hh:mm:ss tt");
                 var nepDate = new DateConverter(GlobalClass.TConnectionString);
                 Parking.InMiti = nepDate.CBSDate(Parking.InDate);
                 Parking.VehicleType = GetVechicleTypeByDeviceId(device.DeviceId);
@@ -235,7 +270,7 @@ namespace AccessControlDownloader.ViewModel
 
         private void DeActivateEnteredCard(int dwEnrollNumberInt)
         {
-           //TODO: Disable enrolled card from access control device
+            //zkem.EnableUser(zkem.MachineNumber, cardId, zkem.MachineNumber, 10, true);
         }
 
         private int GetMaxCardId()

@@ -132,7 +132,13 @@ namespace ParkingManagement.ViewModel
 
             }
         }
-
+        private void GetDeviceList()
+        {
+            using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
+            {
+                DeviceList = new ObservableCollection<Device>(conn.Query<Device>("select * from DeviceList"));
+            }
+        }
         private void ExecuteLoadInvoice(object obj)
         {
             string BillNo = InvoicePrefix + obj.ToString();
@@ -200,6 +206,7 @@ namespace ParkingManagement.ViewModel
                 SaveWithStaffCommand = new RelayCommand(SaveWithStaff);
                 POUT.PropertyChanged += POUT_PropertyChanged;
                 SetAction(ButtonAction.Init);
+                GetDeviceList();
             }
             catch (Exception ex)
             {
@@ -453,9 +460,22 @@ namespace ParkingManagement.ViewModel
                         }
                     }
 
-                    var PINS = conn.Query<ParkingIn>(string.Format(@"SELECT PID, VehicleType, InDate, InMiti, InTime, PlateNo, Barcode, UID FROM ParkingInDetails 
-WHERE((BARCODE <> '' AND  BARCODE = '{0}') OR(ISNULL(PLATENO, '') <> '' AND ISNULL(PlateNo, '') = '{0}'))
-AND FYID = {1} ORDER BY PID DESC", obj, GlobalClass.FYID));
+                    //                    var PINS = conn.Query<ParkingIn>(string.Format(@"SELECT PID, VehicleType, InDate, InMiti, InTime, PlateNo, Barcode, UID FROM ParkingInDetails 
+                    //WHERE((BARCODE <> '' AND  BARCODE = '{0}') OR(ISNULL(PLATENO, '') <> '' AND ISNULL(PlateNo, '') = '{0}'))
+                    //AND FYID = {1} ORDER BY PID DESC", obj, GlobalClass.FYID));
+
+                    //                    var PINS = conn.Query<ParkingIn>(@"select PID, VehicleType, InDate, InMiti, InTime, PlateNo, Barcode, UID from ParkingInDetails where ParkingInDetails.PID not in (select PID from ParkingOutDetails)
+                    //and((BARCODE <> '' AND  BARCODE = @barcode) OR(ISNULL(PLATENO, '') <> '' AND ISNULL(PlateNo, '') = @barcode))
+                    //AND FYID = @fyid", new { barcode = obj, fyid = GlobalClass.FYID });
+
+
+                    var PINS = conn.Query<ParkingIn>(@"select* from ParkingInDetails
+                                        left join ParkingOutDetails on ParkingInDetails.PID = ParkingOutDetails.PID
+                    where ParkingOutDetails.PID is null
+                    and((BARCODE <> '' AND  BARCODE = @barcode) OR(ISNULL(PLATENO, '') <> '' AND ISNULL(PlateNo, '') = @barcode))
+                    AND ParkingInDetails.FYID = @fyid", new { barcode = obj, fyid = GlobalClass.FYID });
+                    
+
                     if (PINS.Count() <= 0)
                     {
                         MessageBox.Show("Invalid barcode readings.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
@@ -495,7 +515,7 @@ AND FYID = {1} ORDER BY PID DESC", obj, GlobalClass.FYID));
                     {
                         CanChangeInvoiceType = true;
                     }
-                    PIN.Barcode = string.Empty;
+                    //PIN.Barcode = string.Empty;
                     FocusedElement = (short)Focusable.Finish;
                     SaveWithStaffEnabled = true;
                     IsHoliday = conn.ExecuteScalar<int>("SELECT COUNT(*) FROM Holiday WHERE HolidayDate = @HolidayDate", new { HolidayDate = POUT.OutDate }) > 0;
@@ -807,7 +827,8 @@ AND FYID = {1} ORDER BY PID DESC", obj, GlobalClass.FYID));
                                 UID = POUT.UID,
                                 SESSION_ID = POUT.SESSION_ID,
                                 FYID = GlobalClass.FYID,
-                                TaxInvoice = TaxInvoice
+                                TaxInvoice = TaxInvoice,
+                                ExpiryDate=DateTime.Now
                             };
                             PSales.Save(tran);
                             TParkingSalesDetails PSalesDetails = new TParkingSalesDetails
@@ -881,20 +902,36 @@ AND FYID = {1} ORDER BY PID DESC", obj, GlobalClass.FYID));
             foreach (var device in DeviceList)
             {
                 var zkem = new zkemkeeper.CZKEM();
+                device.DeviceIp = device.DeviceIp.Trim();
+                bool isValidIpA = UniversalStatic.ValidateIP(device.DeviceIp);
+                if (!isValidIpA)
+                {
+                    MessageBox.Show($"Invalid Ip: {device.DeviceIp}");
+                    continue;
+                    //throw new Exception("The Device IP is invalid !!");
+                }
+
+                isValidIpA = UniversalStatic.PingTheDevice(device.DeviceIp);
+                if (!isValidIpA)
+                {
+                    //MessageBox.Show($"Couldn't connect to device: {device.DeviceIp}");
+                    continue;
+                    //throw new Exception("The device at " + device.DeviceIp + ":" + device.DevicePort + " did not respond!!");
+                }
                 if (zkem.Connect_Net(device.DeviceIp, device.DevicePort))
                 {
                     var cardId = GetEnrolledIdByCardNumber(PIN.Barcode);
-                   
-                    //TODO: Activate from device
+
+                    zkem.EnableUser(zkem.MachineNumber, cardId, zkem.MachineNumber, 10,true);
                 }
             }
         }
 
-        private string GetEnrolledIdByCardNumber(string barcode)
+        private int GetEnrolledIdByCardNumber(string barcode)
         {
             using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
             {
-                var cardId = conn.Query<string>($"select cardid from dailycards where cardnumber='{barcode}'");
+                var cardId = conn.Query<int>($"select cardid from dailycards where cardnumber='{barcode}'");
                 return cardId.FirstOrDefault();
             }
         }

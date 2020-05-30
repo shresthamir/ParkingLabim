@@ -193,6 +193,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Enums\DeviceType.cs" />
     <Compile Include="Forms\DataUtility\RegisterDailyCard.xaml.cs">
       <DependentUpon>RegisterDailyCard.xaml</DependentUpon>
     </Compile>
@@ -323,6 +324,7 @@
     <Compile Include="Models\ParkingSales.cs" />
     <Compile Include="Models\Staff.cs" />
     <Compile Include="Models\SyncModels.cs" />
+    <Compile Include="Models\UniversalStatic.cs" />
     <Compile Include="Models\VoucherType.cs" />
     <Compile Include="ViewModel\CardSalesInvoiceViewModel.cs" />
     <Compile Include="ViewModel\ComplementaryVoucherGeneratorViewModel.cs" />
