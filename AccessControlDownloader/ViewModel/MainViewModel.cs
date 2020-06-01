@@ -5,6 +5,7 @@ using ParkingManagement.Library;
 using ParkingManagement.Library.Helpers;
 using ParkingManagement.Models;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data.SqlClient;
@@ -175,33 +176,48 @@ namespace AccessControlDownloader.ViewModel
                     {
                         device.Status = true;
                         device.GridBackground = new SolidColorBrush(Colors.LightGreen);
-
+                        List<MainViewModel> logData = new List<MainViewModel>();
 
                         if (zkem.ReadAllGLogData(zkem.MachineNumber))
                         {
                             MainViewModel ld = new MainViewModel();
+                            while (zkem.GetGeneralLogData(zkem.MachineNumber, ref ld.dwTMachineNumber, ref ld.dwEnrollNumberInt, ref ld.dwEMachineNumber, ref ld.dwVerifyMode, ref ld.dwInOutMode, ref ld.dwYear, ref ld.dwMonth, ref ld.dwDay, ref ld.dwHour, ref ld.dwMinute))
+                            {
+                                if (ld.dwEnrollNumberInt > short.MaxValue || ld.dwEnrollNumberInt < short.MinValue)
+                                {
+                                    continue;
+                                }
+                                logData.Add(new MainViewModel
+                                {
+                                    dwTMachineNumber = ld.dwTMachineNumber,
+                                    dwEMachineNumber = ld.dwEMachineNumber,
+                                    dwEnrollNumberInt = ld.dwEnrollNumberInt,
+                                    dwVerifyMode = ld.dwVerifyMode,
+                                    dwInOutMode = ld.dwInOutMode,
+                                    dwYear = ld.dwYear,
+                                    dwMonth = ld.dwMonth,
+                                    dwDay = ld.dwDay,
+                                    dwHour = ld.dwHour,
+                                    dwMinute = ld.dwMinute
+                                });
 
+                                //DeActivateEnteredCard(ld.dwEnrollNumberInt);
+                            }
+                            zkem.ClearGLog(zkem.MachineNumber);
                             using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
                             {
                                 conn.Open();
                                 using (SqlTransaction tran = conn.BeginTransaction())
                                 {
-                                    while (zkem.GetGeneralLogData(zkem.MachineNumber, ref ld.dwTMachineNumber, ref ld.dwEnrollNumberInt, ref ld.dwEMachineNumber, ref ld.dwVerifyMode, ref ld.dwInOutMode, ref ld.dwYear, ref ld.dwMonth, ref ld.dwDay, ref ld.dwHour, ref ld.dwMinute))
+                                    foreach (var log in logData)
                                     {
-                                        if (ld.dwEnrollNumberInt > short.MaxValue || ld.dwEnrollNumberInt < short.MinValue)
-                                        {
-                                            continue;
-                                        }
-
-                                        SaveLogsToDb(ld, tran, device);
-                                        //DeActivateEnteredCard(ld.dwEnrollNumberInt);
+                                        SaveLogsToDb(log, tran, device);
                                         if (CheckIfMemberCard(ld.dwEnrollNumberInt, tran))
                                         {
                                             zkem.EnableUser(zkem.MachineNumber, ld.dwEnrollNumberInt, zkem.MachineNumber, 10, false);//To Deactivate member card
                                         }
                                     }
                                     tran.Commit();
-                                    zkem.ClearGLog(zkem.MachineNumber);
                                 }
                             }
                         }
@@ -233,38 +249,45 @@ namespace AccessControlDownloader.ViewModel
 
         private void SaveLogsToDb(MainViewModel ld, SqlTransaction tran, Device device)
         {
-            ParkingIn Parking = new ParkingIn();
-
-            var maxcardId = GetMaxCardId();
-            if (ld.dwEnrollNumberInt <= maxcardId)
+            try
             {
-                Parking.PID = Convert.ToInt32(GetInvoiceNo("PID", tran));
-                Parking.FYID = GlobalClass.FYID;
-                Parking.Barcode = GetCardNumberByEnrollId(ld.dwEnrollNumberInt);
-                Parking.UID = GlobalClass.User.UID;
-                //Parking.PlateNo = ld.dwEnrollNumber;
-                Parking.SESSION_ID = 1;
-                var logDate = new DateTime(ld.dwYear, ld.dwMonth, ld.dwDay, ld.dwHour, ld.dwMinute, ld.dwSecond);
-                Parking.InDate = new DateTime(ld.dwYear, ld.dwMonth, ld.dwDay);
-                Parking.InTime = logDate.ToString("hh:mm:ss tt");
-                var nepDate = new DateConverter(GlobalClass.TConnectionString);
-                Parking.InMiti = nepDate.CBSDate(Parking.InDate);
-                Parking.VehicleType = GetVechicleTypeByDeviceId(device.DeviceId);
+                ParkingIn Parking = new ParkingIn();
 
-                var alreadyExist = tran.Connection.QueryFirstOrDefault<ParkingIn>($"Select * from parkingindetails where fyid=@fyid and vehicletype=@vehicletype and indate=@indate and inmiti=@inmiti and intime=@intime", Parking, tran);
-                if (alreadyExist == null)
+                var maxcardId = GetMaxCardId();
+                if (ld.dwEnrollNumberInt <= maxcardId)
                 {
-                    string strSQL = @"INSERT INTO ParkingInDetails(PID, FYID, VehicleType, InDate, InTime, PlateNo, Barcode, [UID], InMiti, SESSION_ID)
+                    Parking.PID = Convert.ToInt32(GetInvoiceNo("PID", tran));
+                    Parking.FYID = GlobalClass.FYID;
+                    Parking.Barcode = GetCardNumberByEnrollId(ld.dwEnrollNumberInt);
+                    Parking.UID = GlobalClass.User.UID;
+                    //Parking.PlateNo = ld.dwEnrollNumber;
+                    Parking.SESSION_ID = 1;
+                    var logDate = new DateTime(ld.dwYear, ld.dwMonth, ld.dwDay, ld.dwHour, ld.dwMinute, ld.dwSecond);
+                    Parking.InDate = new DateTime(ld.dwYear, ld.dwMonth, ld.dwDay);
+                    Parking.InTime = logDate.ToString("hh:mm:ss tt");
+                    var nepDate = new DateConverter(GlobalClass.TConnectionString);
+                    Parking.InMiti = nepDate.CBSDate(Parking.InDate);
+                    Parking.VehicleType = GetVechicleTypeByDeviceId(device.DeviceId);
+
+                    //var alreadyExist = tran.Connection.QueryFirstOrDefault<ParkingIn>($"Select * from parkingindetails where fyid=@fyid and vehicletype=@vehicletype and indate=@indate and inmiti=@inmiti and intime=@intime", Parking, tran);
+                    //if (alreadyExist == null)
+                    {
+                        string strSQL = @"INSERT INTO ParkingInDetails(PID, FYID, VehicleType, InDate, InTime, PlateNo, Barcode, [UID], InMiti, SESSION_ID)
                           Values(@PID, @FYID, @VehicleType,@InDate,@InTime,@PlateNo,@Barcode,@UID,@InMiti, @SESSION_ID)";
-                    tran.Connection.Execute(strSQL, Parking, tran);
+                        tran.Connection.Execute(strSQL, Parking, tran);
 
-                    tran.Connection.Execute("UPDATE tblSequence SET CurNo = CurNo + 1 WHERE VNAME = 'PID' AND FYID = " + GlobalClass.FYID, transaction: tran);
+                        tran.Connection.Execute("UPDATE tblSequence SET CurNo = CurNo + 1 WHERE VNAME = 'PID' AND FYID = " + GlobalClass.FYID, transaction: tran);
+                    }
+
                 }
-
+                else
+                {
+                    //MessageBox.Show($"CardId: {ld.dwEnrollNumberInt} is not present in database!");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                //MessageBox.Show($"CardId: {ld.dwEnrollNumberInt} is not present in database!");
+
             }
         }
 
