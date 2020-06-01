@@ -112,7 +112,13 @@ namespace ParkingManagement.ViewModel
                 LoadExcel(ExcelFilePath);
             }
         }
-
+        private void GetDeviceList()
+        {
+            using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
+            {
+                DeviceList = new ObservableCollection<Device>(conn.Query<Device>("select * from DeviceList"));
+            }
+        }
         public MemberViewModel()
         {
             try
@@ -132,6 +138,7 @@ namespace ParkingManagement.ViewModel
                     MemberList = new ObservableCollection<Member>(conn.Query<Member>("SELECT * FROM Members"));
                     SchemeList = new ObservableCollection<MembershipScheme>(conn.Query<MembershipScheme>("SELECT * FROM MembershipScheme"));
                 }
+                GetDeviceList();
             }
             catch (Exception ex)
             {
@@ -295,6 +302,19 @@ namespace ParkingManagement.ViewModel
                 {
 
                     var zkem = new zkemkeeper.CZKEM();
+                    bool isValidIpA = UniversalStatic.ValidateIP(device.DeviceIp);
+                    if (!isValidIpA)
+                    {
+                        MessageBox.Show($"The Device with IP: {device.DeviceIp} has invalid IP!!");
+                        continue;
+                    }
+
+                    isValidIpA = UniversalStatic.PingTheDevice(device.DeviceIp);
+                    if (!isValidIpA)
+                    {
+                        MessageBox.Show($"The device at " + device.DeviceIp + ":" + device.DevicePort + " did not respond!!");
+                        continue;
+                    }
 
                     if (device.IsMemberDevice==1)
                     {
@@ -317,7 +337,7 @@ namespace ParkingManagement.ViewModel
                         }
                         else
                         {
-                            MessageBox.Show($"Connecting to device {device.Devicename} failed!", "Daily Card Registraion", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                            MessageBox.Show($"Connecting to device {device.Devicename} failed!", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
                         }
                     }
                     

@@ -97,6 +97,9 @@
     <Reference Include="ExtendedComboBox">
       <HintPath>..\..\..\UpdatePackage\ExtendedComboBox.dll</HintPath>
     </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>..\..\..\..\Users\Amir\source\repos\ImsPosCurrent\PosBackEnd\LibraryDll\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Expression.Interactions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>D:\Projects\RMS\RMS\bin\Debug\Microsoft.Expression.Interactions.dll</HintPath>
@@ -194,6 +197,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Enums\DeviceType.cs" />
+    <Compile Include="Forms\DataUtility\EnableDailyCard.xaml.cs">
+      <DependentUpon>EnableDailyCard.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Forms\DataUtility\RegisterDailyCard.xaml.cs">
       <DependentUpon>RegisterDailyCard.xaml</DependentUpon>
     </Compile>
@@ -331,6 +337,7 @@
     <Compile Include="ViewModel\CreditNoteVoucherWiseViewModel.cs" />
     <Compile Include="ViewModel\CreditNoteViewModel.cs" />
     <Compile Include="ViewModel\DeductionViewModel.cs" />
+    <Compile Include="ViewModel\EnableDailyCardViewModel.cs" />
     <Compile Include="ViewModel\HolidayViewModel.cs" />
     <Compile Include="ViewModel\DiscountSchemeViewModel.cs" />
     <Compile Include="ViewModel\MembershipSchemeViewModel.cs" />
@@ -342,6 +349,10 @@
     <Compile Include="ViewModel\StaffViewModel.cs" />
     <Compile Include="ViewModel\VoucherTypeViewModel.cs" />
     <Compile Include="ViewModel\vmCashSettlement.cs" />
+    <Page Include="Forms\DataUtility\EnableDailyCard.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Forms\DataUtility\RegisterDailyCard.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
