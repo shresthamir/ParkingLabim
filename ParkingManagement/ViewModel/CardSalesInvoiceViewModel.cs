@@ -22,11 +22,13 @@ namespace ParkingManagement.ViewModel
         private ObservableCollection<MembershipScheme> _SchemeList;
         private MembershipScheme _SelectedScheme;
         private Member _SelectedMember;
+        private ObservableCollection<Device> _Device;
 
         public ObservableCollection<Member> MemberList { get { return _MemberList; } set { _MemberList = value; OnPropertyChanged("MemberList"); } }
         public Member SelectedMember { get { return _SelectedMember; } set { _SelectedMember = value; OnPropertyChanged("SelectedMember"); } }
         public ObservableCollection<MembershipScheme> SchemeList { get { return _SchemeList; } set { _SchemeList = value; OnPropertyChanged("SchemeList"); } }
         public MembershipScheme SelectedScheme { get { return _SelectedScheme; } set { _SelectedScheme = value; OnPropertyChanged("SelectedScheme"); } }
+        public ObservableCollection<Device> DeviceList { get { return _Device; } set { _Device = value; OnPropertyChanged("DeviceList"); } }
 
 
         public new RelayCommand AddVoucherCommand { get { return new RelayCommand(AddCard, CanAddCard); } }
@@ -97,7 +99,7 @@ namespace ParkingManagement.ViewModel
                 MemberList = new ObservableCollection<Member>(conn.Query<Member>("SELECT * FROM Members"));
                 SchemeList = new ObservableCollection<MembershipScheme>(conn.Query<MembershipScheme>("SELECT * FROM MembershipScheme"));
             }
-
+            GetDeviceList();
         }
 
         private bool CanExecuteSave(object obj)
@@ -118,6 +120,16 @@ namespace ParkingManagement.ViewModel
         {
             try
             {
+                if (SelectedMember == null)
+                {
+                    MessageBox.Show("Please select member first.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    return;
+                }
+                if (string.IsNullOrWhiteSpace(SelectedMember.Barcode))
+                {
+                    MessageBox.Show("The selected member doesn't have card number. Please assign cardnumber to this member.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    return;
+                }
                 if (!VSales.TRNMODE && string.IsNullOrEmpty(VSales.BillTo))
                 {
                     MessageBox.Show("Customer Name cannot be empty in Credit Sales.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
@@ -177,6 +189,7 @@ namespace ParkingManagement.ViewModel
                     //if (!string.IsNullOrEmpty(VSales.BillNo))
                     //{
                     PrintBill(VSales.BillNo, true);
+                    ReActivateCard(SelectedMember.Barcode);
                     //    if (GenerateVoucher)
                     //    {
                     //        vp.Show();
@@ -194,7 +207,50 @@ namespace ParkingManagement.ViewModel
                 MessageBox.Show(ex.Message, MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+        private void GetDeviceList()
+        {
+            using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
+            {
+                DeviceList = new ObservableCollection<Device>(conn.Query<Device>("select * from DeviceList"));
+            }
+        }
+        private void ReActivateCard(string barcode)
+        {
+            foreach (var device in DeviceList)
+            {
+                var zkem = new zkemkeeper.CZKEM();
+                device.DeviceIp = device.DeviceIp.Trim();
+                bool isValidIpA = UniversalStatic.ValidateIP(device.DeviceIp);
+                if (!isValidIpA)
+                {
+                    MessageBox.Show($"Invalid Ip: {device.DeviceIp}");
+                    continue;
+                    //throw new Exception("The Device IP is invalid !!");
+                }
 
+                isValidIpA = UniversalStatic.PingTheDevice(device.DeviceIp);
+                if (!isValidIpA)
+                {
+                    //MessageBox.Show($"Couldn't connect to device: {device.DeviceIp}");
+                    continue;
+                    //throw new Exception("The device at " + device.DeviceIp + ":" + device.DevicePort + " did not respond!!");
+                }
+                if (zkem.Connect_Net(device.DeviceIp, device.DevicePort))
+                {
+                    var cardId = GetEnrolledIdByCardNumber(barcode);
+
+                    zkem.EnableUser(zkem.MachineNumber, cardId, zkem.MachineNumber, 10, true);
+                }
+            }
+        }
+        private int GetEnrolledIdByCardNumber(string barcode)
+        {
+            using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
+            {
+                var cardId = conn.Query<int>($"select cardid from dailycards where cardnumber='{barcode}'");
+                return cardId.FirstOrDefault();
+            }
+        }
         async void PrintBill(string BillNo, bool IsNew = false)
         {
             try

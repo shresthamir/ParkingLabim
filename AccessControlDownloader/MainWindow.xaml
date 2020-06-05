@@ -57,6 +57,7 @@
                                     </Grid.ColumnDefinitions>
                                     <Grid.RowDefinitions>
                                         <RowDefinition/>
+                                        <RowDefinition/>
                                     </Grid.RowDefinitions>
                                     <Image Grid.Column="0" Height="50" Width="80" Source="{Binding ImageSource}" HorizontalAlignment="Left" VerticalAlignment="Center"/>
                                     <TextBlock Grid.Column="1" HorizontalAlignment="Center" Foreground="black" VerticalAlignment="Center" FontWeight="Bold" FontSize="25" Text="{Binding Devicename}"/>
@@ -78,6 +79,8 @@
                                             </RadioButton.Style>
                                         </RadioButton>
                                     </Viewbox>
+                                    <TextBlock Grid.Row="1" Grid.Column="3" HorizontalAlignment="Center" Foreground="black" VerticalAlignment="Center" FontWeight="Bold" FontSize="25"><Run Text="{Binding DeviceTime}" /></TextBlock>
+
                                     <!--<Button x:Name="myButton" FontWeight="Bold" FontSize="20" Content="{Binding Devicename}" Height="150" Width="150" Foreground="White" />-->
                                 </Grid>
                             </Border>

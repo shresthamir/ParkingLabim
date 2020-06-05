@@ -30,7 +30,7 @@ namespace ParkingManagement.Models
         public int SchemeId { get { return _SchemeId; } set { _SchemeId = value; OnPropertyChanged("SchemeId"); } }
         public DateTime ActivationDate { get { return _ActivationDate; } set { _ActivationDate = value; OnPropertyChanged("ActivationDate"); } }
         public DateTime ExpiryDate { get { return _ExpiryDate; } set { _ExpiryDate = value; OnPropertyChanged("ExpiryDate"); } }
-
+        public DailyCard DailyCard { get; set; }
 
         public override bool Save(SqlTransaction tran)
         {

@@ -447,11 +447,11 @@ namespace ParkingManagement.ViewModel
                             ValidateVoucher(obj, conn);
                             return;
                         }
-                        else if (obj.ToString().StartsWith(GlobalClass.MemberBarcodePrefix))
-                        {
-                            ValidateMember(obj, conn);
-                            return;
-                        }
+                        //else if (obj.ToString().StartsWith(GlobalClass.MemberBarcodePrefix))
+                        //{
+                        //    ValidateMember(obj, conn);
+                        //    return;
+                        //}
                         else
                         {
                             POUT.SaveLog(conn);
@@ -464,16 +464,16 @@ namespace ParkingManagement.ViewModel
                     //WHERE((BARCODE <> '' AND  BARCODE = '{0}') OR(ISNULL(PLATENO, '') <> '' AND ISNULL(PlateNo, '') = '{0}'))
                     //AND FYID = {1} ORDER BY PID DESC", obj, GlobalClass.FYID));
 
-                    //                    var PINS = conn.Query<ParkingIn>(@"select PID, VehicleType, InDate, InMiti, InTime, PlateNo, Barcode, UID from ParkingInDetails where ParkingInDetails.PID not in (select PID from ParkingOutDetails)
-                    //and((BARCODE <> '' AND  BARCODE = @barcode) OR(ISNULL(PLATENO, '') <> '' AND ISNULL(PlateNo, '') = @barcode))
-                    //AND FYID = @fyid", new { barcode = obj, fyid = GlobalClass.FYID });
-
-
-                    var PINS = conn.Query<ParkingIn>(@"select* from ParkingInDetails
-                                        left join ParkingOutDetails on ParkingInDetails.PID = ParkingOutDetails.PID
-                    where ParkingOutDetails.PID is null
+                    var PINS = conn.Query<ParkingIn>(@"select PID, VehicleType, InDate, InMiti, InTime, PlateNo, Barcode, UID from ParkingInDetails where ParkingInDetails.PID not in (select PID from ParkingOutDetails where FYID=@fyid)
                     and((BARCODE <> '' AND  BARCODE = @barcode) OR(ISNULL(PLATENO, '') <> '' AND ISNULL(PlateNo, '') = @barcode))
-                    AND ParkingInDetails.FYID = @fyid", new { barcode = obj, fyid = GlobalClass.FYID });
+                    AND FYID = @fyid", new { barcode = obj, fyid = GlobalClass.FYID });
+
+
+                    //var PINS = conn.Query<ParkingIn>(@"select* from ParkingInDetails
+                    //                    left join ParkingOutDetails on ParkingInDetails.PID = ParkingOutDetails.PID
+                    //where ParkingOutDetails.PID is null
+                    //and((BARCODE <> '' AND  BARCODE = @barcode) OR(ISNULL(PLATENO, '') <> '' AND ISNULL(PlateNo, '') = @barcode))
+                    //AND ParkingInDetails.FYID = @fyid and ParkingOutDetails.FYID=@fyid", new { barcode = obj, fyid = GlobalClass.FYID });
                     
 
                     if (PINS.Count() <= 0)
@@ -847,7 +847,7 @@ namespace ParkingManagement.ViewModel
                                 NetAmount = POUT.CashAmount,
                             };
                             PSalesDetails.Save(tran);
-                            ReActivateCard();
+                            //ReActivateCard();
                             conn.Execute("UPDATE tblSequence SET CurNo = CurNo + 1 WHERE VNAME = @VNAME AND FYID = @FYID", new { VNAME = InvoicePrefix, FYID = GlobalClass.FYID }, transaction: tran);
                             GlobalClass.SetUserActivityLog(tran, "Exit", "New", VCRHNO: BillNo, WorkDetail: "Bill No : " + BillNo);
                             SyncFunctions.LogSyncStatus(tran, BillNo, GlobalClass.FYNAME);

@@ -196,6 +196,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Dtos\CardMemberDto.cs" />
     <Compile Include="Enums\DeviceType.cs" />
     <Compile Include="Forms\DataUtility\EnableDailyCard.xaml.cs">
       <DependentUpon>EnableDailyCard.xaml</DependentUpon>
@@ -322,6 +323,7 @@
     <Compile Include="Library\ValueConverter\RadioButtonTrueFalseConveter.cs" />
     <Compile Include="Models\DailyCard.cs" />
     <Compile Include="Models\Device.cs" />
+    <Compile Include="Models\DeviceLog.cs" />
     <Compile Include="Models\DiscountScheme.cs" />
     <Compile Include="Models\Holiday.cs" />
     <Compile Include="Models\Members.cs" />
