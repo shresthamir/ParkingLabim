@@ -125,10 +125,17 @@
                             <ColumnDefinition />
                             <ColumnDefinition Width="20"/>
                         </Grid.ColumnDefinitions>
-                        <RadioButton IsChecked="{Binding VSales.TRNMODE}" Content="Cash" VerticalAlignment="Center"></RadioButton>
-                        <RadioButton Grid.Column="1" IsChecked="{Binding VSales.TRNMODE, Converter={StaticResource ReverseBool}}" Content="Credit" VerticalAlignment="Center"></RadioButton>
+                        <!--<RadioButton IsChecked="{Binding VSales.TRNMODE}" Content="Cash" VerticalAlignment="Center"></RadioButton>-->
+                        <!--<RadioButton Grid.Column="1" IsChecked="{Binding VSales.TRNMODE, Converter={StaticResource ReverseBool}}" Content="Credit" VerticalAlignment="Center"></RadioButton>-->
                         <Label Grid.Row="1" Content="Customer Name"/>
-                        <ComboBox Grid.Row="1" Grid.Column="1" IsEditable="True" ItemsSource="{Binding MemberList}" SelectedItem="{Binding SelectedMember}" DisplayMemberPath="MemberName" Text="{Binding VSales.BillTo}"  helper:CustomFocusManager.IsFocused="{Binding FocusedElement, Converter={StaticResource ShortToBool}, ConverterParameter='2'}"></ComboBox>
+                        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding CardNumber,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" >
+                            <TextBox.InputBindings>
+                                <KeyBinding Command="{Binding CardNumberCommand}" Key="Return" />
+                                <KeyBinding Command="{Binding CardNumberCommand}" Key="Enter" />
+                            </TextBox.InputBindings>
+                        </TextBox>
+                        
+                        <!--<ComboBox Grid.Row="1" Grid.Column="1" IsEditable="True" ItemsSource="{Binding MemberList}" SelectedItem="{Binding SelectedMember}" DisplayMemberPath="MemberName" Text="{Binding VSales.BillTo}"  helper:CustomFocusManager.IsFocused="{Binding FocusedElement, Converter={StaticResource ShortToBool}, ConverterParameter='2'}"></ComboBox>-->
                         <!--<Label Content="Address" Grid.Row="2" Margin="2 5 0 0" VerticalAlignment="Top" />
                         <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding VSales.BILLTOADD}" Height="50" GotFocus="TextBox_GotFocus" TextWrapping="WrapWithOverflow" ></TextBox>
                         <Label Content="PAN" Grid.Row="3"/>

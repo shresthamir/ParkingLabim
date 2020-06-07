@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Windows;
@@ -23,6 +24,9 @@ namespace AccessControlDownloader.ViewModel
     {
         private static Logger MainLogger = LogManager.GetLogger("MainViewModel");
         public event PropertyChangedEventHandler PropertyChanged;
+        string clearHour = ConfigurationManager.AppSettings["clearHour"];
+        string clearMinute = ConfigurationManager.AppSettings["clearMinute"];
+
         public void OnPropertyChanged(string propname)
         {
             if (PropertyChanged != null)
@@ -291,8 +295,8 @@ namespace AccessControlDownloader.ViewModel
                             //-------------------save to log before clearing data--------------
 
                             //clear data of current device
-                            var TimeToClear = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, 14, 09, 0).ToString("g");
-                            if (DateTime.Now.ToString("g") == TimeToClear)
+                            var TimeToClear = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day,Convert.ToInt32(clearHour), Convert.ToInt32(clearMinute), 0);
+                            if (DateTime.Now >=TimeToClear && DateTime.Now<= TimeToClear.AddMinutes(2))
                             {
 
                                 zkem.EnableDevice(zkem.MachineNumber, false);
@@ -616,7 +620,7 @@ namespace AccessControlDownloader.ViewModel
                                                         pid
                                                         ) 
                                                     values(
-                                                        (SELECT ISNULL(MAX(ID),0) +1 FROM deviceLog),
+                                                        (SELECT ISNULL(MAX(ID),0) +1 FROM exitdevicelog),
                                                         @dwTMachineNumber,
                                                         @dwEMachineNumber,
                                                         @dwEnrollNumberInt,
@@ -730,12 +734,21 @@ namespace AccessControlDownloader.ViewModel
                 return false;
             }
             ParkingOut POUT = new ParkingOut();
-            var nepDate = new DateConverter(GlobalClass.TConnectionString);
+            //var nepDate = new DateConverter(GlobalClass.TConnectionString);
 
-            DateTime ServerTime = nepDate.GetServerTime();
-            POUT.OutDate = ServerTime.Date;
-            POUT.OutTime = ServerTime.ToString("hh:mm:ss tt");
+            //DateTime ServerTime = nepDate.GetServerTime();
+            var logDate = new DateTime(ld.dwYear, ld.dwMonth, ld.dwDay, ld.dwHour, ld.dwMinute, ld.dwSecond);
+            //POUT.InDate = new DateTime(ld.dwYear, ld.dwMonth, ld.dwDay);
+            //POUT.InTime = logDate.ToString("hh:mm:ss tt");
+            //var nepDate = new DateConverter(GlobalClass.TConnectionString);
+            //POUT.InMiti = nepDate.CBSDate(Parking.InDate);
+
+
+            POUT.OutDate = new DateTime(ld.dwYear, ld.dwMonth, ld.dwDay);
+            POUT.OutTime = logDate.ToString("hh:mm:ss tt");
+            var nepDate = new DateConverter(GlobalClass.TConnectionString);
             POUT.OutMiti = nepDate.CBSDate(POUT.OutDate);
+
             POUT.Interval = GetInterval(PIN.InDate, POUT.OutDate, PIN.InTime, POUT.OutTime);
             POUT.PID = PIN.PID;
             POUT.Rate_ID = (int)tran.Connection.ExecuteScalar("SELECT RATE_ID FROM RATEMASTER WHERE IsDefault = 1", transaction: tran);

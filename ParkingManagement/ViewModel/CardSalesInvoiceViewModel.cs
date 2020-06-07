@@ -15,23 +15,28 @@ using System.Windows;
 
 namespace ParkingManagement.ViewModel
 {
-    public class CardSalesInvoiceViewModel: VoucherSalesInvoiceVM
+    public class CardSalesInvoiceViewModel : VoucherSalesInvoiceVM
     {
-        
+
         private ObservableCollection<Member> _MemberList;
         private ObservableCollection<MembershipScheme> _SchemeList;
         private MembershipScheme _SelectedScheme;
         private Member _SelectedMember;
         private ObservableCollection<Device> _Device;
+        private string _CardNumber;
 
         public ObservableCollection<Member> MemberList { get { return _MemberList; } set { _MemberList = value; OnPropertyChanged("MemberList"); } }
         public Member SelectedMember { get { return _SelectedMember; } set { _SelectedMember = value; OnPropertyChanged("SelectedMember"); } }
         public ObservableCollection<MembershipScheme> SchemeList { get { return _SchemeList; } set { _SchemeList = value; OnPropertyChanged("SchemeList"); } }
         public MembershipScheme SelectedScheme { get { return _SelectedScheme; } set { _SelectedScheme = value; OnPropertyChanged("SelectedScheme"); } }
         public ObservableCollection<Device> DeviceList { get { return _Device; } set { _Device = value; OnPropertyChanged("DeviceList"); } }
+        public string CardNumber { get { return _CardNumber; } set { _CardNumber = value; OnPropertyChanged("CardNumber"); } }
+
 
 
         public new RelayCommand AddVoucherCommand { get { return new RelayCommand(AddCard, CanAddCard); } }
+        public RelayCommand CardNumberCommand { get { return new RelayCommand(AddCard, CanAddCard); } }
+
 
         private bool CanAddCard(object obj)
         {
@@ -46,17 +51,31 @@ namespace ParkingManagement.ViewModel
         }
         private void AddCard(object obj)
         {
+            if (string.IsNullOrWhiteSpace(CardNumber))
+            {
+                MessageBox.Show("Please enter card number.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                return;
+            }
+
             if (VSDetail.ProdId == 0)
             {
-                MessageBox.Show("Please Select Membership Scheme first.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                return;
+                SelectedMember = GetSchemeByCardNumber(CardNumber);
+                VSDetail.ProdId = SelectedMember.SchemeId;
+                //MessageBox.Show("Please Select Membership Scheme first.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                //return;
             }
             else if (VSDetailList.Any(x => x.ProdId == VSDetail.ProdId))
             {
                 MessageBox.Show("Selected Card is already added.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 return;
             }
-            if(SelectedScheme is null)
+            if (VSDetail.ProdId != 0)
+            {
+                SelectedMember.SchemeId = VSDetail.ProdId;
+
+                VSales.ExpiryDate = VSales.TDate.AddDays(SchemeList.FirstOrDefault(x => x.SchemeId == VSDetail.ProdId).ValidityPeriod);
+            }
+            if (SelectedScheme is null)
             {
                 SelectedScheme = SchemeList.FirstOrDefault(x => x.SchemeId == VSDetail.ProdId);
             }
@@ -79,12 +98,23 @@ namespace ParkingManagement.ViewModel
             };
             vsDetail.VAT = vsDetail.Taxable * GlobalClass.VAT / 100;
             vsDetail.NetAmount = vsDetail.Amount + vsDetail.VAT;
+            VSDetailList.Clear();
             VSDetailList.Add(vsDetail);
             VSDetail = new TParkingSalesDetails();
             FocusedElement = (short)Focusable.VoucherType;
         }
 
-       
+        private Member GetSchemeByCardNumber(string cardNumber)
+        {
+            using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
+            {
+                conn.Open();
+                string sql = "select * from members m join MembershipScheme s on m.SchemeId=s.SchemeId where BARCODE=@cardNumber";
+                var result = conn.Query<Member>(sql, new { cardNumber }).FirstOrDefault();
+                return result;
+            }
+        }
+
         public CardSalesInvoiceViewModel()
         {
             //SaveCommand = new RelayCommand(ExecuteSave, CanExecuteSave);
@@ -114,7 +144,6 @@ namespace ParkingManagement.ViewModel
             SetAction(ButtonAction.New);
             FocusedElement = (short)Focusable.Customer;
             VSDetail.PropertyChanged += VSDetail_PropertyChanged;
-
         }
         private async void ExecuteSave(object obj)
         {
@@ -128,6 +157,11 @@ namespace ParkingManagement.ViewModel
                 if (string.IsNullOrWhiteSpace(SelectedMember.Barcode))
                 {
                     MessageBox.Show("The selected member doesn't have card number. Please assign cardnumber to this member.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    return;
+                }
+                if (string.IsNullOrWhiteSpace(CardNumber))
+                {
+                    MessageBox.Show("Please Enter Cardnumber first.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
                     return;
                 }
                 if (!VSales.TRNMODE && string.IsNullOrEmpty(VSales.BillTo))
@@ -164,7 +198,7 @@ namespace ParkingManagement.ViewModel
                             PSD.FYID = VSales.FYID;
                             PSD.Save(tran);
                         }
-                        conn.Execute("update members set Expirydate=@Expirydate,ActivationDate=getdate() where memberid=@memberid", new { Expirydate= VSales.ExpiryDate, memberid=SelectedMember.MemberId }, transaction: tran);
+                        conn.Execute("update members set Expirydate=@Expirydate,ActivationDate=getdate(), SchemeId=@SchemeId where memberid=@memberid", new { Expirydate = VSales.ExpiryDate, memberid = SelectedMember.MemberId, SchemeId=SelectedMember.SchemeId }, transaction: tran);
 
                         conn.Execute("UPDATE tblSequence SET CurNo = CurNo + 1 WHERE VNAME = @VNAME AND FYID = @FYID", new { VNAME = InvoicePrefix, FYID = GlobalClass.FYID }, transaction: tran);
                         GlobalClass.SetUserActivityLog("Voucher Sales Invoice", "New", VCRHNO: VSales.BillNo, WorkDetail: "Bill No : " + VSales.BillNo);

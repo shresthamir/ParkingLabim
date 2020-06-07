@@ -7,10 +7,15 @@
         mc:Ignorable="d"
         Title="EnableDailyCard" Height="200" Width="450">
     <Border BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" BorderThickness="2">
-        <StackPanel Orientation="Horizontal">
+        <StackPanel Orientation="Horizontal" FocusManager.FocusedElement="{Binding ElementName=CardNumber}">
             
             <TextBlock Text="Card NUmber" Margin="5 0 5 0"  VerticalAlignment="Center" FontWeight="SemiBold"/>
-            <TextBox Grid.Column="1" x:Name="CardNumber" Text="{Binding CardNumber}" Width="200" Height="28"/>
+            <TextBox Grid.Column="1" x:Name="CardNumber" Text="{Binding CardNumber,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  Width="200" Height="28">
+                <TextBox.InputBindings>
+                    <KeyBinding Command="{Binding EnableCardCommand}" Key="Return" />
+                    <KeyBinding Command="{Binding EnableCardCommand}" Key="Enter" />
+                </TextBox.InputBindings>
+            </TextBox>
             <Button Grid.Column="2" x:Name="BtnEnableCard" Content="Enable" Command="{Binding EnableCardCommand}" Height="28" Margin="5 0 5 0" Width="100"/>
 
         </StackPanel>

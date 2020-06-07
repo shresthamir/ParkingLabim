@@ -40,5 +40,9 @@ namespace ParkingManagement.Forms.Transaction
                     e.Handled = true;
             }
         }
+        public void OnEnterPressed(object sender, EventArgs e)
+        {
+            //BarcodeEntry.Focus();
+        }
     }
 }

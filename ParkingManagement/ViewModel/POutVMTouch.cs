@@ -779,7 +779,7 @@ namespace ParkingManagement.ViewModel
             try
             {
                 using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
-                {
+                { 
                     conn.Open();
                     using (SqlTransaction tran = conn.BeginTransaction())
                     {
