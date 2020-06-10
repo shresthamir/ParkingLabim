@@ -13,10 +13,13 @@ using System.ComponentModel;
 using System.Configuration;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Threading;
 using zkemkeeper;
+using ParkingManagement.Services;
+using ParkingManagement.Dtos;
 
 namespace AccessControlDownloader.ViewModel
 {
@@ -24,8 +27,8 @@ namespace AccessControlDownloader.ViewModel
     {
         private static Logger MainLogger = LogManager.GetLogger("MainViewModel");
         public event PropertyChangedEventHandler PropertyChanged;
-        string clearHour = ConfigurationManager.AppSettings["clearHour"];
-        string clearMinute = ConfigurationManager.AppSettings["clearMinute"];
+        //string clearHour = ConfigurationManager.AppSettings["clearHour"];
+        //string clearMinute = ConfigurationManager.AppSettings["clearMinute"];
 
         public void OnPropertyChanged(string propname)
         {
@@ -99,6 +102,10 @@ namespace AccessControlDownloader.ViewModel
                 timerSec++;
                 timerToSyncDeviceTime++;
                 DateToday = DateTime.Now;
+
+
+                await SaveAccountBill();
+
                 //CheckDeviceStatus();
 
             }
@@ -154,7 +161,7 @@ namespace AccessControlDownloader.ViewModel
         private ObservableCollection<Device> _Device;
         private DateTime _DateToday;
 
-        private void ExecuteReadLog(object obj)
+        private async void ExecuteReadLog(object obj)
         {
             try
             {
@@ -295,8 +302,8 @@ namespace AccessControlDownloader.ViewModel
                             //-------------------save to log before clearing data--------------
 
                             //clear data of current device
-                            var TimeToClear = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day,Convert.ToInt32(clearHour), Convert.ToInt32(clearMinute), 0);
-                            if (DateTime.Now >=TimeToClear && DateTime.Now<= TimeToClear.AddMinutes(2))
+                            var TimeToClear = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, Convert.ToInt32(GlobalClass.clearhour), Convert.ToInt32(GlobalClass.clearminute), 0);
+                            if (DateTime.Now >= TimeToClear && DateTime.Now <= TimeToClear.AddMinutes(2))
                             {
 
                                 zkem.EnableDevice(zkem.MachineNumber, false);
@@ -361,7 +368,192 @@ namespace AccessControlDownloader.ViewModel
             }
         }
 
+        bool alreadyEntered = false;
+        async Task SaveAccountBill()
+        {
+            if (!TimeToSaveAccount()) return;
+
+            bool parkingExists = await CheckIfParkingSalesAlreadyExist(GlobalClass.mcode);
+            if (parkingExists)
+            {
+                MainLogger.Info("From SaveAccountBill: Parking sales Already exists");
+            }
+            else
+            {
+                await SaveParkingAccount();
+            }
+
+            bool membershipExists = await CheckIfMembershipSalesAlreadyExist(GlobalClass.mcode);
+            if (membershipExists)
+            {
+                MainLogger.Info("From SaveAccountBill: Membership sales Already exists");
+            }
+            else
+            {
+                await SaveMembershipAccount();
+            }
+        }
+
+        private async Task SaveMembershipAccount()
+        {
+            var salesList = GetMembershipSalesOfTheDay();
+            if (salesList == null || salesList.Count() == 0)
+            {
+                MainLogger.Info("From SaveAccountBill: Membership Sales not found");
+                return;
+            }
+            foreach (var sales in salesList)
+            {
+                var res = await ProductService.CheckIfMenuCodeExists(sales.prodid, sales.description);
+                if (res == null)
+                {
+                    MainLogger.Error("From CheckIfMenuCodeExists: " + "End Point Not Found");
+                    return;
+                }
+                string mcode;
+                if (res.status == "ok")
+                {
+                    mcode = res.result.ToString();
+                }
+                else
+                {
+                    MainLogger.Error("From SaveMembershipAccount: " + res.result.ToString());
+                    return;
+                }
+                BillMain billMain = new BillMain();
+                billMain.division = "MMX";
+                billMain.terminal = GlobalClass.Terminal;
+                billMain.trnuser = GlobalClass.User.UserName;
+                billMain.trnmode = "Cash";
+                billMain.trnac = "AT01002";
+                billMain.parac = "AT01002";
+                billMain.guid = Guid.NewGuid().ToString();
+                billMain.voucherAbbName = sales.GrossAmount > 5000 ? "TI" : "SI";
+                billMain.Orders = "";
+                billMain.ConfirmedBy = GlobalClass.User.UserName;
+                billMain.tender = sales.GrossAmount;
+
+
+                //var TaxedAmount = item.NetAmount;
+
+                Product product = new Product
+                {
+                    mcode = mcode,
+                    quantity = 1,
+                    rate = sales.Taxable,
+                };
+                billMain.prodList.Add(product);
+                await SaveBillAndPrint(billMain);
+            }
+
+        }
+
+        private IEnumerable<dynamic> GetMembershipSalesOfTheDay()
+        {
+            using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
+            {
+                conn.Open();
+                var query = @"select d.prodid,d.description, s.* from ParkingSales s join ParkingSalesDetails d on s.BillNo=d.BillNo where TDate=convert(date,GETDATE()) and PTYPE='c'";
+                var res = conn.Query(query);
+                return res;
+            }
+        }
+
+        private async Task SaveParkingAccount()
+        {
+            var sales = GetParkingSalesOfTheDay();
+            if (sales == null ||sales.GrossAmount==0||sales.Taxable==0)
+            {
+                MainLogger.Info("From SaveAccountBill: Daily Sales not found");
+                return;
+            }
+
+            BillMain billMain = new BillMain();
+            billMain.division = "MMX";
+            billMain.terminal = GlobalClass.Terminal;
+            billMain.trnuser = GlobalClass.User.UserName;
+            billMain.trnmode = "Cash";
+            billMain.trnac = "AT01002";
+            billMain.parac = "AT01002";
+            billMain.guid = Guid.NewGuid().ToString();
+            billMain.voucherAbbName = sales.GrossAmount > 5000 ? "TI" : "SI";
+            billMain.Orders = "";
+            billMain.ConfirmedBy = GlobalClass.User.UserName;
+            billMain.tender = sales.GrossAmount;
+
+
+            //var TaxedAmount = item.NetAmount;
+
+            Product product = new Product
+            {
+                mcode = GlobalClass.mcode,
+                quantity = 1,
+                rate = sales.Taxable,
+            };
+            billMain.prodList.Add(product);
+            await SaveBillAndPrint(billMain);
+        }
+
+        private async Task<bool> CheckIfParkingSalesAlreadyExist(string mcode)
+        {
+            var res = await BillingService.CheckIfparkingSalesAlreadyExist(mcode);
+            return res;
+        }
+        private async Task<bool> CheckIfMembershipSalesAlreadyExist(string mcode)
+        {
+            var res = await BillingService.CheckIfMembershipSalesAlreadyExist(mcode);
+            return res;
+        }
         
+        private bool TimeToSaveAccount()
+        {
+            var TimeToSaveAccount = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, Convert.ToInt32(GlobalClass.clearhour), Convert.ToInt32(GlobalClass.clearminute), 0);
+            //if (DateTime.Now >= TimeToSaveAccount && DateTime.Now <= TimeToSaveAccount.AddMinutes(1))
+            if (DateTime.Now >= TimeToSaveAccount && DateTime.Now <= TimeToSaveAccount.AddMinutes(2))
+            {
+                if (!alreadyEntered)
+                {
+                    alreadyEntered = true;
+                    return true;
+                }
+                return false;
+            }
+            alreadyEntered = false;
+            return false;
+        }
+
+        private async Task<bool> SaveBillAndPrint(BillMain billMain)
+        {
+            var functionRes = await BillingService.SaveBill(billMain);
+            if (functionRes.status == "1")
+            {
+                //PrintFunction.PrintBill(functionRes.result.ToString());
+                //if (w != null)
+                //{
+                //    w.Close();
+                //}
+
+                return true;
+            }
+            else if (functionRes.status == "0")
+            {
+                MainLogger.Error(functionRes.result?.ToString());
+                return false;
+            }
+            // to do log Couldn't save bill to database
+            MainLogger.Error(functionRes.result?.ToString());
+            return false;
+        }
+        private DailyTransactionDto GetParkingSalesOfTheDay()
+        {
+            using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
+            {
+                conn.Open();
+                var query = @"select SUM(s.GrossAmount) GrossAmount, SUM(s.Amount) Amount, SUM(s.VAT) vat,SUM(s.Taxable) Taxable,SUM(s.NonTaxable) nontaxable from parkingsales s join ParkingSalesDetails d on s.BillNo=d.BillNo  where TDate=convert(date,GETDATE()) and PTYPE='P'";
+                var res = conn.QueryFirstOrDefault<DailyTransactionDto>(query);
+                return res;
+            }
+        }
 
         string GetInterval(DateTime In, DateTime Out, string InTime, string OutTime)
         {
@@ -516,7 +708,7 @@ namespace AccessControlDownloader.ViewModel
                 dwMinute = log.dwMinute,
                 DeviceIp = device.DeviceIp,
                 DeviceId = device.DeviceId,
-                pid=pid
+                pid = pid
             }, tran);
             if (alreadyExist == null)
             {
@@ -599,7 +791,7 @@ namespace AccessControlDownloader.ViewModel
                 dwMinute = log.dwMinute,
                 DeviceIp = device.DeviceIp,
                 DeviceId = device.DeviceId,
-                pid=pid
+                pid = pid
             }, tran);
             if (alreadyExist == null)
             {
@@ -649,7 +841,7 @@ namespace AccessControlDownloader.ViewModel
                     dwMinute = log.dwMinute,
                     DeviceIp = device.DeviceIp,
                     DeviceId = device.DeviceId,
-                    pid=pid
+                    pid = pid
                 }, tran);
                 MainLogger.Info($"Saved logs of exit device: {device.DeviceIp}");
             }

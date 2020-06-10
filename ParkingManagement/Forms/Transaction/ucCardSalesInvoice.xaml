@@ -127,7 +127,7 @@
                         </Grid.ColumnDefinitions>
                         <!--<RadioButton IsChecked="{Binding VSales.TRNMODE}" Content="Cash" VerticalAlignment="Center"></RadioButton>-->
                         <!--<RadioButton Grid.Column="1" IsChecked="{Binding VSales.TRNMODE, Converter={StaticResource ReverseBool}}" Content="Credit" VerticalAlignment="Center"></RadioButton>-->
-                        <Label Grid.Row="1" Content="Customer Name"/>
+                        <Label Grid.Row="1" Content="Card Number"/>
                         <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding CardNumber,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" >
                             <TextBox.InputBindings>
                                 <KeyBinding Command="{Binding CardNumberCommand}" Key="Return" />

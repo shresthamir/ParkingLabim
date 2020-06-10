@@ -58,6 +58,10 @@ namespace ParkingManagement.Library
         public static string ReportParams { get; set; }
         public static string PrintTime { get; set; }
         public static byte SlipPrinterWith { get; set; }
+        public static string mcode { get; set; }
+        public static int clearhour { get; set; }
+        public static int clearminute { get; set; }
+
         static GlobalClass()
         {
             try
@@ -86,7 +90,7 @@ namespace ParkingManagement.Library
                                 ISNULL(ShowCollectionAmountInCashSettlement, 0) ShowCollectionAmountInCashSettlement, ISNULL(DisableCashAmountChange,0) DisableCashAmountChange, 
                                 SettlementMode, ISNULL(AllowMultiVehicleForStaff,0) AllowMultiVehicleForStaff, ISNULL(SlipPrinterWidth, 58) SlipPrinterWidth, 
                                 ISNULL(EnableStaff, 0) EnableStaff, ISNULL(EnableStamp, 0) EnableStamp, ISNULL(EnableDiscount, 0) EnableDiscount, ISNULL(EnablePlateNo, 0) EnablePlateNo, 
-                                ISNULL(EnablePrepaid, 0) EnablePrepaid, ISNULL(PrepaidInfo, '{}') PrepaidInfo, MemberBarcodePrefix FROM tblSetting").First();
+                                ISNULL(EnablePrepaid, 0) EnablePrepaid, ISNULL(PrepaidInfo, '{}') PrepaidInfo, MemberBarcodePrefix,ServerIpAddress,mcode,clearminute,clearhour FROM tblSetting").First();
                     CompanyName = Setting.CompanyName;
                     CompanyAddress = Setting.CompanyAddress;
                     CompanyPan = Setting.CompanyInfo;
@@ -106,6 +110,10 @@ namespace ParkingManagement.Library
                     TCList = cnmain.Query<PSlipTerms>("SELECT Description, Height from PSlipTerms");
                     FYID = cnmain.ExecuteScalar<byte>("SELECT FYID FROM tblFiscalYear WHERE CONVERT(VARCHAR,GETDATE(),101) BETWEEN BEGIN_DATE AND END_DATE");
                     FYNAME = cnmain.ExecuteScalar<string>("SELECT FYNAME FROM tblFiscalYear WHERE CONVERT(VARCHAR,GETDATE(),101) BETWEEN BEGIN_DATE AND END_DATE");
+                    ServerIpAddress = Setting.ServerIpAddress;
+                    mcode = Setting.mcode;
+                    clearminute= Setting.clearminute;
+                    clearhour = Setting.clearhour;
                 }
             }
             catch (Exception ex)
@@ -136,6 +144,8 @@ namespace ParkingManagement.Library
             }
         }
         public static int StickerVoucher { get; internal set; }
+        public static string ServerIpAddress { get; internal set; }
+
         public static string GetTConnectionString(string TUser, string TPassword)
         {
             SqlConnectionStringBuilder ConnBuilder = new SqlConnectionStringBuilder(DataConnectionString);

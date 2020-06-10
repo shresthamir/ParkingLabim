@@ -2,6 +2,7 @@
 using ParkingManagement.Library;
 using ParkingManagement.Library.Helpers;
 using ParkingManagement.Models;
+using ParkingManagement.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -60,6 +61,11 @@ namespace ParkingManagement.ViewModel
             if (VSDetail.ProdId == 0)
             {
                 SelectedMember = GetSchemeByCardNumber(CardNumber);
+                if (SelectedMember == null)
+                {
+                    MessageBox.Show("Member with this Cardnumber not found..", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    return;
+                }
                 VSDetail.ProdId = SelectedMember.SchemeId;
                 //MessageBox.Show("Please Select Membership Scheme first.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 //return;
@@ -109,10 +115,11 @@ namespace ParkingManagement.ViewModel
             using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
             {
                 conn.Open();
-                string sql = "select * from members m join MembershipScheme s on m.SchemeId=s.SchemeId where BARCODE=@cardNumber";
+                string sql = "select m.*,s.SchemeName from members m join MembershipScheme s on m.SchemeId=s.SchemeId where BARCODE=@cardNumber";
                 var result = conn.Query<Member>(sql, new { cardNumber }).FirstOrDefault();
                 return result;
             }
+
         }
 
         public CardSalesInvoiceViewModel()
@@ -126,7 +133,7 @@ namespace ParkingManagement.ViewModel
 
             using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
             {
-                MemberList = new ObservableCollection<Member>(conn.Query<Member>("SELECT * FROM Members"));
+                MemberList = new ObservableCollection<Member>(conn.Query<Member>("select m.*,s.SchemeName from members m join MembershipScheme s on m.SchemeId=s.SchemeId"));
                 SchemeList = new ObservableCollection<MembershipScheme>(conn.Query<MembershipScheme>("SELECT * FROM MembershipScheme"));
             }
             GetDeviceList();
@@ -145,7 +152,7 @@ namespace ParkingManagement.ViewModel
             FocusedElement = (short)Focusable.Customer;
             VSDetail.PropertyChanged += VSDetail_PropertyChanged;
         }
-        private async void ExecuteSave(object obj)
+        private void ExecuteSave(object obj)
         {
             try
             {
@@ -177,6 +184,16 @@ namespace ParkingManagement.ViewModel
                 if (MessageBox.Show("You are going to save current transation. Do you want to proceed?", MessageBoxCaption, MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
                     return;
                 //ParkingVouchers = new List<Voucher>();
+                //string mcode = "";
+                //var res=await ProductService.GetMcodeByDesca(SelectedMember.SchemeName);
+                //if (res.status == "ok")
+                //{
+                //    mcode = res.result.ToString();
+                //}
+                //else
+                //{
+                //    throw new Exception("Product code for this scheme not found.");
+                //}
                 using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
                 {
                     conn.Open();
@@ -198,10 +215,12 @@ namespace ParkingManagement.ViewModel
                             PSD.FYID = VSales.FYID;
                             PSD.Save(tran);
                         }
-                        conn.Execute("update members set Expirydate=@Expirydate,ActivationDate=getdate(), SchemeId=@SchemeId where memberid=@memberid", new { Expirydate = VSales.ExpiryDate, memberid = SelectedMember.MemberId, SchemeId=SelectedMember.SchemeId }, transaction: tran);
+                        conn.Execute("update members set Expirydate=@Expirydate,ActivationDate=getdate(), SchemeId=@SchemeId where memberid=@memberid", new { Expirydate = VSales.ExpiryDate, memberid = SelectedMember.MemberId, SchemeId = SelectedMember.SchemeId }, transaction: tran);
 
                         conn.Execute("UPDATE tblSequence SET CurNo = CurNo + 1 WHERE VNAME = @VNAME AND FYID = @FYID", new { VNAME = InvoicePrefix, FYID = GlobalClass.FYID }, transaction: tran);
                         GlobalClass.SetUserActivityLog("Voucher Sales Invoice", "New", VCRHNO: VSales.BillNo, WorkDetail: "Bill No : " + VSales.BillNo);
+
+                        //await SaveAccountBill(mcode);
 
                         //SyncFunctions.LogSyncStatus(tran, VSales.BillNo, GlobalClass.FYNAME);
                         //if (GenerateVoucher)
@@ -241,6 +260,60 @@ namespace ParkingManagement.ViewModel
                 MessageBox.Show(ex.Message, MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+        async Task<bool> SaveAccountBill(string mcode)
+        {
+            BillMain billMain = new BillMain();
+            billMain.division = "MMX";
+            billMain.terminal = GlobalClass.Terminal;
+            billMain.trnuser = GlobalClass.User.UserName;
+            billMain.trnmode = "Cash";
+            billMain.trnac = "AT01002";
+            billMain.parac = "AT01002";
+            billMain.guid = Guid.NewGuid().ToString();
+            billMain.voucherAbbName = VSales.GrossAmount > 5000 ? "TI" : "SI";
+            billMain.Orders = "";
+            billMain.ConfirmedBy = GlobalClass.User.UserName;
+            billMain.tender = VSales.GrossAmount;
+
+
+            foreach (var item in VSDetailList)
+            {
+                //var TaxedAmount = item.NetAmount;
+
+                Product product = new Product
+                {
+                    mcode = mcode,
+                    quantity = item.Quantity,
+                    rate = item.Rate,
+                };
+                billMain.prodList.Add(product);
+            }
+            var result=await SaveBillAndPrint(billMain);
+            return result;
+        }
+        private async Task<bool> SaveBillAndPrint(BillMain billMain)
+        {
+            var functionRes = await BillingService.SaveBill(billMain);
+            if (functionRes.status == "1")
+            {
+                //PrintFunction.PrintBill(functionRes.result.ToString());
+                //if (w != null)
+                //{
+                //    w.Close();
+                //}
+
+                return true;
+            }
+            else if (functionRes.status == "0")
+            {
+                MessageBox.Show(functionRes.result?.ToString());
+                return false;
+            }
+            // to do log Couldn't save bill to database
+            MessageBox.Show(functionRes.result.ToString());
+            return false;
+        }
+
         private void GetDeviceList()
         {
             using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))

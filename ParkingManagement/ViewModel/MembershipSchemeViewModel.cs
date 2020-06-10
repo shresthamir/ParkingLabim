@@ -10,6 +10,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using Dapper;
+using ParkingManagement.Services;
+
 namespace ParkingManagement.ViewModel
 {
     class MembershipSchemeViewModel : BaseViewModel
@@ -132,14 +134,14 @@ namespace ParkingManagement.ViewModel
         {
             if (string.IsNullOrEmpty(Scheme.SchemeName))
             {
-                MessageBox.Show("Scheme Name cannot be empty. Please enter Scheme Name and try again", MessageBoxCaption, MessageBoxButton.OK,MessageBoxImage.Exclamation);
+                MessageBox.Show("Scheme Name cannot be empty. Please enter Scheme Name and try again", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 return;
             }
-            if(Scheme.Discount>100)
+            if (Scheme.Discount > 100)
             {
                 MessageBox.Show("Discount cannot be greater than 100", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 return;
-            }           
+            }
             if (_action == ButtonAction.New)
                 Save(Scheme);
             else if (_action == ButtonAction.Edit)
@@ -147,7 +149,7 @@ namespace ParkingManagement.ViewModel
 
         }
 
-        private void Save(object obj)
+        private async void Save(object obj)
         {
             try
             {
@@ -160,7 +162,15 @@ namespace ParkingManagement.ViewModel
                     {
                         Scheme.SchemeId = conn.ExecuteScalar<int>("SELECT ISNULL(MAX(SchemeId), 0) + 1 FROM MembershipScheme ", transaction: tran);
                         Scheme.Save(tran);
-                        tran.Commit();
+                        //var res = await ProductService.CreateProduct(Scheme.SchemeName);
+                        //if (res.status == "ok")
+                        //{
+                        //    tran.Commit();
+                        //}
+                        //else
+                        //{
+                        //    throw new Exception(res.result.ToString());
+                        //}
                     }
                 }
                 SchemeList.Add(new MembershipScheme()
