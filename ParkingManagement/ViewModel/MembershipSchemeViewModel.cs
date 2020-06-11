@@ -171,6 +171,7 @@ namespace ParkingManagement.ViewModel
                         //{
                         //    throw new Exception(res.result.ToString());
                         //}
+                        tran.Commit();
                     }
                 }
                 SchemeList.Add(new MembershipScheme()
@@ -182,7 +183,8 @@ namespace ParkingManagement.ViewModel
                     ValidHours = Scheme.ValidHours,
                     Limit = Scheme.Limit,
                     Discount = Scheme.Discount,
-                    ValidityPeriod = Scheme.ValidityPeriod
+                    ValidityPeriod = Scheme.ValidityPeriod,
+                    Rate=Scheme.Rate
                 });
                 MessageBox.Show("Scheme successfully saved.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Information);
                 UndoMethod(null);

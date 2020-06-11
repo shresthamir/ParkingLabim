@@ -96,6 +96,8 @@ namespace AccessControlDownloader.ViewModel
                 if (timerSec == 60)
                 {
                     ExecuteReadLog(null);
+                    await SaveAccountBill();
+
                     timerSec = 0;
                 }
 
@@ -104,7 +106,6 @@ namespace AccessControlDownloader.ViewModel
                 DateToday = DateTime.Now;
 
 
-                await SaveAccountBill();
 
                 //CheckDeviceStatus();
 
@@ -372,31 +373,30 @@ namespace AccessControlDownloader.ViewModel
         async Task SaveAccountBill()
         {
             if (!TimeToSaveAccount()) return;
+            //bool parkingExists = await CheckIfParkingSalesAlreadyExist(GlobalClass.mcode);
+            //if (parkingExists)
+            //{
+            //    MainLogger.Info("From SaveAccountBill: Parking sales Already exists");
+            //}
+            //else
+            //{
+            await SaveParkingAccount();
+            //}
 
-            bool parkingExists = await CheckIfParkingSalesAlreadyExist(GlobalClass.mcode);
-            if (parkingExists)
-            {
-                MainLogger.Info("From SaveAccountBill: Parking sales Already exists");
-            }
-            else
-            {
-                await SaveParkingAccount();
-            }
-
-            bool membershipExists = await CheckIfMembershipSalesAlreadyExist(GlobalClass.mcode);
-            if (membershipExists)
-            {
-                MainLogger.Info("From SaveAccountBill: Membership sales Already exists");
-            }
-            else
-            {
-                await SaveMembershipAccount();
-            }
+            //bool membershipExists = await CheckIfMembershipSalesAlreadyExist(GlobalClass.mcode);
+            //if (membershipExists)
+            //{
+            //    MainLogger.Info("From SaveAccountBill: Membership sales Already exists");
+            //}
+            //else
+            //{
+            await SaveMembershipAccount();
+            //}
         }
 
         private async Task SaveMembershipAccount()
         {
-            var salesList = GetMembershipSalesOfTheDay();
+            var salesList = await GetMembershipSalesOfTheDay();
             if (salesList == null || salesList.Count() == 0)
             {
                 MainLogger.Info("From SaveAccountBill: Membership Sales not found");
@@ -448,21 +448,12 @@ namespace AccessControlDownloader.ViewModel
 
         }
 
-        private IEnumerable<dynamic> GetMembershipSalesOfTheDay()
-        {
-            using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
-            {
-                conn.Open();
-                var query = @"select d.prodid,d.description, s.* from ParkingSales s join ParkingSalesDetails d on s.BillNo=d.BillNo where TDate=convert(date,GETDATE()) and PTYPE='c'";
-                var res = conn.Query(query);
-                return res;
-            }
-        }
+
 
         private async Task SaveParkingAccount()
         {
-            var sales = GetParkingSalesOfTheDay();
-            if (sales == null ||sales.GrossAmount==0||sales.Taxable==0)
+            var sales = await GetParkingSalesOfTheDay();
+            if (sales == null || sales.GrossAmount == 0 || sales.Taxable == 0)
             {
                 MainLogger.Info("From SaveAccountBill: Daily Sales not found");
                 return;
@@ -491,7 +482,11 @@ namespace AccessControlDownloader.ViewModel
                 rate = sales.Taxable,
             };
             billMain.prodList.Add(product);
-            await SaveBillAndPrint(billMain);
+            var res = await SaveBillAndPrint(billMain);
+            if (res)
+            {
+                await SaveParkingAccount();
+            }
         }
 
         private async Task<bool> CheckIfParkingSalesAlreadyExist(string mcode)
@@ -504,7 +499,7 @@ namespace AccessControlDownloader.ViewModel
             var res = await BillingService.CheckIfMembershipSalesAlreadyExist(mcode);
             return res;
         }
-        
+
         private bool TimeToSaveAccount()
         {
             var TimeToSaveAccount = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, Convert.ToInt32(GlobalClass.clearhour), Convert.ToInt32(GlobalClass.clearminute), 0);
@@ -532,7 +527,7 @@ namespace AccessControlDownloader.ViewModel
                 //{
                 //    w.Close();
                 //}
-
+                //await SaveParkingAccount();
                 return true;
             }
             else if (functionRes.status == "0")
@@ -544,17 +539,45 @@ namespace AccessControlDownloader.ViewModel
             MainLogger.Error(functionRes.result?.ToString());
             return false;
         }
-        private DailyTransactionDto GetParkingSalesOfTheDay()
+        private async Task<DailyTransactionDto> GetParkingSalesOfTheDay()
         {
             using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
             {
                 conn.Open();
-                var query = @"select SUM(s.GrossAmount) GrossAmount, SUM(s.Amount) Amount, SUM(s.VAT) vat,SUM(s.Taxable) Taxable,SUM(s.NonTaxable) nontaxable from parkingsales s join ParkingSalesDetails d on s.BillNo=d.BillNo  where TDate=convert(date,GETDATE()) and PTYPE='P'";
-                var res = conn.QueryFirstOrDefault<DailyTransactionDto>(query);
-                return res;
+                var res = await BillingService.GetLastParkingBillDate(GlobalClass.mcode);
+                if (res.status == "ok")
+                {
+                    var lastBillDate = Convert.ToDateTime(res.result).ToString("yyyy-MM-dd");
+
+                    var sql1 = @"SELECT ISNULL(MIN(TDate), '2000-01-01') FROM ParkingSales  s join ParkingSalesDetails d on s.BillNo=d.BillNo where TDate>@TDate and PTYPE='p'";
+                    var nextTransactionDate = conn.ExecuteScalar<DateTime>(sql1, new { TDate = lastBillDate });
+                    var query = @"select SUM(s.GrossAmount) GrossAmount, SUM(s.Amount) Amount, SUM(s.VAT) vat,SUM(s.Taxable) Taxable,SUM(s.NonTaxable) nontaxable from parkingsales s join ParkingSalesDetails d on s.BillNo=d.BillNo  where TDate=@TDate and PTYPE='P'";
+                    var result = conn.QueryFirstOrDefault<DailyTransactionDto>(query, new { TDate = nextTransactionDate });
+                    return result;
+                }
+                MainLogger.Error(res.result.ToString());
+                return null;
             }
         }
+        private async Task<IEnumerable<dynamic>> GetMembershipSalesOfTheDay()
+        {
+            using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
+            {
+                conn.Open();
+                var res = await BillingService.GetLastMembersBillDate(GlobalClass.mcode);
 
+                if (res.status == "ok")
+                {
+                    var lastBillDate = Convert.ToDateTime(res.result).ToString("yyyy-MM-dd");
+
+                    var query = @"select d.prodid,d.description, s.* from ParkingSales s join ParkingSalesDetails d on s.BillNo=d.BillNo where TDate>@TDate and PTYPE='c'";
+                    var result = await conn.QueryAsync(query, new { TDate = lastBillDate });
+                    return result;
+                }
+                MainLogger.Error(res.result.ToString());
+                return null;
+            }
+        }
         string GetInterval(DateTime In, DateTime Out, string InTime, string OutTime)
         {
             var InDate = In.Add(DateTime.Parse(InTime).TimeOfDay);

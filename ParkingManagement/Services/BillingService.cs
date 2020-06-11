@@ -59,7 +59,64 @@ namespace ParkingManagement.Services
                 throw new Exception(ex.ToString());
             };
         }
+        public static async Task<FunctionResponse> GetLastParkingBillDate(string mcode)
+        {
+            try
+            {
+                //string ContentType = "application/json"; // or application/xml
+                string url = GlobalClass.ServerIpAddress + "/api/GetLastParkingBillDate/" + mcode;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
+                    var response = await client.GetAsync(url);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var json = await response.Content.ReadAsStringAsync();
+                        var result = JsonConvert.DeserializeObject<FunctionResponse>(json);
+                        return result;
+                    }
+                    else
+                    {
+                        return new FunctionResponse { status="error", result=response.ReasonPhrase };
+                    }
+                    
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.ToString());
+            };
+        }
+        public static async Task<FunctionResponse> GetLastMembersBillDate(string mcode)
+        {
+            try
+            {
+                //string ContentType = "application/json"; // or application/xml
+                string url = GlobalClass.ServerIpAddress + "/api/GetLastMembersBillDate/" + mcode;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    var response = await client.GetAsync(url);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var json = await response.Content.ReadAsStringAsync();
+                        var result = JsonConvert.DeserializeObject<FunctionResponse>(json);
+                        return result;
+                    }
+                    else
+                    {
+                        return new FunctionResponse { status = "error", result = response.ReasonPhrase };
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.ToString());
+            };
+        }
         public static async Task<bool> CheckIfMembershipSalesAlreadyExist(string mcode)
         {
             try
