@@ -8,7 +8,7 @@
              xmlns:helper ="clr-namespace:ParkingManagement.Library.Helpers"
              FocusManager.FocusedElement="{Binding ElementName=txtInvoice}"
              mc:Ignorable="d" 
-            d:DesignHeight="468" d:DesignWidth="1024">   
+            d:DesignHeight="468" d:DesignWidth="1024">
     <UserControl.InputBindings>
         <KeyBinding Key="S" Modifiers="Control" Command="{Binding SaveCommand}"/>
         <KeyBinding Key="Z" Modifiers="Control" Command="{Binding UndoCommand}"/>
@@ -17,7 +17,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="60"/>
             <RowDefinition Height="50"/>
-            <RowDefinition Height="130"/>
+            <RowDefinition Height="140"/>
             <RowDefinition/>
             <RowDefinition Height="40"/>
         </Grid.RowDefinitions>
@@ -134,7 +134,7 @@
                                 <KeyBinding Command="{Binding CardNumberCommand}" Key="Enter" />
                             </TextBox.InputBindings>
                         </TextBox>
-                        
+
                         <!--<ComboBox Grid.Row="1" Grid.Column="1" IsEditable="True" ItemsSource="{Binding MemberList}" SelectedItem="{Binding SelectedMember}" DisplayMemberPath="MemberName" Text="{Binding VSales.BillTo}"  helper:CustomFocusManager.IsFocused="{Binding FocusedElement, Converter={StaticResource ShortToBool}, ConverterParameter='2'}"></ComboBox>-->
                         <!--<Label Content="Address" Grid.Row="2" Margin="2 5 0 0" VerticalAlignment="Top" />
                         <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding VSales.BILLTOADD}" Height="50" GotFocus="TextBox_GotFocus" TextWrapping="WrapWithOverflow" ></TextBox>
@@ -143,54 +143,51 @@
                     </Grid>
                 </Border>
                 <Border Style="{StaticResource PlainBackground}" Grid.Column="1">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="100"/>
-                            <ColumnDefinition Width="150"/>
-                            <ColumnDefinition Width="50"/>
-                            <ColumnDefinition Width="100"/>
-                            <ColumnDefinition Width="150"/>
-                            <ColumnDefinition/>
-                            <ColumnDefinition Width="10"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="35"/>
-                            <RowDefinition Height="35"/>
-                            <RowDefinition Height="35"/>
-                            <RowDefinition Height="35"/>
-                            <RowDefinition Height="35"/>
-                        </Grid.RowDefinitions>
-                        <Label Content="Product" />
-                        <ComboBox Grid.ColumnSpan="4" ItemsSource="{Binding SchemeList}" DisplayMemberPath="SchemeName" SelectedValuePath="SchemeId" SelectedValue="{Binding VSDetail.ProdId}" SelectedItem="{Binding SelectedScheme}" IsSynchronizedWithCurrentItem="True" Grid.Column="1" FontSize="14"
-                                  helper:CustomFocusManager.IsFocused="{Binding FocusedElement, Converter={StaticResource ShortToBool}, ConverterParameter='1'}"></ComboBox>
+                    <StackPanel Orientation="Horizontal">
+                        <StackPanel Width="160">
+                            <StackPanel Orientation="Horizontal">
+                                <Label Grid.Row="0" Grid.Column="0" Content="Member:"/>
+                                <Label Grid.Row="0" Grid.Column="1" Content="{Binding SelectedMember.MemberName}"></Label>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <Label Grid.Row="0" Grid.Column="2" Content="Address:"/>
+                                <Label Grid.Row="0" Grid.Column="3" Content="{Binding SelectedMember.Address}"></Label>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <Label Grid.Row="0" Grid.Column="4" Content="Mobile:"/>
+                                <Label Grid.Row="0" Grid.Column="5" Content="{Binding SelectedMember.Mobile}"></Label>
+                            </StackPanel>
+                        </StackPanel>
+                        <StackPanel >
 
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                                    <Label Width="100" HorizontalAlignment="Left" Content="Activation Date"></Label>
+                                    <DatePicker VerticalAlignment="Center" Grid.Row="2" Grid.Column="1" IsEnabled="False" Text="{Binding VSales.TDate, Mode=TwoWay, ValidatesOnDataErrors=True}">
+                                        <DatePicker.Resources>
+                                            <Style TargetType="Button"/>
+                                        </DatePicker.Resources>
+                                    </DatePicker>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Width="100" Content="Expiry Date"></Label>
+                                    <DatePicker VerticalAlignment="Center"  Grid.Row="2" Grid.Column="4" IsEnabled="False"  Text="{Binding VSales.ExpiryDate,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}">
+                                        <DatePicker.Resources>
+                                            <Style TargetType="Button"/>
+                                        </DatePicker.Resources>
+                                    </DatePicker>
+                                </StackPanel>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="10">
+                                <Label Width="100"  Content="Product" />
+                                <!--<Label Width="100"  Content="{Binding SelectedScheme.SchemeName}" />-->
+                                <!--<ComboBox MinWidth="300" ItemsSource="{Binding SchemeList}" DisplayMemberPath="SchemeName" SelectedValuePath="SchemeId" SelectedValue="{Binding VSDetail.ProdId,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SelectedScheme,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsSynchronizedWithCurrentItem="True" FontSize="14"></ComboBox>-->
+                                <ComboBox Width="310" ItemsSource="{Binding SchemeList}" DisplayMemberPath="SchemeName" SelectedItem="{Binding SelectedScheme}"/>
 
-                        <!--<Label Grid.Row="1" Content="Rate"/>
-                        <TextBox Grid.Row="1" Grid.Column="1" Height="28" Text="{Binding VSDetail.RateStr, UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Right"/>
-
-                        <Label Grid.Row="2" Content="Quantity"/>
-                        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding VSDetail.QuantityStr, UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Right" />
-
-                        <Label Grid.Row="2" Grid.Column="3"  Content="Amount"/>
-                        <TextBox Grid.Row="2" Grid.Column="4" Grid.ColumnSpan="1" Text="{Binding VSDetail.Amount, Converter={StaticResource NoZero}}" HorizontalContentAlignment="Right" IsReadOnly="True" Focusable="False"/>
-
-                        <Label Grid.Row="3" Grid.Column="0"  Content="Remarks"/>
-                        <TextBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="4" Text="{Binding VSDetail.Remarks, UpdateSourceTrigger=PropertyChanged}" />-->
-                        <Label Grid.Row="1" Content="Activation Date"></Label>
-                        <DatePicker VerticalAlignment="Center" Grid.Row="1" Grid.Column="1" IsEnabled="False" Text="{Binding VSales.TDate, Mode=TwoWay, ValidatesOnDataErrors=True}">
-                        <DatePicker.Resources>
-                            <Style TargetType="Button"/>
-                        </DatePicker.Resources>
-                    </DatePicker>
-
-                    <Label Grid.Row="1" Grid.Column="3" Content="Expiry Date"></Label>
-                        <DatePicker VerticalAlignment="Center"  Grid.Row="1" Grid.Column="4" IsEnabled="{Binding EntryPanelEnabled}"  Text="{Binding VSales.ExpiryDate,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}">
-                        <DatePicker.Resources>
-                            <Style TargetType="Button"/>
-                        </DatePicker.Resources>
-                    </DatePicker>
-                        <Button Grid.Row="2" Grid.Column="5" HorizontalAlignment="Left" Style="{DynamicResource NewButton}" Command="{Binding AddVoucherCommand}" Content="Add" Width="60" Height="28" Margin="5 0 0 0"></Button>
-                    </Grid>
+                                <Button HorizontalAlignment="Left" Style="{DynamicResource NewButton}" Command="{Binding AddVoucherCommand}" Content="Change Scheme" Width="120" Height="28" Margin="5 0 0 0"></Button>
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
                 </Border>
             </Grid>
 

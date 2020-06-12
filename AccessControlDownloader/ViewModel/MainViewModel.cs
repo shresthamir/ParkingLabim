@@ -428,7 +428,7 @@ namespace AccessControlDownloader.ViewModel
                 billMain.trnac = "AT01002";
                 billMain.parac = "AT01002";
                 billMain.guid = Guid.NewGuid().ToString();
-                billMain.voucherAbbName = sales.GrossAmount > 5000 ? "TI" : "SI";
+                billMain.voucherAbbName = "TI";
                 billMain.Orders = "";
                 billMain.ConfirmedBy = GlobalClass.User.UserName;
                 billMain.tender = sales.GrossAmount;
@@ -467,7 +467,7 @@ namespace AccessControlDownloader.ViewModel
             billMain.trnac = "AT01002";
             billMain.parac = "AT01002";
             billMain.guid = Guid.NewGuid().ToString();
-            billMain.voucherAbbName = sales.GrossAmount > 5000 ? "TI" : "SI";
+            billMain.voucherAbbName = "TI";
             billMain.Orders = "";
             billMain.ConfirmedBy = GlobalClass.User.UserName;
             billMain.tender = sales.GrossAmount;

@@ -58,9 +58,12 @@ namespace ParkingManagement.ViewModel
                 return;
             }
 
-            if (VSDetail.ProdId == 0)
+            //if (VSDetail.ProdId == 0)
+            if (SelectedScheme==null)
             {
                 SelectedMember = GetSchemeByCardNumber(CardNumber);
+                SelectedScheme = SchemeList.FirstOrDefault(x => x.SchemeId == SelectedMember.SchemeId);
+                VSDetail.ProdId = SelectedMember.SchemeId;
                 if (SelectedMember == null)
                 {
                     MessageBox.Show("Member with this Cardnumber not found..", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
@@ -70,20 +73,25 @@ namespace ParkingManagement.ViewModel
                 //MessageBox.Show("Please Select Membership Scheme first.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 //return;
             }
-            else if (VSDetailList.Any(x => x.ProdId == VSDetail.ProdId))
+            //else if (VSDetailList.Any(x => x.ProdId == VSDetail.ProdId))
+            else if (VSDetailList.Any(x => x.ProdId == SelectedScheme.SchemeId))
             {
                 MessageBox.Show("Selected Card is already added.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 return;
             }
-            if (VSDetail.ProdId != 0)
+            //if (VSDetail.ProdId != 0)
+            if(SelectedScheme!=null)
             {
-                SelectedMember.SchemeId = VSDetail.ProdId;
+                //SelectedMember.SchemeId = VSDetail.ProdId;
+                SelectedMember.SchemeId = SelectedScheme.SchemeId;
 
-                VSales.ExpiryDate = VSales.TDate.AddDays(SchemeList.FirstOrDefault(x => x.SchemeId == VSDetail.ProdId).ValidityPeriod);
+                //VSales.ExpiryDate = VSales.TDate.AddDays(SchemeList.FirstOrDefault(x => x.SchemeId == VSDetail.ProdId).ValidityPeriod);
+                VSales.ExpiryDate = VSales.TDate.AddDays(SchemeList.FirstOrDefault(x => x.SchemeId == SelectedScheme.SchemeId).ValidityPeriod);
             }
             if (SelectedScheme is null)
             {
-                SelectedScheme = SchemeList.FirstOrDefault(x => x.SchemeId == VSDetail.ProdId);
+                //SelectedScheme = SchemeList.FirstOrDefault(x => x.SchemeId == VSDetail.ProdId);
+                SelectedScheme = SchemeList.FirstOrDefault(x => x.SchemeId == SelectedScheme.SchemeId);
             }
             //GenerateVoucher = !SelectedVoucherType.SkipVoucherGeneration;
             var vsDetail = new TParkingSalesDetails
