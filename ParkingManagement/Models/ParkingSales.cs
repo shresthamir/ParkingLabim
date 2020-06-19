@@ -57,13 +57,14 @@ namespace ParkingManagement.Models
         public int PID { get { return _PID; } set { _PID = value; } }
         public bool TRNMODE { get { return _TRNMODE; } set { _TRNMODE = value; OnPropertyChanged("TRNMODE"); } }
         public DateTime ExpiryDate { get { return _ExpiryDate; } set { _ExpiryDate = value; OnPropertyChanged("ExpiryDate"); } }
+        public int memberId { get; set; }
 
         public override bool Save(SqlTransaction tran)
         {
             string strSQL = string.Format
                              (
-                                 @"INSERT INTO ParkingSales (BillNo, FYID, TDate, TMiti, TTime, [Description], BillTo, BILLTOADD, BILLTOPAN, Amount, Discount, NonTaxable, Taxable, VAT, GrossAmount, RefBillNo, TaxInvoice, Remarks, UID, SESSION_ID, PID, TRNMODE,ExpiryDate) 
-                                    VALUES (@BillNo, @FYID, @TDate, @TMiti, @TTime, @Description, @BillTo, @BILLTOADD, @BILLTOPAN, @Amount, @Discount, @NonTaxable, @Taxable, @VAT, @GrossAmount, @RefBillNo, @TaxInvoice, @Remarks, @UID, @SESSION_ID, @PID, @TRNMODE,@ExpiryDate)"
+                                 @"INSERT INTO ParkingSales (BillNo, FYID, TDate, TMiti, TTime, [Description], BillTo, BILLTOADD, BILLTOPAN, Amount, Discount, NonTaxable, Taxable, VAT, GrossAmount, RefBillNo, TaxInvoice, Remarks, UID, SESSION_ID, PID, TRNMODE,ExpiryDate,memberId) 
+                                    VALUES (@BillNo, @FYID, @TDate, @TMiti, @TTime, @Description, @BillTo, @BILLTOADD, @BILLTOPAN, @Amount, @Discount, @NonTaxable, @Taxable, @VAT, @GrossAmount, @RefBillNo, @TaxInvoice, @Remarks, @UID, @SESSION_ID, @PID, @TRNMODE,@ExpiryDate,@memberId)"
                              );
             return tran.Connection.Execute(strSQL, this, tran) == 1;
         }

@@ -216,6 +216,7 @@ namespace ParkingManagement.ViewModel
                         VSales.FYID = GlobalClass.FYID;
                         VSales.BillTo = SelectedMember.MemberName;
                         VSales.BILLTOADD = SelectedMember.Address;
+                        VSales.memberId = SelectedMember.MemberId;
                         VSales.Save(tran);
                         foreach (TParkingSalesDetails PSD in VSDetailList)
                         {

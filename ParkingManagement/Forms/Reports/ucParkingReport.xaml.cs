@@ -60,7 +60,7 @@ namespace ParkingManagement.Forms.Reports
             catch (Exception ex)
             {
                 MessageBox.Show("Invalid BS Date", "Daily Cash Collection Report", MessageBoxButton.OK, MessageBoxImage.Error);
-            }           
+            }
         }
         public ucParkingReport()
         {
@@ -72,14 +72,14 @@ namespace ParkingManagement.Forms.Reports
             txtTDate.SelectedDate = DateTime.Today;
             txtFDate.SelectedDate = DateTime.Today;
 
-            dgDailySales.Columns.Add(new DataGridTextColumn { Header = "In", Binding = new Binding("Date1"){StringFormat = "MM/dd/yyyy hh:mm:ss tt"}, Width = 150 });
-            dgDailySales.Columns.Add(new DataGridTextColumn { Header = "Out", Binding = new Binding("Date2"){StringFormat = "MM/dd/yyyy hh:mm:ss tt"}, Width = 150 });
+            dgDailySales.Columns.Add(new DataGridTextColumn { Header = "In", Binding = new Binding("Date1") { StringFormat = "MM/dd/yyyy hh:mm:ss tt" }, Width = 150 });
+            dgDailySales.Columns.Add(new DataGridTextColumn { Header = "Out", Binding = new Binding("Date2") { StringFormat = "MM/dd/yyyy hh:mm:ss tt" }, Width = 150 });
             dgDailySales.Columns.Add(new DataGridTextColumn { Header = "Interval", Binding = new Binding("Column3"), Width = 100 });
             dgDailySales.Columns.Add(new DataGridTextColumn { Header = "Vehicle Type", Binding = new Binding("Column4"), Width = 100 });
             dgDailySales.Columns.Add(new DataGridTextColumn { Header = "Rate", Binding = new Binding("Column6"), Width = 200 });
             dgDailySales.Columns.Add(new DataGridTextColumn { Header = "Party", Binding = new Binding("Column5"), Width = 150 });
             dgDailySales.Columns.Add(new DataGridTextColumn { Header = "User", Binding = new Binding("Column7"), Width = 200 });
-            dgDailySales.Columns.Add(new DataGridTextColumn { Header = "Charged Amount", Binding = new Binding("Decimal1"){StringFormat = "#0.00"}, Width = 150, CellStyle = NumericColumn });
+            dgDailySales.Columns.Add(new DataGridTextColumn { Header = "Charged Amount", Binding = new Binding("Decimal1") { StringFormat = "#0.00" }, Width = 150, CellStyle = NumericColumn });
             dgDailySales.Columns.Add(new DataGridTextColumn { Header = "Amount", Binding = new Binding("Decimal2") { StringFormat = "#0.00" }, Width = 150, CellStyle = NumericColumn });
 
             this.DataContext = ViewModel = new vmParkingReports();
@@ -157,12 +157,12 @@ namespace ParkingManagement.Forms.Reports
                     ViewModel.LoadSummaryReport(txtFDate.SelectedDate.Value, txtTDate.SelectedDate.Value, SQL);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
         }
-           
+
 
         private void Print_Click(object sender, RoutedEventArgs e)
         {
@@ -223,7 +223,7 @@ namespace ParkingManagement.Forms.Reports
             {
                 using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
                 {
-                    ReportSource = new ObservableCollection<DataItem>(conn.Query<DataItem>(SQL, new { FDATE = FDate, TDATE = TDate }));
+                    ReportSource = new ObservableCollection<DataItem>(conn.Query<DataItem>(SQL, new { FDATE = FDate, TDATE = TDate}));
                 }
             }
             catch (Exception ex)
@@ -234,7 +234,7 @@ namespace ParkingManagement.Forms.Reports
         }
     }
 
-   
+
 
 
 }
