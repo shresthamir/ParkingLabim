@@ -273,6 +273,9 @@
     <Compile Include="Forms\Transaction\Denomination.xaml.cs">
       <DependentUpon>Denomination.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Transaction\EntrySales.xaml.cs">
+      <DependentUpon>EntrySales.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Transaction\ucCloseParkingEntrance.xaml.cs">
       <DependentUpon>ucCloseParkingEntrance.xaml</DependentUpon>
     </Compile>
@@ -348,6 +351,7 @@
     <Compile Include="ViewModel\CreditNoteViewModel.cs" />
     <Compile Include="ViewModel\DeductionViewModel.cs" />
     <Compile Include="ViewModel\EnableDailyCardViewModel.cs" />
+    <Compile Include="ViewModel\EntrySalesViewModel.cs" />
     <Compile Include="ViewModel\HolidayViewModel.cs" />
     <Compile Include="ViewModel\DiscountSchemeViewModel.cs" />
     <Compile Include="ViewModel\MembershipSchemeViewModel.cs" />
@@ -492,6 +496,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Forms\Transaction\Denomination.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Forms\Transaction\EntrySales.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

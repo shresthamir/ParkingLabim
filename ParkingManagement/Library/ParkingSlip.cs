@@ -49,13 +49,13 @@ namespace ParkingManagement.Library
             Bitmap qrCodeImage = qrCode.GetGraphic(3);
             G.DrawImage(qrCodeImage, new Point(180, i));
 
-            G.DrawString(CompanyAddress, new Font(new FontFamily("Segoe UI"), 9), Brushes.Black, new RectangleF(0, i, paperWidth -20, 17), format);
+            G.DrawString(CompanyAddress, new Font(new FontFamily("Segoe UI"), 9), Brushes.Black, new RectangleF(0, i, paperWidth - 20, 17), format);
             i += 17;
 
-            G.DrawString("Parking Slip", new Font(new FontFamily("Segoe UI Semibold"), 9), Brushes.Black, new RectangleF(0, i, paperWidth -20, 20), format);
+            G.DrawString("Parking Slip", new Font(new FontFamily("Segoe UI Semibold"), 9), Brushes.Black, new RectangleF(0, i, paperWidth - 20, 20), format);
             i += 18;
 
-            G.DrawString(PIN.VType.Description, new Font(new FontFamily("Segoe UI"), 11, FontStyle.Bold), Brushes.Black, new RectangleF(0, i, paperWidth -20, 18), format);
+            G.DrawString(PIN.VType.Description, new Font(new FontFamily("Segoe UI"), 11, FontStyle.Bold), Brushes.Black, new RectangleF(0, i, paperWidth - 20, 18), format);
             i += 20;
             G.DrawString(string.Format("Date : {0} ({1})", PIN.InDate.ToString("MM/dd/yyyy"), PIN.InMiti), new Font(new FontFamily("Segoe UI"), 9), Brushes.Black, new RectangleF(10, i, paperWidth, 18));
             i += 17;
@@ -68,8 +68,6 @@ namespace ParkingManagement.Library
             }
 
             i += 22;
-
-            
 
             Barcode barcode = new Barcode()
             {
@@ -180,7 +178,174 @@ namespace ParkingManagement.Library
             PD.Print();
         }
     }
+    public class EntranceTicketPrint
+    {
 
+        public string CompanyName { get; set; } = GlobalClass.CompanyName;
+        public string CompanyAddress { get; set; } = GlobalClass.CompanyAddress;
+        public string VAT { get; set; } = GlobalClass.CompanyPan;
+        public bool IsDuplicate { get; set; }
+        int paperWidth = (GlobalClass.SlipPrinterWith == 58) ? 225 : 300;
+        int BarcodeWidth = (GlobalClass.SlipPrinterWith == 58) ? 200 : 250;
+
+        Voucher Barcodes;
+        private readonly TParkingSales vSales;
+        private readonly decimal amount;
+        private readonly string description;
+        PrintDocument PD;
+        public EntranceTicketPrint(Voucher _Barcode, TParkingSales vSales, decimal amount, string Description)
+        {
+            PD = new PrintDocument();
+            PD.PrinterSettings.PrinterName = GlobalClass.PrinterName;
+            PD.PrintPage += PD_PrintPage;
+            Barcodes = _Barcode;
+            this.vSales = vSales;
+            this.amount = amount;
+            description = Description;
+        }
+
+        void PD_PrintPage(object sender, PrintPageEventArgs e)
+        {
+            PrintTicket(e.Graphics);
+        }
+
+        private void PrintTicket(Graphics G)
+        {
+
+            string EventName;
+            string RateName;
+            string ShowTime;
+            int i = 0;
+            //ShowTime = Ticket.show.ShowDate.Add(Ticket.show.StartTime).ToString("dd MMM yyyy dddd hh:mm tt");
+            //RateName = (Ticket.IsComplimentary) ? "Complimentary Pass" : (Ticket.Rate.Name + " - " + Ticket.SCat.Name);
+            //if (Ticket.Event.Rating != null)
+            //    EventName = Ticket.Event.Name + " (" + Ticket.Event.Rating.Rating + ")";
+            //else
+            //    EventName = Ticket.Event.Name;
+            StringFormat format = new StringFormat();
+            format.Alignment = StringAlignment.Center;
+            format.LineAlignment = StringAlignment.Center;
+
+            //if (!Ticket.IsComplimentary)
+            //{
+            //    G.DrawString("Entrance Pass", new Font(new FontFamily("Segoe UI"), 9, FontStyle.Bold), Brushes.Black, new RectangleF(0, i, 300, 17), format);
+            //    i += 17;
+            //}
+
+
+            G.DrawString(CompanyName, new Font(new FontFamily("Segoe UI"), 9), Brushes.Black, new RectangleF(0, i, 300, 17), format);
+            i += 17;
+
+            G.DrawString(CompanyAddress, new Font(new FontFamily("Segoe UI"), 9), Brushes.Black, new RectangleF(0, i, 300, 17), format);
+
+            i += 17;
+
+            QRCodeGenerator qrGenerator = new QRCodeGenerator();
+            QRCodeData qrCodeData = qrGenerator.CreateQrCode(Barcodes.Barcode, QRCodeGenerator.ECCLevel.Q);
+            QRCode qrCode = new QRCode(qrCodeData);
+            Bitmap qrCodeImage = qrCode.GetGraphic(3);
+            G.DrawImage(qrCodeImage, new Point(180, i));
+
+            i += 17;
+            G.DrawString(VAT, new Font(new FontFamily("Segoe UI"), 9), Brushes.Black, new RectangleF(0, i, 300, 17), format);
+
+            if (IsDuplicate)
+            {
+                i += 17;
+                G.DrawString("Duplicate", new Font(new FontFamily("Segoe UI"), 7), Brushes.Black, new RectangleF(0, i, 300, 14), format);
+            }
+            i += 18;
+            //G.DrawString("Inv No.  : " + Ticket.sales.BillNo, new Font(new FontFamily("Segoe UI"), 7), Brushes.Black, new RectangleF(10, i, 150, 14));
+            G.DrawString("Date : " + vSales.TDate.ToString("MM/dd/yyyy"), new Font(new FontFamily("Segoe UI"), 7), Brushes.Black, new RectangleF(0, i, 300, 17));
+            i += 14;
+            //G.DrawString("Time : " + DateTime.Today.Date.Add(Ticket.sales.Time).ToString("hh:mm tt"), new Font(new FontFamily("Segoe UI"), 7), Brushes.Black, new RectangleF(150, i, 150, 14));
+            G.DrawString("Time : " + vSales.TTime, new Font(new FontFamily("Segoe UI"), 7), Brushes.Black, new RectangleF(0, i, 300, 17));
+            //if (!Ticket.IsComplimentary)
+            //{
+
+            //    G.DrawString("Pay Mode : Cash", new Font(new FontFamily("Segoe UI"), 7), Brushes.Black, new RectangleF(10, i, 300, 14));
+            //}
+            i += 30;
+            G.DrawString(description, new Font(new FontFamily("Segoe UI"), 11, FontStyle.Bold), Brushes.Black, new RectangleF(0, i, 300, 20), format);
+            i += 20;
+            //G.DrawString(ShowTime, new Font(new FontFamily("Segoe UI Semibold"), 9), Brushes.Black, new RectangleF(0, i, 300, 18), format);
+            //i += 18;
+            //G.DrawString(RateName, new Font(new FontFamily("Segoe UI Semibold"), 9), Brushes.Black, new RectangleF(10, i, 200, 18));
+            //G.DrawString("Seat : " + Ticket.seat.SeatNo, new Font(new FontFamily("Segoe UI Semibold"), 9), Brushes.Black, new RectangleF(205, i, 90, 18));
+
+            //i += 22;
+            //if (!Ticket.IsComplimentary)
+            //{
+            //    format.Alignment = StringAlignment.Far;
+            //    G.DrawString("Net amount", new Font(new FontFamily("Segoe UI"), 7), Brushes.Black, new RectangleF(10, i, 190, 14));
+            //    G.DrawString(Ticket.NetAmount.ToString("#0.00"), new Font(new FontFamily("Segoe UI"), 7), Brushes.Black, new RectangleF(190, i, 90, 14), format);
+            //    i += 14;
+
+            //    foreach (RateTax s in Ticket.Taxes)
+            //    {
+            //        string taxname = s.Tax.TaxName + " (" + s.Tax.TaxRate + "%)";
+            //        G.DrawString(taxname, new Font(new FontFamily("Segoe UI"), 7), Brushes.Black, new RectangleF(10, i, 190, 14));
+            //        G.DrawString(s.TaxAmnt.ToString("#0.00"), new Font(new FontFamily("Segoe UI"), 7), Brushes.Black, new RectangleF(190, i, 90, 14), format);
+            //        i += 14;
+            //    }
+
+            //    G.DrawLine(new Pen(Brushes.Black), new PointF(10, i), new Point(290, i));
+            //    i += 5;
+            //    G.DrawString("Gross amount", new Font(new FontFamily("Segoe UI"), 7), Brushes.Black, new RectangleF(10, i, 200, 14));
+            //    G.DrawString(Ticket.GrossAmount.ToString("#0.00"), new Font(new FontFamily("Segoe UI"), 7), Brushes.Black, new RectangleF(190, i, 90, 14), format);
+            //    i += 18;
+            //}
+            Barcode barcode = new Barcode()
+            {
+                IncludeLabel = true,
+                Alignment = AlignmentPositions.CENTER,
+                Width = 250,
+                Height = 60,
+                RotateFlipType = RotateFlipType.RotateNoneFlipNone,
+                BackColor = Color.White,
+                ForeColor = Color.Black,
+                LabelFont = new Font(new FontFamily("Segoe UI"), 8)
+            };
+
+            Image img = barcode.Encode(TYPE.CODE128, Barcodes.Barcode);
+
+            G.DrawImage(img, new Point(10, i));
+            i += 65;
+            format.Alignment = StringAlignment.Center;
+            G.DrawString("Keep the ticket until the end!Have Fun!", new Font(new FontFamily("Segoe UI"), 6), Brushes.Black, new RectangleF(10, i, 290, 24), format);
+            i += 25;
+            //if (!string.IsNullOrEmpty(Ticket.Event.TicketMessage))
+            //{
+            //    G.DrawString(Ticket.Event.TicketMessage, new Font(new FontFamily("Segoe UI"), 6), Brushes.Black, new RectangleF(10, i, 290, 24), format);
+            //    i += 25;
+            //}
+            G.DrawString("Terms & conditions:", new Font(new FontFamily("Segoe UI"), 5), Brushes.Black, new RectangleF(10, i, 300, 10));
+            i += 10;
+            G.DrawString("1.Tickets once sold cannot be refuned.", new Font(new FontFamily("Segoe UI"), 5), Brushes.Black, new RectangleF(10, i, 290, 10));
+            i += 10;
+            G.DrawString("2.Lost, stolen or damaged tickets will not be replaced.", new Font(new FontFamily("Segoe UI"), 5), Brushes.Black, new RectangleF(10, i, 290, 10));
+            i += 10;
+            //G.DrawString("3." + CompanyName + " reserves the right to cancel a show, substitute an alternative film or change the timings of the shows if necessary for any reasons.", new Font(new FontFamily("Segoe UI"), 5), Brushes.Black, new RectangleF(10, i, 290, 20));
+            //i += 20;
+            //G.DrawString("4.If a film showing is cancelled or it’s timing altered, the cost of purchase of the tickets will either be refunded or replacement tickets for the same movie at an alternative showtime  will be issued. " + CompanyName + " will not be liable to reimburse for any expenses or any losses incurred including travel cost & parking cost.", new Font(new FontFamily("Segoe UI"), 5), Brushes.Black, new RectangleF(10, i, 290, 40));
+            //i += 40;
+            //G.DrawString("5.Seat allocations cannot be altered after the purchase of the tickets.", new Font(new FontFamily("Segoe UI"), 5), Brushes.Black, new RectangleF(10, i, 290, 10));
+            //i += 25;
+            G.DrawString("Enjoy your experience at " + CompanyName + ".", new Font(new FontFamily("Segoe UI"), 6), Brushes.Black, new RectangleF(0, i, 300, 12), format);
+
+        }
+
+        public void Print()
+        {
+            PageSettings ps = new PageSettings();
+            PaperSize PSize = new PaperSize() { RawKind = (int)PaperKind.A4 };
+            ps.PaperSize = PSize;
+            ps.Margins = new Margins(10, 10, 10, 10);
+            ps.Landscape = false;
+            PD.DefaultPageSettings = ps;
+            PD.Print();
+        }
+    }
     class BillPrint
     {
         PrintDocument PD;
@@ -624,4 +789,6 @@ namespace ParkingManagement.Library
             PD.Print();
         }
     }
+
+
 }

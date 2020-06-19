@@ -60,6 +60,7 @@ namespace ParkingManagement.Library
         public static byte SlipPrinterWith { get; set; }
         public static string mcode { get; set; }
         public static int clearhour { get; set; }
+
         public static int clearminute { get; set; }
 
         static GlobalClass()

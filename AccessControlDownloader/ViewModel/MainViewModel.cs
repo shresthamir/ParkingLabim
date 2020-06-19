@@ -432,7 +432,9 @@ namespace AccessControlDownloader.ViewModel
                 billMain.Orders = "";
                 billMain.ConfirmedBy = GlobalClass.User.UserName;
                 billMain.tender = sales.GrossAmount;
-
+                billMain.TRNDATE = sales.TDate;
+                billMain.TRN_DATE = sales.TDate;
+                billMain.TRNTIME =sales.TRNTIME;
 
                 //var TaxedAmount = item.NetAmount;
 
@@ -471,6 +473,9 @@ namespace AccessControlDownloader.ViewModel
             billMain.Orders = "";
             billMain.ConfirmedBy = GlobalClass.User.UserName;
             billMain.tender = sales.GrossAmount;
+            billMain.TRNDATE = sales.TDate;
+            billMain.TRN_DATE = sales.TDate;
+            billMain.TRNTIME = DateTime.Now.ToString("hh:mm:ss tt");
 
 
             //var TaxedAmount = item.NetAmount;
@@ -551,7 +556,8 @@ namespace AccessControlDownloader.ViewModel
 
                     var sql1 = @"SELECT ISNULL(MIN(TDate), '2000-01-01') FROM ParkingSales  s join ParkingSalesDetails d on s.BillNo=d.BillNo where TDate>@TDate and PTYPE='p'";
                     var nextTransactionDate = conn.ExecuteScalar<DateTime>(sql1, new { TDate = lastBillDate });
-                    var query = @"select SUM(s.GrossAmount) GrossAmount, SUM(s.Amount) Amount, SUM(s.VAT) vat,SUM(s.Taxable) Taxable,SUM(s.NonTaxable) nontaxable from parkingsales s join ParkingSalesDetails d on s.BillNo=d.BillNo  where TDate=@TDate and PTYPE='P'";
+                    //var query = @"select SUM(s.GrossAmount) GrossAmount, SUM(s.Amount) Amount, SUM(s.VAT) vat,SUM(s.Taxable) Taxable,SUM(s.NonTaxable) nontaxable from parkingsales s join ParkingSalesDetails d on s.BillNo=d.BillNo  where TDate=@TDate and PTYPE='P'";
+                    var query = @"select SUM(s.GrossAmount) GrossAmount, SUM(s.Amount) Amount, SUM(s.VAT) vat,SUM(s.Taxable) Taxable,SUM(s.NonTaxable) nontaxable,TDate from parkingsales s join ParkingSalesDetails d on s.BillNo=d.BillNo  where TDate=@TDate and PTYPE='P' group by TDate";
                     var result = conn.QueryFirstOrDefault<DailyTransactionDto>(query, new { TDate = nextTransactionDate });
                     return result;
                 }

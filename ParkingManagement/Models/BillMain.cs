@@ -29,6 +29,9 @@ namespace ParkingManagement.Models
         public string Orders { get; set; }
         public string ConfirmedBy { get; set; }
         public int ResId { get; set; }//to disable reservaion in ticketbill
+        public DateTime TRNDATE { get; set; }
+        public DateTime TRN_DATE { get; set; }
+        public string TRNTIME { get; set; }
 
         public ObservableCollection<Product> prodList { get; set; }
         public BillMain()

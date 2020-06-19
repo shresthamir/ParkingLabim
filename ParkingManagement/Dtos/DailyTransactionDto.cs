@@ -13,5 +13,7 @@ namespace ParkingManagement.Dtos
         public decimal vat { get; set; }
         public decimal Taxable { get; set; }
         public decimal nontaxable { get; set; }
+        public DateTime TDate { get; set; }
+        public string TRNTIME { get; set; }
     }
 }
