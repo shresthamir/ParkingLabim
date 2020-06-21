@@ -249,6 +249,9 @@
       <DependentUpon>ucCardDiscountReport.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Forms\Reports\ucBirthDayReport.xaml.cs">
+      <DependentUpon>ucBirthDayReport.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Reports\ucMembersReport.xaml.cs">
       <DependentUpon>ucMembersReport.xaml</DependentUpon>
     </Compile>
@@ -266,6 +269,9 @@
     </Compile>
     <Compile Include="Forms\Reports\wTranLogReport.xaml.cs">
       <DependentUpon>wTranLogReport.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\SelectExitVehicle.xaml.cs">
+      <DependentUpon>SelectExitVehicle.xaml</DependentUpon>
     </Compile>
     <Compile Include="Forms\Transaction\CashSettlement.xaml.cs">
       <DependentUpon>CashSettlement.xaml</DependentUpon>
@@ -462,6 +468,10 @@
       <SubType>Designer</SubType>
       <Generator>XamlIntelliSenseFileGenerator</Generator>
     </Page>
+    <Page Include="Forms\Reports\ucBirthDayReport.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Forms\Reports\ucMembersReport.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -493,6 +503,10 @@
     <Page Include="Forms\Reports\wTranLogReport.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Forms\SelectExitVehicle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Forms\Transaction\CashSettlement.xaml">
       <SubType>Designer</SubType>

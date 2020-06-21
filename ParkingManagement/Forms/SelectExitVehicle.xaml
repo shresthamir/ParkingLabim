@@ -1,0 +1,123 @@
+﻿<Window x:Class="ParkingManagement.Forms.SelectExitVehicle"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ParkingManagement.Forms"
+         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+         xmlns:helper ="clr-namespace:ParkingManagement.Library.Helpers"
+        mc:Ignorable="d"
+        Title="Select Exit Vehicle" Height="240" Width="650">
+    <Grid>
+            <!--<Label Content="Exit Type"></Label>
+            <ComboBox ItemsSource="{Binding TVehicleTypeList}" DisplayMemberPath="Description" Width="150">
+                <i:Interaction.Behaviors>
+                    <helper:SelectionBehavior SelectedItem="{Binding SelectedTVehicleType,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
+                </i:Interaction.Behaviors>
+            </ComboBox>-->
+            <Border Grid.Column="1" Style="{StaticResource PlainBackground}" >
+            <ScrollViewer>
+                <ItemsControl ItemsSource="{Binding TVehicleTypeList}" Margin="20">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <!--<Border BorderBrush="Black" BorderThickness="1">-->
+                            <Grid  Margin="20">
+                                <Grid.Resources>
+                                    <Storyboard x:Key="ExpandDetail">
+                                        <DoubleAnimationUsingKeyFrames  Storyboard.TargetProperty="Height" Storyboard.Target="{Binding ElementName=Detail}">
+                                            <EasingDoubleKeyFrame KeyTime="0:0:0.30" Value="300"/>
+                                        </DoubleAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                    <Storyboard x:Key="CollapseDetail">
+                                        <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Height" Storyboard.Target="{Binding ElementName=Detail}">
+                                            <EasingDoubleKeyFrame KeyTime="0:0:0.30" Value="0"/>
+                                        </DoubleAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </Grid.Resources>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="100"/>
+                                    <RowDefinition Height="20"/>
+                                    <RowDefinition Height="30"/>
+                                    <RowDefinition Height="25"/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+                                <!--<StackPanel Orientation="Horizontal" Margin="2">
+                                    <Label Content="Plate No" Width="60"/>
+                                    <TextBox Height="26" Width="150"  Text="{Binding PlateNo, UpdateSourceTrigger=PropertyChanged}">
+                                        <TextBox.InputBindings>
+                                            <KeyBinding Key="Return" Command="{Binding Path=DataContext.SaveCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}"
+                                                            CommandParameter="{Binding Path=DataContext,RelativeSource={RelativeSource AncestorType=TextBox}}"/>
+                                        </TextBox.InputBindings>
+                                    </TextBox>
+                                </StackPanel>-->
+                                <Button Grid.Row="1" Style="{StaticResource ParkingInButtons}" Width="100" 
+                                        Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}, Path=DataContext.VehicleSelectCommand}"
+                                        CommandParameter="{Binding Path=DataContext, RelativeSource={RelativeSource Mode=Self}}">
+                                    <Button.Content>
+                                        <StackPanel>
+                                            <Image x:Name="image" Source="{Binding ImageSource}" Height="40" Width="150"/>
+                                            <TextBlock HorizontalAlignment="Center" FontSize="12" Text="{Binding Description}"/>
+                                            <StackPanel.Resources>
+                                                <Style TargetType="Image">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding ButtonImage.Length}" Value="0">
+                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </StackPanel.Resources>
+                                        </StackPanel>
+                                    </Button.Content>
+                                </Button>
+                                <!--<ProgressBar x:Name="pBar" Grid.Row="2" Value="{Binding Occupency}" Maximum="{Binding Capacity}" Margin="5 2" Style="{DynamicResource ImsProgressBarTemplate}" />
+                                <Grid Grid.Row="3" Margin="5 2">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{Binding Occupency, StringFormat=O : {0:}}"/>
+                                    <TextBlock Grid.Column="1" Text="{Binding Available, StringFormat=A : {0:}}"/>
+                                    <TextBlock Grid.Column="2" Text="{Binding Capacity, StringFormat=C : {0:}}"/>
+                                </Grid>-->
+
+
+                                <!--<ToggleButton Grid.Row="4" Style="{StaticResource ExtendedToggleButton}" >
+                                    <ToggleButton.Triggers>
+                                        <EventTrigger RoutedEvent="ToggleButton.Checked">
+                                            <BeginStoryboard Storyboard="{StaticResource ExpandDetail}"/>
+                                        </EventTrigger>
+                                        <EventTrigger RoutedEvent="ToggleButton.Unchecked">
+                                            <BeginStoryboard Storyboard="{StaticResource CollapseDetail}"/>
+                                        </EventTrigger>
+                                    </ToggleButton.Triggers>
+                                </ToggleButton>
+                                <Border Grid.Row="5" VerticalAlignment="Top" x:Name="Detail" Background="GhostWhite" BorderBrush="Gainsboro" BorderThickness="1 1 1 1" Height="0"  MaxHeight="300">
+                                    <ScrollViewer>
+                                        <ItemsControl ItemsSource="{Binding PAOccupencyList}" ItemTemplate="{StaticResource ExtraDetail}" >
+                                        </ItemsControl>
+                                    </ScrollViewer>
+                                </Border>-->
+                            </Grid>
+                            <!--<DataTemplate.Triggers>
+                                <DataTrigger Binding="{Binding IsOverHalf}" Value="true">
+                                    <Setter TargetName="pBar" Property="Foreground" Value="{StaticResource ProgressBar.ProgressOrange}" ></Setter>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding IsOverMaxLimit}" Value="true">
+                                    <Setter TargetName="pBar" Property="Foreground" Value="{StaticResource ProgressBar.ProgressRed}" ></Setter>
+                                </DataTrigger>
+                            </DataTemplate.Triggers>-->
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+
+            </Border>
+    </Grid>
+</Window>

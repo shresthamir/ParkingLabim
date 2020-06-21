@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using Newtonsoft.Json;
+using ParkingManagement.Forms;
 using ParkingManagement.Forms.Transaction;
 using ParkingManagement.Library;
 using ParkingManagement.Library.Helpers;
@@ -45,19 +46,23 @@ namespace ParkingManagement.ViewModel
         private List<DiscountScheme> _DiscountList;
         private DiscountScheme _SelectedDiscount;
         private bool IsHoliday;
-        private string _TrnMode="Sales";
+        private string _TrnMode = "Sales";
         private ObservableCollection<Device> _Device;
+        private ObservableCollection<VehicleType> _TVehicleTypeList;
+        private VehicleType _SelectedTVehicleType;
 
         public ParkingIn PIN { get { return _PIN; } set { _PIN = value; OnPropertyChanged("PIN"); } }
         public ParkingOut POUT { get { return _POUT; } set { _POUT = value; OnPropertyChanged("POUT"); } }
         public ObservableCollection<Device> DeviceList { get { return _Device; } set { _Device = value; OnPropertyChanged("DeviceList"); } }
-
+        public ObservableCollection<VehicleType> TVehicleTypeList { get { return _TVehicleTypeList; } set { _TVehicleTypeList = value; OnPropertyChanged("TVehicleTypeList"); } }
+        public VehicleType SelectedTVehicleType { get { return _SelectedTVehicleType; } set { _SelectedTVehicleType = value; OnPropertyChanged("SelectedTVehicleType"); } }
+        
         public ObservableCollection<RateMaster> RSchemes
         {
             get { return _RSchemes; }
             set { _RSchemes = value; OnPropertyChanged("RSchemes"); }
         }
-        
+
         public bool TaxInvoice
         {
             get { return _TaxInvoice; }
@@ -85,6 +90,9 @@ namespace ParkingManagement.ViewModel
         public RelayCommand OpenStaffBarcodeCommand { get; set; }
         public RelayCommand SaveWithStaffCommand { get; set; }
         public RelayCommand SaveWithPrepaidCommand { get { return new RelayCommand(SaveWithPrepaid); } }
+        public RelayCommand VehicleSelectCommand { get { return new RelayCommand(ExecuteVehicleSelect); } }
+
+       
 
         public RelayCommand RePrintCommand { get { return new RelayCommand(ExecuteRePrint, CanExecuteRePrint); } }
         public RelayCommand LoadInvoice { get { return new RelayCommand(ExecuteLoadInvoice, CanLoadInvoice); } }
@@ -137,6 +145,25 @@ namespace ParkingManagement.ViewModel
             using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
             {
                 DeviceList = new ObservableCollection<Device>(conn.Query<Device>("select * from DeviceList"));
+            }
+        }
+        public void GetVechicleTypes()
+        {
+            using (SqlConnection Conn = new SqlConnection(GlobalClass.TConnectionString))
+            {
+                Conn.Open();
+
+                //TVehicleTypeList = new ObservableCollection<TVehicleType>(Conn.Query<TVehicleType>("SELECT VTypeID, [Description], Capacity, [UID] FROM VehicleType"));
+
+                string strSql = "SELECT VTypeID, [Description],(SELECT SUM(Capacity) FROM PARKINGAREA WHERE VehicleType = VTypeID) Capacity, [UID], ButtonImage from VehicleType";
+                TVehicleTypeList = new ObservableCollection<VehicleType>(Conn.Query<VehicleType>(strSql));
+
+                foreach (VehicleType vtype in TVehicleTypeList)
+                {
+                    if (vtype.ButtonImage == null)
+                        continue;
+                    vtype.ImageSource = Imaging.BinaryToImage(vtype.ButtonImage);
+                }
             }
         }
         private void ExecuteLoadInvoice(object obj)
@@ -207,6 +234,7 @@ namespace ParkingManagement.ViewModel
                 POUT.PropertyChanged += POUT_PropertyChanged;
                 SetAction(ButtonAction.Init);
                 GetDeviceList();
+                GetVechicleTypes();
             }
             catch (Exception ex)
             {
@@ -274,7 +302,16 @@ namespace ParkingManagement.ViewModel
         }
 
 
-
+        private void ExecuteVehicleSelect(object obj)
+        {
+            if (obj is VehicleType)
+            {
+                //Parking.VType = obj as VehicleType;
+                //Parking.VehicleType = Parking.VType.VTypeID;
+                SelectedTVehicleType = obj as VehicleType;
+                window.Close();
+            }
+        }
         private void SaveWithPrepaid(object obj)
         {
             if (obj == null)
@@ -295,7 +332,7 @@ namespace ParkingManagement.ViewModel
             }
         }
 
-        bool ValidateKKFC(string Url1, string Url2, string ClientId, string ClientSecretKey, string CardNumber, string TransactionId,string TrnMode)
+        bool ValidateKKFC(string Url1, string Url2, string ClientId, string ClientSecretKey, string CardNumber, string TransactionId, string TrnMode)
         {
             try
             {
@@ -330,7 +367,7 @@ namespace ParkingManagement.ViewModel
                     Description = POUT.BILLTO?.ToString(),
                     TransactionNumber = TransactionId,
                     TrnMode,
-                    remarks=POUT.Remarks
+                    remarks = POUT.Remarks
                 }));
                 PaymentRequest.Method = "POST";
                 PaymentRequest.ContentType = "application/json";
@@ -383,7 +420,7 @@ namespace ParkingManagement.ViewModel
             }
             else
             {
-                DiscountScheme discountScheme=DiscountList.Where(x => x.DiscountPercent == 25).FirstOrDefault();
+                DiscountScheme discountScheme = DiscountList.Where(x => x.DiscountPercent == 25).FirstOrDefault();
                 this.SelectedDiscount = discountScheme;
                 StaffBarcode = new wPrepaidCard() { DataContext = this };
                 StaffBarcode.ShowDialog();
@@ -432,10 +469,18 @@ namespace ParkingManagement.ViewModel
                 MessageBox.Show(ex.Message, MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+        SelectExitVehicle window;
         private void ExecuteLoad(object obj)
         {
             try
             {
+                window = new SelectExitVehicle(this);
+                window.ShowDialog();
+                if (SelectedTVehicleType == null)
+                {
+                    MessageBox.Show("Please select Exit Vehicle Type", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    return;
+                }
                 decimal ChargedHours = 0;
                 decimal ChargedAmount = 0;
                 using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
@@ -474,7 +519,7 @@ namespace ParkingManagement.ViewModel
                     //where ParkingOutDetails.PID is null
                     //and((BARCODE <> '' AND  BARCODE = @barcode) OR(ISNULL(PLATENO, '') <> '' AND ISNULL(PlateNo, '') = @barcode))
                     //AND ParkingInDetails.FYID = @fyid and ParkingOutDetails.FYID=@fyid", new { barcode = obj, fyid = GlobalClass.FYID });
-                    
+
 
                     if (PINS.Count() <= 0)
                     {
@@ -483,7 +528,8 @@ namespace ParkingManagement.ViewModel
                         return;
                     }
                     PIN = PINS.First();
-                    PIN.VType = conn.Query<VehicleType>(string.Format("SELECT VTypeId, Description FROM VehicleType WHERE VTypeId = {0}", PIN.VehicleType)).First();
+                    //PIN.VType = conn.Query<VehicleType>(string.Format("SELECT VTypeId, Description FROM VehicleType WHERE VTypeId = {0}", PIN.VehicleType)).First();
+                    PIN.VType = conn.Query<VehicleType>(string.Format("SELECT VTypeId, Description FROM VehicleType WHERE VTypeId = {0}", SelectedTVehicleType.VTypeID)).First();
                     var POUTS = conn.Query<ParkingOut>(string.Format("SELECT * FROM ParkingOutDetails WHERE PID = {0} AND FYID = {1}", PIN.PID, GlobalClass.FYID));
                     if (POUTS.Count() > 0)
                     {
@@ -501,7 +547,7 @@ namespace ParkingManagement.ViewModel
                     POUT.Interval = GetInterval(PIN.InDate, POUT.OutDate, PIN.InTime, POUT.OutTime);
                     POUT.PID = PIN.PID;
 
-                    CalculateParkingCharge(conn, PIN.InDate.Add(DateTime.Parse(PIN.InTime).TimeOfDay), POUT.OutDate.Add(DateTime.Parse(POUT.OutTime).TimeOfDay), POUT.Rate_ID, PIN.VehicleType, ref ChargedAmount, ref ChargedHours);
+                    CalculateParkingCharge(conn, PIN.InDate.Add(DateTime.Parse(PIN.InTime).TimeOfDay), POUT.OutDate.Add(DateTime.Parse(POUT.OutTime).TimeOfDay), POUT.Rate_ID, PIN.VType.VTypeID, ref ChargedAmount, ref ChargedHours);
                     POUT.ChargedHours = ChargedHours;
                     POUT.ChargedAmount = ChargedAmount;
                     POUT.CashAmount = POUT.ChargedAmount;
@@ -779,7 +825,7 @@ namespace ParkingManagement.ViewModel
             try
             {
                 using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
-                { 
+                {
                     conn.Open();
                     using (SqlTransaction tran = conn.BeginTransaction())
                     {
@@ -828,7 +874,7 @@ namespace ParkingManagement.ViewModel
                                 SESSION_ID = POUT.SESSION_ID,
                                 FYID = GlobalClass.FYID,
                                 TaxInvoice = TaxInvoice,
-                                ExpiryDate=DateTime.Now
+                                ExpiryDate = DateTime.Now
                             };
                             PSales.Save(tran);
                             TParkingSalesDetails PSalesDetails = new TParkingSalesDetails
@@ -922,7 +968,7 @@ namespace ParkingManagement.ViewModel
                 {
                     var cardId = GetEnrolledIdByCardNumber(PIN.Barcode);
 
-                    zkem.EnableUser(zkem.MachineNumber, cardId, zkem.MachineNumber, 10,true);
+                    zkem.EnableUser(zkem.MachineNumber, cardId, zkem.MachineNumber, 10, true);
                 }
             }
         }
@@ -960,6 +1006,7 @@ namespace ParkingManagement.ViewModel
             SelectedDiscount = null;
             OnPropertyChanged("IsEntryMode");
             PoleDisplay.WriteToDisplay(0);
+            SelectedTVehicleType = null;
         }
 
         string GetInterval(DateTime In, DateTime Out, string InTime, string OutTime)

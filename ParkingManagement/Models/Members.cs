@@ -21,6 +21,7 @@ namespace ParkingManagement.Models
         private DateTime _ActivationDate = DateTime.Today;
         private DateTime _ExpiryDate;
         private string _Barcode;
+        private DateTime _DOB = DateTime.Now;
 
         public int MemberId { get { return _MemberId; } set { _MemberId = value; OnPropertyChanged("MemberId"); } }
         public string Barcode { get { return _Barcode; } set { _Barcode = value; OnPropertyChanged("Barcode"); } }
@@ -31,19 +32,20 @@ namespace ParkingManagement.Models
         public DateTime ActivationDate { get { return _ActivationDate; } set { _ActivationDate = value; OnPropertyChanged("ActivationDate"); } }
         public DateTime ExpiryDate { get { return _ExpiryDate; } set { _ExpiryDate = value; OnPropertyChanged("ExpiryDate"); } }
         public DailyCard DailyCard { get; set; }
+        public DateTime DOB { get { return _DOB; } set { _DOB = value; OnPropertyChanged("DOB"); } }
         public string SchemeName { get; set; }
 
 
         public override bool Save(SqlTransaction tran)
         {
             //return tran.Connection.Execute("INSERT INTO Members(MemberId, MemberName, Address, Mobile, SchemeId, ActivationDate, ExpiryDate, Barcode) VALUES (@MemberId, @MemberName, @Address, @Mobile, @SchemeId, @ActivationDate, @ExpiryDate, @Barcode)", this, tran) == 1;
-            return tran.Connection.Execute("INSERT INTO Members(MemberId, MemberName, Address, Mobile, SchemeId,Barcode) VALUES (@MemberId, @MemberName, @Address, @Mobile, @SchemeId, @Barcode)", this, tran) == 1;
+            return tran.Connection.Execute("INSERT INTO Members(MemberId, MemberName, Address, Mobile, SchemeId,Barcode,DOB) VALUES (@MemberId, @MemberName, @Address, @Mobile, @SchemeId, @Barcode,@DOB)", this, tran) == 1;
         }
 
         public override bool Update(SqlTransaction tran)
         {
             //return tran.Connection.Execute("Update Members SET MemberName = @MemberName, Address = @Address, Mobile = @Mobile, SchemeId = @SchemeId, ActivationDate = @ActivationDate, ExpiryDate = @ExpiryDate, Barcode = @Barcode WHERE MemberId = @MemberId", this, tran) == 1;
-            return tran.Connection.Execute("Update Members SET MemberName = @MemberName, Address = @Address, Mobile = @Mobile, SchemeId = @SchemeId, Barcode = @Barcode WHERE MemberId = @MemberId", this, tran) == 1;
+            return tran.Connection.Execute("Update Members SET MemberName = @MemberName, Address = @Address, Mobile = @Mobile, SchemeId = @SchemeId, Barcode = @Barcode,DOB=@DOB WHERE MemberId = @MemberId", this, tran) == 1;
         }
 
         public override bool Delete(SqlTransaction tran)
@@ -57,12 +59,12 @@ namespace ParkingManagement.Models
             get
             {
                 //if (string.IsNullOrEmpty(MemberId))
-                if (MemberId==0)
+                if (MemberId == 0)
                     return "Member Id cannot be empty";
                 else if (string.IsNullOrEmpty(Barcode))
                     return "Barcode cannot be empty";
                 else if (!Barcode.StartsWith(GlobalClass.MemberBarcodePrefix))
-                    return "Barcode must start with '"+GlobalClass.MemberBarcodePrefix+"' character";
+                    return "Barcode must start with '" + GlobalClass.MemberBarcodePrefix + "' character";
                 else if (string.IsNullOrEmpty(MemberName))
                     return "Member Name cannot be empty";
                 //else if (string.IsNullOrEmpty(Mobile))
@@ -89,7 +91,7 @@ namespace ParkingManagement.Models
                         break;
                     case "MemberId":
                         //if (string.IsNullOrEmpty(MemberId))
-                        if (MemberId==0)
+                        if (MemberId == 0)
                             Result = "Member Id cannot be empty";
                         break;
                     case "Barcode":
@@ -105,7 +107,7 @@ namespace ParkingManagement.Models
                     //case "ExpiryDate":
                     //    if (ExpiryDate < ActivationDate)
                     //        Result = "ExpiryDate cannot be earilier than Activation Date";
-                        //break;
+                    //break;
                     case "SchemeId":
                         if (SchemeId == 0)
                             Result = "Scheme cannot be empty.";
