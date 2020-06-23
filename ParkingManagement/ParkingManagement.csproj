@@ -252,6 +252,9 @@
     <Compile Include="Forms\Reports\ucBirthDayReport.xaml.cs">
       <DependentUpon>ucBirthDayReport.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Reports\ucMembersActivityReport.xaml.cs">
+      <DependentUpon>ucMembersActivityReport.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Reports\ucMembersReport.xaml.cs">
       <DependentUpon>ucMembersReport.xaml</DependentUpon>
     </Compile>
@@ -469,6 +472,10 @@
       <Generator>XamlIntelliSenseFileGenerator</Generator>
     </Page>
     <Page Include="Forms\Reports\ucBirthDayReport.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Forms\Reports\ucMembersActivityReport.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

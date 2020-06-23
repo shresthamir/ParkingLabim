@@ -86,6 +86,7 @@ namespace ParkingManagement.Models
         public TimeSpan ValidEnd { get; set; }
         public DateTime ScannedTime { get; set; }
         public byte FYID { get; set; }
+        public byte IsUsed { get; set; }
 
         public override bool Save(SqlTransaction tran)
         {

@@ -1,0 +1,85 @@
+﻿<Window x:Class="GateApplication.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Gate Application" WindowState="Maximized" ResizeMode="NoResize" WindowStyle="None">
+    <Window.Resources>
+        <Style x:Key="Label" TargetType="Label">
+            <Setter Property="Width" Value="120"/>
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="Value" TargetType="Label">
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+        </Style>
+        <Style x:Key="SPanel" TargetType="StackPanel">
+            <Setter Property="Orientation" Value="Horizontal"/>
+            <Setter Property="Margin" Value="0 0 0 8"/>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid>
+            <Grid.Background>
+                <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
+                    <GradientStop Color="White" Offset="0.8"/>
+                    <GradientStop Color="{DynamicResource {x:Static SystemColors.ControlLightColorKey}}"/>
+                </LinearGradientBrush>
+            </Grid.Background>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="100"></RowDefinition>
+                <RowDefinition Height="2*"></RowDefinition>
+                <RowDefinition Height="3*"></RowDefinition>
+                <RowDefinition Height="5*"/>
+            </Grid.RowDefinitions>
+            <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10">
+                <TextBlock FontSize="20" Width="120" FontWeight="SemiBold"  >Barcode</TextBlock>
+
+                <TextBox PreviewLostKeyboardFocus="txtBarcode_PreviewLostKeyboardFocus"  Name="txtBarcode"   Height="40" Width="400" BorderThickness="2" BorderBrush="RoyalBlue" FontSize="25" Text="{Binding Barcode}" >
+                    <TextBox.InputBindings>
+                        <KeyBinding Key="Enter" Command="{Binding LoadData}" CommandParameter="{Binding Path=Text,RelativeSource={RelativeSource AncestorType={x:Type TextBox}}}"/>
+                    </TextBox.InputBindings>
+                </TextBox>
+            </StackPanel>
+            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Image x:Name="imgScanResult" Source="{Binding Image}" Height="75" Width="75" ></Image>
+                <TextBlock FontSize="36" FontFamily="Century Gothic" x:Name="txtScanResult" FontWeight="SemiBold" HorizontalAlignment="Center"  VerticalAlignment="Center" Foreground="{Binding MsgColor}" Text="{Binding Message}" Margin="30" TextWrapping="Wrap"></TextBlock>
+            </StackPanel>
+            <GroupBox Grid.Row="2" Visibility="{Binding TInfoVisible}">
+                <GroupBox.Header >
+                    <Label Content="Ticket Info" FontSize="16" FontWeight="SemiBold"/>
+                </GroupBox.Header>
+                <StackPanel Margin="10">
+                    <StackPanel Style="{StaticResource SPanel}">
+                        <Label Style="{StaticResource Label}">Show</Label>
+                        <Label Style="{StaticResource Value}" Content="{Binding ShowName}"></Label>
+                    </StackPanel>
+                    <StackPanel Style="{StaticResource SPanel}">
+                        <Label Style="{StaticResource Label}">Theatre</Label>
+                        <Label Style="{StaticResource Value}" Content="{Binding TheatreName}"></Label>
+                    </StackPanel>
+                    <StackPanel Style="{StaticResource SPanel}">
+                        <Label Style="{StaticResource Label}">Show Time</Label>
+                        <Label Style="{StaticResource Value}" Content="{Binding ShowTime}"></Label>
+                    </StackPanel>
+                    <StackPanel Style="{StaticResource SPanel}">
+                        <Label Style="{StaticResource Label}">Ticket Type</Label>
+                        <Label Style="{StaticResource Value}" Content="{Binding RateName}"></Label>
+                    </StackPanel>
+                    <StackPanel Style="{StaticResource SPanel}">
+                        <Label Style="{StaticResource Label}">SeatNo</Label>
+                        <Label VerticalAlignment="Center" Style="{StaticResource Value}" Content="{Binding SeatNo}"></Label>
+                    </StackPanel>
+                </StackPanel>
+            </GroupBox>
+            <DataGrid Grid.Row="3" ItemsSource="{Binding TicketList}" IsReadOnly="True" AutoGenerateColumns="False">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Bill No" Width="50" Binding="{Binding BillNo}"/>
+                    <DataGridTextColumn Header="Barcode" Width="100" Binding="{Binding Barcode}"/>
+                    <DataGridTextColumn Header="VoucherName" Width="150" Binding="{Binding VoucherName}"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+    </Grid>
+</Window>

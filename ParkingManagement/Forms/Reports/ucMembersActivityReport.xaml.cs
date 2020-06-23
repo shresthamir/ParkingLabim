@@ -24,9 +24,9 @@ namespace ParkingManagement.Forms.Reports
     /// <summary>
     /// Interaction logic for ucDailySalesReport.xaml
     /// </summary>
-    public partial class ucBirthDayReport : UserControl
+    public partial class ucMembersActivityReport : UserControl
     {
-        vmBirthDayReport ViewModel;
+        vmMembersActivityReport ViewModel;
         DateConverter nepDate;
         Style NumericColumn;
         private void txtFDate_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
@@ -62,7 +62,7 @@ namespace ParkingManagement.Forms.Reports
                 MessageBox.Show("Invalid BS Date", "Daily Cash Collection Report", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-        public ucBirthDayReport()
+        public ucMembersActivityReport()
         {
 
             InitializeComponent();
@@ -78,12 +78,11 @@ namespace ParkingManagement.Forms.Reports
             dgDailySales.Columns.Add(new DataGridTextColumn { Header = "Mobile", Binding = new Binding("Column4"), Width = 100 });
             //dgDailySales.Columns.Add(new DataGridTextColumn { Header = "SchemeName", Binding = new Binding("Column5"), Width = 200 });
             //dgDailySales.Columns.Add(new DataGridTextColumn { Header = "Rate", Binding = new Binding("Column6"), Width = 150 });
-            //dgDailySales.Columns.Add(new DataGridTextColumn { Header = "ActivationDate", Binding = new Binding("Date1") { StringFormat = "MM/dd/yyyy hh:mm:ss tt" }, Width = 150 });
-            //dgDailySales.Columns.Add(new DataGridTextColumn { Header = "ExpiryDate", Binding = new Binding("Date2") { StringFormat = "MM/dd/yyyy hh:mm:ss tt" }, Width = 150 });
+            dgDailySales.Columns.Add(new DataGridTextColumn { Header = "EnteredDate", Binding = new Binding("Date1") { StringFormat = "MM/dd/yyyy" }, Width = 150 });
+            dgDailySales.Columns.Add(new DataGridTextColumn { Header = "EnteredTIme", Binding = new Binding("Time1"), Width = 150 });
             dgDailySales.Columns.Add(new DataGridTextColumn { Header = "CardNumber", Binding = new Binding("Column7"), Width = 150, CellStyle = NumericColumn });
-            dgDailySales.Columns.Add(new DataGridTextColumn { Header = "DOB", Binding = new Binding("Date3") { StringFormat = "MM/dd/yyyy hh:mm:ss tt" }, Width = 150 });
 
-            this.DataContext = ViewModel = new vmBirthDayReport();
+            this.DataContext = ViewModel = new vmMembersActivityReport();
 
         }
 
@@ -96,19 +95,19 @@ namespace ParkingManagement.Forms.Reports
                 string SQL;
                 //if (cmbFilter.SelectedIndex == 0)
                 //{
-                SQL = @"select m.MemberId Column1, Membername Column2,Address Column3,Mobile Column4, m.ExpiryDate Date2, Barcode Column7,m.DOB Date3 from members M join membershipscheme MS on m.schemeid=ms.schemeid where DATEPART(m,m.dob)=DATEPART(m,getdate()) and DATEPART(d,m.dob)=DATEPART(d,GETDATE())";
+                SQL = @"select m.MemberId Column1, Membername Column2,Address Column3,Mobile Column4,Convert(date,pin.InDate) Date1,cast(pin.InTime as time) Time1, m.BARCODE column7 from members m join ParkingInDetails pin on m.BARCODE=pin.Barcode where (m.memberid=@memberid or m.membername=@memberid or m.barcode=@memberid) and (pin.InDate BETWEEN @FDATE AND @TDATE)
+";
                 dgDailySales.Columns.Add(new DataGridTextColumn { Header = "MemberId", Binding = new Binding("Column1"), Width = 150 });
                 dgDailySales.Columns.Add(new DataGridTextColumn { Header = "MemberName", Binding = new Binding("Column2"), Width = 150 });
                 dgDailySales.Columns.Add(new DataGridTextColumn { Header = "Address", Binding = new Binding("Column3"), Width = 100 });
                 dgDailySales.Columns.Add(new DataGridTextColumn { Header = "Mobile", Binding = new Binding("Column4"), Width = 100 });
                 //dgDailySales.Columns.Add(new DataGridTextColumn { Header = "SchemeName", Binding = new Binding("Column5"), Width = 200 });
                 //dgDailySales.Columns.Add(new DataGridTextColumn { Header = "Rate", Binding = new Binding("Column6"), Width = 150 });
-                //dgDailySales.Columns.Add(new DataGridTextColumn { Header = "ActivationDate", Binding = new Binding("Date1") { StringFormat = "MM/dd/yyyy hh:mm:ss tt" }, Width = 150 });
-                //dgDailySales.Columns.Add(new DataGridTextColumn { Header = "ExpiryDate", Binding = new Binding("Date2") { StringFormat = "MM/dd/yyyy hh:mm:ss tt" }, Width = 150 });
+                dgDailySales.Columns.Add(new DataGridTextColumn { Header = "EnteredDate", Binding = new Binding("Date1") { StringFormat = "MM/dd/yyyy" }, Width = 150 });
+                dgDailySales.Columns.Add(new DataGridTextColumn { Header = "EnteredTIme", Binding = new Binding("Time1"), Width = 150 });
                 dgDailySales.Columns.Add(new DataGridTextColumn { Header = "CardNumber", Binding = new Binding("Column7"), Width = 150, CellStyle = NumericColumn });
-                dgDailySales.Columns.Add(new DataGridTextColumn { Header = "DOB", Binding = new Binding("Date3") { StringFormat = "MM/dd/yyyy" }, Width = 150 });
 
-                ViewModel.LoadSummaryReport(txtFDate.SelectedDate.Value, txtTDate.SelectedDate.Value, SQL);
+                ViewModel.LoadSummaryReport(txtFDate.SelectedDate.Value, txtTDate.SelectedDate.Value, SQL, txtMemberId.Text);
                 //}
 
             }
@@ -123,19 +122,19 @@ namespace ParkingManagement.Forms.Reports
         {
             List<ExcelHeader> headers = new List<ExcelHeader>();
             headers.Add(new ExcelHeader { Header = GlobalClass.CompanyName.ToUpper(), FontSize = 14, IsBold = true, HorizontalAllignment = Microsoft.Office.Interop.Excel.Constants.xlCenter });
-            headers.Add(new ExcelHeader { Header = "Birthday Report -" + txtFDate.SelectedDate, FontSize = 14, IsBold = false, HorizontalAllignment = Microsoft.Office.Interop.Excel.Constants.xlCenter });
+            headers.Add(new ExcelHeader { Header = "Members Activity Report -" + txtMemberId.Text, FontSize = 14, IsBold = false, HorizontalAllignment = Microsoft.Office.Interop.Excel.Constants.xlCenter });
             headers.Add(new ExcelHeader { Header = txtFMiti.Text + " - " + txtTMiti.Text, FontSize = 12, IsBold = false, HorizontalAllignment = Microsoft.Office.Interop.Excel.Constants.xlCenter });
             DataGridExport.ExportDataGrid(dgDailySales, headers);
         }
     }
 
-    class vmBirthDayReport : BaseViewModel
+    class vmMembersActivityReport : BaseViewModel
     {
         private ObservableCollection<DataItem> _ReportSource;
         //public CollectionViewSource cvs { get { return _cvs; } set { _cvs = value; OnPropertyChanged("cvs"); } }
         public ObservableCollection<DataItem> ReportSource { get { return _ReportSource; } set { _ReportSource = value; OnPropertyChanged("ReportSource"); } }
 
-        public vmBirthDayReport()
+        public vmMembersActivityReport()
         {
 
         }
@@ -171,14 +170,14 @@ namespace ParkingManagement.Forms.Reports
             }
         }
 
-        public void LoadSummaryReport(DateTime FDate, DateTime TDate, string SQL)
+        public void LoadSummaryReport(DateTime FDate, DateTime TDate, string SQL, string memberId)
         {
 
             try
             {
                 using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
                 {
-                    ReportSource = new ObservableCollection<DataItem>(conn.Query<DataItem>(SQL, new { FDATE = FDate, TDATE = TDate}));
+                    ReportSource = new ObservableCollection<DataItem>(conn.Query<DataItem>(SQL, new { FDATE = FDate, TDATE = TDate, memberId = memberId }));
                 }
             }
             catch (Exception ex)

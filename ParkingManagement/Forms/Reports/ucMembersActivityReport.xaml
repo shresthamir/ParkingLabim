@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="ParkingManagement.Forms.Reports.ucBirthDayReport"
+﻿<UserControl x:Class="ParkingManagement.Forms.Reports.ucMembersActivityReport"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -32,13 +32,13 @@
                         <StackPanel Margin="0">
                             <StackPanel Orientation="Horizontal" Margin="2">
                                 <Label Width="80" Content = "From Date" ></Label>
-                                <DatePicker  x:Name="txtFDate" Height="28" IsEnabled="False"></DatePicker>
+                                <DatePicker  x:Name="txtFDate" Height="28" ></DatePicker>
 
                                 <Label Width="80" Margin="20 0 0 0" Content = "From Miti"></Label>
                                 <TextBox x:Name="txtFMiti" Height="28" Width="120"  Text="{Binding ElementName=txtFDate, Path=SelectedDate, Converter={StaticResource DateToMiti}}" ></TextBox>
 
                                 <Label Width="80" Margin="50 0 0 0" Content = "To Date" ></Label>
-                                <DatePicker x:Name="txtTDate" Height="28" IsEnabled="False"></DatePicker>
+                                <DatePicker x:Name="txtTDate" Height="28"></DatePicker>
 
                                 <Label Width="80" Margin="20 0 0 0" Content = "To Miti"></Label>
                                 <TextBox x:Name="txtTMiti" Height="28" Width="120"  Text="{Binding ElementName=txtTDate, Path=SelectedDate, Converter={StaticResource DateToMiti}}" ></TextBox>
@@ -54,8 +54,8 @@
                                 <ComboBoxItem Content="Not Expired"/>
                             </ComboBox.Items>
                         </ComboBox>-->
-                        <!--<Label Width="80" Margin="20 0 0 0" Content = "Member"></Label>
-                        <TextBox x:Name="txtMemberId" Height="28" Width="120" ></TextBox>-->
+                        <Label Width="80" Margin="20 0 0 0" Content = "Member"></Label>
+                        <TextBox x:Name="txtMemberId" Height="28" Width="120" ></TextBox>
 
                     </StackPanel>
                 </StackPanel>
