@@ -156,6 +156,49 @@ namespace ParkingManagement.Forms.Reports
                     dgDailySales.Columns.Add(new DataGridTextColumn { Header = "Interval", Binding = new Binding("Column5"), Width = 100 });
                     ViewModel.LoadSummaryReport(txtFDate.SelectedDate.Value, txtTDate.SelectedDate.Value, SQL);
                 }
+                else if (cmbFilter.SelectedIndex == 3)
+                {
+                    SQL = @"SELECT CAST(ROW_NUMBER() OVER(ORDER BY (PID.InDate + CAST(PID.InTime AS datetime))) AS Int) Int1, PID.InDate + CAST(PID.InTime AS datetime) Date1, 
+                            PID.InMiti + ' ' + CAST(PID.InTime AS VARCHAR) Column1, IU.FullName Column2,
+                            PID.PlateNo Column3, POD.OutDate + CAST(POD.OutTime AS DATETIME) Date2, PID.InDate Date3, 
+                            POD.OutMiti + ' ' + CAST(POD.OutTime AS VARCHAR) Column4,
+                            POD.Interval Column5, VT.[Description] Column6, U.FullName Column7 FROM ParkingInDetails PID
+                            INNER JOIN VehicleType VT ON VT.VTypeID = PID.VehicleType
+                            INNER JOIN Users IU ON IU.[UID] = PID.[UID]
+							INNER JOIN ParkingOutDetails POD ON PID.PID = POD.PID AND POD.FYID = PID.FYID
+                            inner join ExitDevicelog E on POD.PID=E.PID
+							INNER JOIN Users U ON U.[UID] = POD.[UID]
+                            WHERE (PID.InDate BETWEEN @FDATE AND @TDATE)
+                            ORDER BY Date1";
+                    dgDailySales.Columns.Add(new DataGridTextColumn { Header = "SNo.", Binding = new Binding("Int1"), Width = 50, CellStyle = NumericColumn });
+                    dgDailySales.Columns.Add(new DataGridTextColumn { Header = "In Date", Binding = new Binding("Date1") { StringFormat = "MM/dd/yyyy hh:mm:ss tt" }, Width = 140 });
+                    dgDailySales.Columns.Add(new DataGridTextColumn { Header = "In User", Binding = new Binding("Column2"), Width = 150 });
+                    dgDailySales.Columns.Add(new DataGridTextColumn { Header = "Vehicle Type", Binding = new Binding("Column6"), Width = 150 });
+                    dgDailySales.Columns.Add(new DataGridTextColumn { Header = "Plate No", Binding = new Binding("Column3"), Width = 100 });
+                    dgDailySales.Columns.Add(new DataGridTextColumn { Header = "Out Date", Binding = new Binding("Date2") { StringFormat = "MM/dd/yyyy hh:mm:ss tt" }, Width = 140 });
+                    dgDailySales.Columns.Add(new DataGridTextColumn { Header = "Out User", Binding = new Binding("Column7"), Width = 150 });
+                    dgDailySales.Columns.Add(new DataGridTextColumn { Header = "Interval", Binding = new Binding("Column5"), Width = 100 });
+                    ViewModel.LoadSummaryReport(txtFDate.SelectedDate.Value, txtTDate.SelectedDate.Value, SQL);
+                }
+                else if (cmbFilter.SelectedIndex == 4)
+                {
+                    SQL = @"SELECT CAST(ROW_NUMBER() OVER(ORDER BY Date1) AS Int) Int1, *, DATEDIFF(Mi,Date1,(SELECT GETDATE())) Int2 FROM (
+                            SELECT PID.InDate + CAST(PID.InTime AS datetime) Date1, PID.InMiti + ' ' + CAST(PID.InTime AS VARCHAR) Column1, IU.FullName Column2, PID.InDate Date3,
+                            PID.PlateNo Column3, VT.[Description] Column6,POD.PID Int3 FROM ParkingInDetails PID
+                            inner join deviceLog dl on PID.PID=dl.pid join DeviceList d on dl.DeviceId=d.DeviceId 
+                            INNER JOIN VehicleType VT ON VT.VTypeID = PID.VehicleType
+                            INNER JOIN Users IU ON IU.[UID] = PID.[UID] 
+                            LEFT JOIN ParkingOutDetails POD ON POD.PID=PID.PID AND POD.FYID = PID.FYID
+                            WHERE (PID.InDate BETWEEN @FDATE AND @TDATE and d.IsMemberDevice=1)) TEMP WHERE Int3 IS NULL";
+                    dgDailySales.Columns.Add(new DataGridTextColumn { Header = "SNo.", Binding = new Binding("Int1"), Width = 50, CellStyle = NumericColumn });
+                    dgDailySales.Columns.Add(new DataGridTextColumn { Header = "In Date", Binding = new Binding("Date1") { StringFormat = "MM/dd/yyyy hh:mm:ss tt" }, Width = 140 });
+                    dgDailySales.Columns.Add(new DataGridTextColumn { Header = "In User", Binding = new Binding("Column2"), Width = 150 });
+                    dgDailySales.Columns.Add(new DataGridTextColumn { Header = "Vehicle Type", Binding = new Binding("Column6"), Width = 150 });
+                    dgDailySales.Columns.Add(new DataGridTextColumn { Header = "Plate No", Binding = new Binding("Column3"), Width = 100 });
+                    dgDailySales.Columns.Add(new DataGridTextColumn { Header = "Interval", Binding = new Binding("Int2") { Converter = new MinToHHMMConverter() }, Width = 100 });
+                    ViewModel.LoadSummaryReport(txtFDate.SelectedDate.Value, txtTDate.SelectedDate.Value, SQL);
+                }
+
             }
             catch (Exception ex)
             {
@@ -223,7 +266,7 @@ namespace ParkingManagement.Forms.Reports
             {
                 using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
                 {
-                    ReportSource = new ObservableCollection<DataItem>(conn.Query<DataItem>(SQL, new { FDATE = FDate, TDATE = TDate}));
+                    ReportSource = new ObservableCollection<DataItem>(conn.Query<DataItem>(SQL, new { FDATE = FDate, TDATE = TDate }));
                 }
             }
             catch (Exception ex)

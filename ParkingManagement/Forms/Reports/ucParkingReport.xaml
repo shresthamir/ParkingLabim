@@ -52,6 +52,8 @@
                                 <ComboBoxItem Content="All Records"/>
                                 <ComboBoxItem Content="Vehicle In Parking"/>
                                 <ComboBoxItem Content="Vehicle that have exited"/>
+                                <ComboBoxItem Content="Members that have exited"/>
+                                <ComboBoxItem Content="Members In Parking"/>
                             </ComboBox.Items>
                         </ComboBox>
                     </StackPanel>
