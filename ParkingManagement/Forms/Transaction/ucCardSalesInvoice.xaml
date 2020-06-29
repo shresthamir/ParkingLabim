@@ -17,7 +17,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="60"/>
             <RowDefinition Height="50"/>
-            <RowDefinition Height="140"/>
+            <RowDefinition Height="160"/>
             <RowDefinition/>
             <RowDefinition Height="40"/>
         </Grid.RowDefinitions>
@@ -185,6 +185,12 @@
                                 <ComboBox Width="310" ItemsSource="{Binding SchemeList}" DisplayMemberPath="SchemeName" SelectedItem="{Binding SelectedScheme}"/>
 
                                 <Button HorizontalAlignment="Left" Style="{DynamicResource NewButton}" Command="{Binding AddVoucherCommand}" Content="Change Scheme" Width="120" Height="28" Margin="5 0 0 0"></Button>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="10">
+                                <Label Width="100"  Content="Mode" />
+                                <!--<Label Width="100"  Content="{Binding SelectedScheme.SchemeName}" />-->
+                                <!--<ComboBox MinWidth="300" ItemsSource="{Binding SchemeList}" DisplayMemberPath="SchemeName" SelectedValuePath="SchemeId" SelectedValue="{Binding VSDetail.ProdId,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SelectedScheme,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsSynchronizedWithCurrentItem="True" FontSize="14"></ComboBox>-->
+                                <ComboBox Width="310" ItemsSource="{Binding TrnModeList}" DisplayMemberPath="Name" SelectedItem="{Binding SelectedMode}"/>
                             </StackPanel>
                         </StackPanel>
                     </StackPanel>

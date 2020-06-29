@@ -138,5 +138,34 @@ namespace ParkingManagement.Services
                 throw new Exception(ex.ToString());
             };
         }
+        public static async Task<string> CheckIfAccCodeAlreadyExist(dynamic sales)
+        {
+            try
+            {
+                FunctionResponse functionResponse = new Library.Helpers.FunctionResponse();
+
+                var JsonObject = JsonConvert.SerializeObject(new Account { ACNAME= sales.BillTo,ADDRESS=sales.BILLTOADD,ACCODE=sales.memberid });
+
+                string ContentType = "application/json"; // or application/xml
+                string url = GlobalClass.ServerIpAddress + "/api/SaveAccount";
+                using (HttpClient client = new HttpClient())
+                {
+                    var response = await client.PostAsync(url, new StringContent(JsonObject.ToString(), Encoding.UTF8, ContentType));
+                    var json = await response.Content.ReadAsStringAsync();
+                    var res = JsonConvert.DeserializeObject<FunctionResponse>(json);
+                    if (res.status == "ok")
+                    {
+                        var accode=JsonConvert.DeserializeObject<dynamic>(res.result.ToString());
+                        var acid=accode.acid;
+                        return acid;
+                    }
+                    throw new Exception(res.result.ToString());
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.ToString());
+            };
+        }
     }
 }

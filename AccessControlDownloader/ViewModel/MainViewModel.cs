@@ -96,7 +96,7 @@ namespace AccessControlDownloader.ViewModel
                 if (timerSec == 60)
                 {
                     ExecuteReadLog(null);
-                    await SaveAccountBill();
+                     await SaveAccountBill();
 
                     timerSec = 0;
                 }
@@ -424,9 +424,10 @@ namespace AccessControlDownloader.ViewModel
                 billMain.division = "MMX";
                 billMain.terminal = GlobalClass.Terminal;
                 billMain.trnuser = GlobalClass.User.UserName;
-                billMain.trnmode = "Cash";
-                billMain.trnac = "AT01002";
-                billMain.parac = "AT01002";
+                billMain.trnmode = sales.TRNMODE == true ? "Cash" : "Credit";
+                //billMain.trnac = "AT01002";
+                billMain.trnac = billMain.trnmode=="Cash"? "AT01002":await CheckIfAccodeExists(sales);
+                billMain.parac = billMain.trnac;
                 billMain.guid = Guid.NewGuid().ToString();
                 billMain.voucherAbbName = "TI";
                 billMain.Orders = "";
@@ -434,7 +435,9 @@ namespace AccessControlDownloader.ViewModel
                 billMain.tender = sales.GrossAmount;
                 billMain.TRNDATE = sales.TDate;
                 billMain.TRN_DATE = sales.TDate;
-                billMain.TRNTIME =sales.TRNTIME;
+                billMain.TRNTIME = sales.TRNTIME;
+                billMain.billto = sales.BillTo;
+                billMain.billtoadd = sales.BILLTOADD;
 
                 //var TaxedAmount = item.NetAmount;
 
@@ -450,7 +453,11 @@ namespace AccessControlDownloader.ViewModel
 
         }
 
-
+        private async Task<string> CheckIfAccodeExists(dynamic sales)
+        {
+            var res = await BillingService.CheckIfAccCodeAlreadyExist(sales);
+            return res;
+        }
 
         private async Task SaveParkingAccount()
         {

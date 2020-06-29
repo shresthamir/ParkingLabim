@@ -205,7 +205,8 @@ namespace ParkingManagement.ViewModel
                         ActivationDate = SelectedMember.ActivationDate,
                         ExpiryDate = SelectedMember.ExpiryDate,
                         SchemeId = SelectedMember.SchemeId,
-                        Barcode =SelectedMember.Barcode
+                        Barcode =SelectedMember.Barcode,
+                        DOB=SelectedMember.DOB
                     };
                     SetAction(ButtonAction.Selected);
                 }

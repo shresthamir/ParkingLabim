@@ -25,6 +25,8 @@ namespace ParkingManagement.ViewModel
         private Member _SelectedMember;
         private ObservableCollection<Device> _Device;
         private string _CardNumber;
+        private ObservableCollection<TrnMode> _TrnModeList;
+        private TrnMode _SelectedMode;
 
         public ObservableCollection<Member> MemberList { get { return _MemberList; } set { _MemberList = value; OnPropertyChanged("MemberList"); } }
         public Member SelectedMember { get { return _SelectedMember; } set { _SelectedMember = value; OnPropertyChanged("SelectedMember"); } }
@@ -32,7 +34,8 @@ namespace ParkingManagement.ViewModel
         public MembershipScheme SelectedScheme { get { return _SelectedScheme; } set { _SelectedScheme = value; OnPropertyChanged("SelectedScheme"); } }
         public ObservableCollection<Device> DeviceList { get { return _Device; } set { _Device = value; OnPropertyChanged("DeviceList"); } }
         public string CardNumber { get { return _CardNumber; } set { _CardNumber = value; OnPropertyChanged("CardNumber"); } }
-
+        public ObservableCollection<TrnMode> TrnModeList { get { return _TrnModeList; } set { _TrnModeList = value; OnPropertyChanged("TrnModeList"); } }
+        public TrnMode SelectedMode { get { return _SelectedMode; } set { _SelectedMode = value; OnPropertyChanged("SelectedMode"); } }
 
 
         public new RelayCommand AddVoucherCommand { get { return new RelayCommand(AddCard, CanAddCard); } }
@@ -62,13 +65,14 @@ namespace ParkingManagement.ViewModel
             if (SelectedScheme==null)
             {
                 SelectedMember = GetSchemeByCardNumber(CardNumber);
-                SelectedScheme = SchemeList.FirstOrDefault(x => x.SchemeId == SelectedMember.SchemeId);
-                VSDetail.ProdId = SelectedMember.SchemeId;
                 if (SelectedMember == null)
                 {
                     MessageBox.Show("Member with this Cardnumber not found..", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
                     return;
                 }
+                SelectedScheme = SchemeList.FirstOrDefault(x => x.SchemeId == SelectedMember.SchemeId);
+                VSDetail.ProdId = SelectedMember.SchemeId;
+                
                 VSDetail.ProdId = SelectedMember.SchemeId;
                 //MessageBox.Show("Please Select Membership Scheme first.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 //return;
@@ -145,6 +149,7 @@ namespace ParkingManagement.ViewModel
                 SchemeList = new ObservableCollection<MembershipScheme>(conn.Query<MembershipScheme>("SELECT * FROM MembershipScheme"));
             }
             GetDeviceList();
+            TrnModeList = TrnModes.TrnModeList; 
         }
 
         private bool CanExecuteSave(object obj)
@@ -217,6 +222,7 @@ namespace ParkingManagement.ViewModel
                         VSales.BillTo = SelectedMember.MemberName;
                         VSales.BILLTOADD = SelectedMember.Address;
                         VSales.memberId = SelectedMember.MemberId;
+                        VSales.TRNMODE = Convert.ToBoolean(SelectedMode.Id);
                         VSales.Save(tran);
                         foreach (TParkingSalesDetails PSD in VSDetailList)
                         {

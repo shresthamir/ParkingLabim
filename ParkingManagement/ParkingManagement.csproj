@@ -341,6 +341,7 @@
     <Compile Include="Library\Helpers\SyncFunctions.cs" />
     <Compile Include="Library\PoleDisplay.cs" />
     <Compile Include="Library\ValueConverter\RadioButtonTrueFalseConveter.cs" />
+    <Compile Include="Models\Account.cs" />
     <Compile Include="Models\BillMain.cs" />
     <Compile Include="Models\DailyCard.cs" />
     <Compile Include="Models\Device.cs" />
@@ -353,6 +354,7 @@
     <Compile Include="Models\ParkingSales.cs" />
     <Compile Include="Models\Staff.cs" />
     <Compile Include="Models\SyncModels.cs" />
+    <Compile Include="Models\TrnMode.cs" />
     <Compile Include="Models\UniversalStatic.cs" />
     <Compile Include="Models\VoucherType.cs" />
     <Compile Include="Services\BillingService.cs" />
