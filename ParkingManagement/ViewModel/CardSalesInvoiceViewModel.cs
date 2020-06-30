@@ -26,7 +26,7 @@ namespace ParkingManagement.ViewModel
         private ObservableCollection<Device> _Device;
         private string _CardNumber;
         private ObservableCollection<TrnMode> _TrnModeList;
-        private TrnMode _SelectedMode;
+        private TrnMode _SelectedMode = TrnModes.TrnModeList[1];
 
         public ObservableCollection<Member> MemberList { get { return _MemberList; } set { _MemberList = value; OnPropertyChanged("MemberList"); } }
         public Member SelectedMember { get { return _SelectedMember; } set { _SelectedMember = value; OnPropertyChanged("SelectedMember"); } }
@@ -62,7 +62,7 @@ namespace ParkingManagement.ViewModel
             }
 
             //if (VSDetail.ProdId == 0)
-            if (SelectedScheme==null)
+            if (SelectedScheme == null)
             {
                 SelectedMember = GetSchemeByCardNumber(CardNumber);
                 if (SelectedMember == null)
@@ -72,19 +72,19 @@ namespace ParkingManagement.ViewModel
                 }
                 SelectedScheme = SchemeList.FirstOrDefault(x => x.SchemeId == SelectedMember.SchemeId);
                 VSDetail.ProdId = SelectedMember.SchemeId;
-                
+
                 VSDetail.ProdId = SelectedMember.SchemeId;
                 //MessageBox.Show("Please Select Membership Scheme first.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 //return;
             }
             //else if (VSDetailList.Any(x => x.ProdId == VSDetail.ProdId))
-            else if (VSDetailList.Any(x => x.ProdId == SelectedScheme.SchemeId))
-            {
-                MessageBox.Show("Selected Card is already added.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                return;
-            }
+            //else if (VSDetailList.Any(x => x.ProdId == SelectedScheme.SchemeId))
+            //{
+            //    MessageBox.Show("Selected Card is already added.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            //    return;
+            //}
             //if (VSDetail.ProdId != 0)
-            if(SelectedScheme!=null)
+            if (SelectedScheme != null)
             {
                 //SelectedMember.SchemeId = VSDetail.ProdId;
                 SelectedMember.SchemeId = SelectedScheme.SchemeId;
@@ -108,14 +108,19 @@ namespace ParkingManagement.ViewModel
                 //QuantityStr = VSDetail.QuantityStr,
                 Rate = SelectedScheme.Rate,
                 //RateStr = VSDetail.RateStr,
-                Amount = SelectedScheme.Rate,
+                //Amount = SelectedScheme.Rate,
+                //Amount = SelectedScheme.Rate - (SelectedScheme.Rate * (SelectedScheme.Discount / 100)),
+                Amount = SelectedScheme.Rate / (1 + (GlobalClass.VAT / 100)),
                 //Taxable = SelectedVoucherType.NonVat ? 0 : VSDetail.Amount,
-                Taxable = SelectedScheme.Rate,
                 //NonTaxable = SelectedVoucherType.NonVat ? VSDetail.Amount : 0,
+                NonTaxable = 0,
                 //Remarks = VSDetail.Remarks
             };
-            vsDetail.VAT = vsDetail.Taxable * GlobalClass.VAT / 100;
-            vsDetail.NetAmount = vsDetail.Amount + vsDetail.VAT;
+            vsDetail.Taxable = vsDetail.Amount + vsDetail.VAT;
+
+            vsDetail.VAT = vsDetail.Amount * GlobalClass.VAT / 100;
+            vsDetail.Discount = (vsDetail.Taxable) * (SelectedScheme.Discount / 100);
+            vsDetail.NetAmount = vsDetail.Taxable - (vsDetail.Taxable) * (SelectedScheme.Discount / 100) + vsDetail.VAT;
             VSDetailList.Clear();
             VSDetailList.Add(vsDetail);
             VSDetail = new TParkingSalesDetails();
@@ -149,7 +154,7 @@ namespace ParkingManagement.ViewModel
                 SchemeList = new ObservableCollection<MembershipScheme>(conn.Query<MembershipScheme>("SELECT * FROM MembershipScheme"));
             }
             GetDeviceList();
-            TrnModeList = TrnModes.TrnModeList; 
+            TrnModeList = TrnModes.TrnModeList;
         }
 
         private bool CanExecuteSave(object obj)
@@ -223,6 +228,7 @@ namespace ParkingManagement.ViewModel
                         VSales.BILLTOADD = SelectedMember.Address;
                         VSales.memberId = SelectedMember.MemberId;
                         VSales.TRNMODE = Convert.ToBoolean(SelectedMode.Id);
+                        VSales.Discount = VSDetailList.Sum(x => x.Discount);
                         VSales.Save(tran);
                         foreach (TParkingSalesDetails PSD in VSDetailList)
                         {
@@ -303,7 +309,7 @@ namespace ParkingManagement.ViewModel
                 };
                 billMain.prodList.Add(product);
             }
-            var result=await SaveBillAndPrint(billMain);
+            var result = await SaveBillAndPrint(billMain);
             return result;
         }
         private async Task<bool> SaveBillAndPrint(BillMain billMain)

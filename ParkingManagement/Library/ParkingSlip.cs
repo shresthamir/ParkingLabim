@@ -451,7 +451,7 @@ namespace ParkingManagement.Library
                 G.DrawString(psd.Description, new Font(new FontFamily(Font), 9), Brushes.Black, new RectangleF(65, i, 400, 20));
                 G.DrawString(psd.Quantity.ToString("#0.00"), new Font(new FontFamily(Font), 9), Brushes.Black, new RectangleF(450, i, 95, 20), format);
                 G.DrawString(psd.Rate.ToString("#0.00"), new Font(new FontFamily(Font), 9), Brushes.Black, new RectangleF(550, i, 95, 20), format);
-                G.DrawString(psd.Amount.ToString("#,##,##0.00"), new Font(new FontFamily(Font), 9), Brushes.Black, new RectangleF(650, i, 120, 20), format);
+                G.DrawString(psd.Rate.ToString("#,##,##0.00"), new Font(new FontFamily(Font), 9), Brushes.Black, new RectangleF(650, i, 120, 20), format);
                 i += 18;
                 if (!string.IsNullOrEmpty(psd.Remarks))
                 {
@@ -461,7 +461,7 @@ namespace ParkingManagement.Library
             }
             i = 810;
             G.DrawString(PSDetails.Sum(x => x.Quantity).ToString("#0.00"), new Font(new FontFamily(Font), 9, FontStyle.Bold), Brushes.Black, new RectangleF(450, i, 95, 20), format);
-            G.DrawString(PSales.Amount.ToString("#,##,##0.00"), new Font(new FontFamily(Font), 9), Brushes.Black, new RectangleF(650, i, 120, 20), format);
+            G.DrawString((PSales.Amount+PSales.VAT).ToString("#,##,##0.00"), new Font(new FontFamily(Font), 9), Brushes.Black, new RectangleF(650, i, 120, 20), format);
 
             i += 25;
             G.DrawString("In Words :", new Font(new FontFamily(Font), 9, FontStyle.Bold), Brushes.Black, new RectangleF(10, i, 95, 20));
@@ -479,6 +479,9 @@ namespace ParkingManagement.Library
             G.DrawString(PSales.VAT.ToString("#,##,##0.00"), new Font(new FontFamily(Font), 9, FontStyle.Bold), Brushes.Black, new RectangleF(650, i, 120, 20), format);
             i += 18;
 
+            G.DrawString("Discount :", new Font(new FontFamily(Font), 9), Brushes.Black, new RectangleF(550, i, 95, 20));
+            G.DrawString(PSales.Discount.ToString("#,##,##0.00"), new Font(new FontFamily(Font), 9, FontStyle.Bold), Brushes.Black, new RectangleF(650, i, 120, 20), format);
+            i += 18;
             G.DrawString("Net Amount :", new Font(new FontFamily(Font), 9), Brushes.Black, new RectangleF(550, i, 95, 20));
             G.DrawString(PSales.GrossAmount.ToString("#,##,##0.00"), new Font(new FontFamily(Font), 9, FontStyle.Bold), Brushes.Black, new RectangleF(650, i, 120, 20), format);
             i += 18;

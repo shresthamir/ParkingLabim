@@ -94,7 +94,8 @@ namespace ParkingManagement.ViewModel
                         ValidHours = SelectedScheme.ValidHours,
                         Limit = SelectedScheme.Limit,
                         Discount = SelectedScheme.Discount,
-                        ValidityPeriod = SelectedScheme.ValidityPeriod
+                        ValidityPeriod = SelectedScheme.ValidityPeriod,
+                        Rate=SelectedScheme.Rate
                     };
                     SetAction(ButtonAction.Selected);
                 }

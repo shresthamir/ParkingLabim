@@ -115,9 +115,9 @@
                 <Border Style="{StaticResource PlainBackground}">
                     <Grid>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="25"/>
+                            <RowDefinition Height="40"/>
                             <RowDefinition Height="30"/>
-                            <RowDefinition Height="50"/>
+                            <RowDefinition Height="30"/>
                             <RowDefinition Height="30"/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
@@ -127,24 +127,14 @@
                         </Grid.ColumnDefinitions>
                         <!--<RadioButton IsChecked="{Binding VSales.TRNMODE}" Content="Cash" VerticalAlignment="Center"></RadioButton>-->
                         <!--<RadioButton Grid.Column="1" IsChecked="{Binding VSales.TRNMODE, Converter={StaticResource ReverseBool}}" Content="Credit" VerticalAlignment="Center"></RadioButton>-->
-                        <Label Grid.Row="1" Content="Card Number"/>
-                        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding CardNumber,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" >
+                        <Label Grid.Row="0" Content="Card Number"/>
+                        <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding CardNumber,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                             <TextBox.InputBindings>
                                 <KeyBinding Command="{Binding CardNumberCommand}" Key="Return" />
                                 <KeyBinding Command="{Binding CardNumberCommand}" Key="Enter" />
                             </TextBox.InputBindings>
                         </TextBox>
-
-                        <!--<ComboBox Grid.Row="1" Grid.Column="1" IsEditable="True" ItemsSource="{Binding MemberList}" SelectedItem="{Binding SelectedMember}" DisplayMemberPath="MemberName" Text="{Binding VSales.BillTo}"  helper:CustomFocusManager.IsFocused="{Binding FocusedElement, Converter={StaticResource ShortToBool}, ConverterParameter='2'}"></ComboBox>-->
-                        <!--<Label Content="Address" Grid.Row="2" Margin="2 5 0 0" VerticalAlignment="Top" />
-                        <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding VSales.BILLTOADD}" Height="50" GotFocus="TextBox_GotFocus" TextWrapping="WrapWithOverflow" ></TextBox>
-                        <Label Content="PAN" Grid.Row="3"/>
-                        <TextBox Grid.Column="1" Grid.Row="3" Text="{Binding VSales.BILLTOPAN}" GotFocus="TextBox_GotFocus" PreviewTextInput="TextBox_PreviewTextInput" ></TextBox>-->
-                    </Grid>
-                </Border>
-                <Border Style="{StaticResource PlainBackground}" Grid.Column="1">
-                    <StackPanel Orientation="Horizontal">
-                        <StackPanel Width="160">
+                        <StackPanel HorizontalAlignment="Left" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Grid.RowSpan="4" Width="160" Margin="0">
                             <StackPanel Orientation="Horizontal">
                                 <Label Grid.Row="0" Grid.Column="0" Content="Member:"/>
                                 <Label Grid.Row="0" Grid.Column="1" Content="{Binding SelectedMember.MemberName}"></Label>
@@ -158,6 +148,16 @@
                                 <Label Grid.Row="0" Grid.Column="5" Content="{Binding SelectedMember.Mobile}"></Label>
                             </StackPanel>
                         </StackPanel>
+                        <!--<ComboBox Grid.Row="1" Grid.Column="1" IsEditable="True" ItemsSource="{Binding MemberList}" SelectedItem="{Binding SelectedMember}" DisplayMemberPath="MemberName" Text="{Binding VSales.BillTo}"  helper:CustomFocusManager.IsFocused="{Binding FocusedElement, Converter={StaticResource ShortToBool}, ConverterParameter='2'}"></ComboBox>-->
+                        <!--<Label Content="Address" Grid.Row="2" Margin="2 5 0 0" VerticalAlignment="Top" />
+                        <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding VSales.BILLTOADD}" Height="50" GotFocus="TextBox_GotFocus" TextWrapping="WrapWithOverflow" ></TextBox>
+                        <Label Content="PAN" Grid.Row="3"/>
+                        <TextBox Grid.Column="1" Grid.Row="3" Text="{Binding VSales.BILLTOPAN}" GotFocus="TextBox_GotFocus" PreviewTextInput="TextBox_PreviewTextInput" ></TextBox>-->
+                    </Grid>
+                </Border>
+                <Border Style="{StaticResource PlainBackground}" Grid.Column="1">
+                    <StackPanel Orientation="Horizontal">
+                       
                         <StackPanel >
 
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
@@ -178,7 +178,7 @@
                                     </DatePicker>
                                 </StackPanel>
                             </StackPanel>
-                            <StackPanel Orientation="Horizontal" Margin="10">
+                            <StackPanel Orientation="Horizontal" Margin="10 10 0 0">
                                 <Label Width="100"  Content="Product" />
                                 <!--<Label Width="100"  Content="{Binding SelectedScheme.SchemeName}" />-->
                                 <!--<ComboBox MinWidth="300" ItemsSource="{Binding SchemeList}" DisplayMemberPath="SchemeName" SelectedValuePath="SchemeId" SelectedValue="{Binding VSDetail.ProdId,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SelectedScheme,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsSynchronizedWithCurrentItem="True" FontSize="14"></ComboBox>-->
@@ -186,12 +186,24 @@
 
                                 <Button HorizontalAlignment="Left" Style="{DynamicResource NewButton}" Command="{Binding AddVoucherCommand}" Content="Change Scheme" Width="120" Height="28" Margin="5 0 0 0"></Button>
                             </StackPanel>
-                            <StackPanel Orientation="Horizontal" Margin="10">
-                                <Label Width="100"  Content="Mode" />
-                                <!--<Label Width="100"  Content="{Binding SelectedScheme.SchemeName}" />-->
-                                <!--<ComboBox MinWidth="300" ItemsSource="{Binding SchemeList}" DisplayMemberPath="SchemeName" SelectedValuePath="SchemeId" SelectedValue="{Binding VSDetail.ProdId,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SelectedScheme,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsSynchronizedWithCurrentItem="True" FontSize="14"></ComboBox>-->
-                                <ComboBox Width="310" ItemsSource="{Binding TrnModeList}" DisplayMemberPath="Name" SelectedItem="{Binding SelectedMode}"/>
+                            <StackPanel Orientation="Horizontal" Margin="6 10 0 0">
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Width="100"  Content="Mode" />
+                                    <!--<Label Width="100"  Content="{Binding SelectedScheme.SchemeName}" />-->
+                                    <!--<ComboBox MinWidth="300" ItemsSource="{Binding SchemeList}" DisplayMemberPath="SchemeName" SelectedValuePath="SchemeId" SelectedValue="{Binding VSDetail.ProdId,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SelectedScheme,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsSynchronizedWithCurrentItem="True" FontSize="14"></ComboBox>-->
+                                    <ComboBox Width="310" ItemsSource="{Binding TrnModeList}" DisplayMemberPath="Name" SelectedItem="{Binding SelectedMode}"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Margin="10 0 0 0">
+                                    <Label Content="Discount %"/>
+                                    <TextBox Text="{Binding SelectedScheme.Discount,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="50" >
+                                        <TextBox.InputBindings>
+                                            <KeyBinding Command="{Binding AddVoucherCommand}" Key="Return" />
+                                            <KeyBinding Command="{Binding AddVoucherCommand}" Key="Enter" />
+                                        </TextBox.InputBindings>
+                                    </TextBox>
+                                </StackPanel>
                             </StackPanel>
+                           
                         </StackPanel>
                     </StackPanel>
                 </Border>
@@ -203,9 +215,10 @@
                 <DataGridTextColumn Header="Scheme Name" Binding="{Binding Description}" MinWidth="300" Width="30*" />
                 <DataGridTextColumn CellStyle="{DynamicResource NumericDataGridCell}"  Header="Rate" Binding="{Binding Rate, StringFormat={}{0:#,##,##0.00}}" MinWidth="125" Width="12.5*"/>
                 <DataGridTextColumn CellStyle="{DynamicResource NumericDataGridCell}" Header="Quantity" Binding="{Binding Quantity, StringFormat={}{0:#,##,##0.00}}" MinWidth="125" Width="12.5*"/>
+                <DataGridTextColumn CellStyle="{DynamicResource NumericDataGridCell}" Header="Discount" Binding="{Binding Discount, StringFormat={}{0:#,##,##0.00}}" MinWidth="150" Width="15*"/>
                 <DataGridTextColumn CellStyle="{DynamicResource NumericDataGridCell}" Header="Gross Amount" Binding="{Binding Amount, StringFormat={}{0:#,##,##0.00}}" MinWidth="150" Width="15*"/>
                 <DataGridTextColumn CellStyle="{DynamicResource NumericDataGridCell}" Header="VAT" Binding="{Binding VAT, StringFormat={}{0:#,##,##0.00}}" MinWidth="150" Width="15*"/>
-                <DataGridTextColumn CellStyle="{DynamicResource NumericDataGridCell}" Header="NetAmount Amount" Binding="{Binding NetAmount, StringFormat={}{0:#,##,##0.00}}" MinWidth="150" Width="15*"/>
+                <DataGridTextColumn CellStyle="{DynamicResource NumericDataGridCell}" Header="Net Amount" Binding="{Binding NetAmount, StringFormat={}{0:#,##,##0.00}}" MinWidth="150" Width="15*"/>
             </DataGrid.Columns>
         </DataGrid>
         <Border Grid.Row="4" Style="{StaticResource PlainBackground}">
