@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using ExcelDataReader;
 using Microsoft.Win32;
+using ParkingManagement.Enums;
 using ParkingManagement.Library;
 using ParkingManagement.Library.Helpers;
 using ParkingManagement.Models;
@@ -56,7 +57,7 @@ namespace ParkingManagement.ViewModel
         {
             try
             {
-                foreach (var device in DeviceList)
+                foreach (var device in DeviceList.Where(x=>x.DeviceType== (int)DeviceType.Entry))
                 {
                     int maxCardId = await GetCardIdFromDb();
 

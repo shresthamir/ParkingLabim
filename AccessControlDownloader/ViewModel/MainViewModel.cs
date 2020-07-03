@@ -96,7 +96,7 @@ namespace AccessControlDownloader.ViewModel
                 if (timerSec == 60)
                 {
                     ExecuteReadLog(null);
-                     await SaveAccountBill();
+                    await SaveAccountBill();
 
                     timerSec = 0;
                 }
@@ -253,11 +253,24 @@ namespace AccessControlDownloader.ViewModel
                                         {
                                             //SaveLogsToDb(this, tran, device);
                                             SaveToParkingInDetails(this, tran, device);
-                                            if (CheckIfMemberCard(this.dwEnrollNumberInt, tran))
+
+                                            string query = "select CardId from parkingindetails p join DailyCards d on p.Barcode=d.CardNumber where pid not in(select pid from ParkingOutDetails)";
+                                            var res=conn.Query<int>(query, transaction: tran);
+                                            if (res != null)
                                             {
-                                                //To Deactivate member card
-                                                zkem.EnableUser(zkem.MachineNumber, this.dwEnrollNumberInt, zkem.MachineNumber, 10, false);
+                                                foreach(var id in res)
+                                                {
+                                                    //if (CheckIfMemberCard(this.dwEnrollNumberInt, tran))
+                                                    if (CheckIfMemberCard(id, tran))
+                                                    {
+                                                        //To Deactivate member card
+                                                        zkem.EnableUser(zkem.MachineNumber, id, zkem.MachineNumber, 10, false);
+                                                        MainLogger.Info($"Card with id: {id} is disabled.");
+                                                    }
+                                                }
                                             }
+
+                                            
                                             tran.Commit();
                                         }
                                     }
@@ -426,7 +439,7 @@ namespace AccessControlDownloader.ViewModel
                 billMain.trnuser = GlobalClass.User.UserName;
                 billMain.trnmode = sales.TRNMODE == true ? "Cash" : "Credit";
                 //billMain.trnac = "AT01002";
-                billMain.trnac = billMain.trnmode=="Cash"? "AT01002":await CheckIfAccodeExists(sales);
+                billMain.trnac = billMain.trnmode == "Cash" ? "AT01002" : await CheckIfAccodeExists(sales);
                 billMain.parac = billMain.trnac;
                 billMain.guid = Guid.NewGuid().ToString();
                 billMain.voucherAbbName = "TI";
