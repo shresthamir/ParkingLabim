@@ -372,7 +372,7 @@ namespace AccessControlDownloader.ViewModel
                         var tableName = device.DeviceType == 1 ? "deviceLog" : "exitdevicelog";
                         //var totalEnteredVechicle = conn.ExecuteScalar<int>($"SELECT count(*) FROM PARKINGINDETAILS p join devicelist d on p.vehicletype=d.vehicletype where deviceid='{device.DeviceId}' and convert(date, indate) = convert(date, getdate())");
                         //DeviceList.Where(x => x.VehicleType == device.VehicleType).ToList().ForEach(x => x.EnteredVehicle = totalEnteredVechicle);
-                        device.EnteredVehicle = conn.ExecuteScalar<int>($"select Count(*) from {tableName} where DeviceId='{device.DeviceId}' and DATEFROMPARTS(dwYear, dwMonth, dwDay) = convert(date, getdate())");
+                        device.EnteredVehicle = conn.ExecuteScalar<int>($"select Count(*) from {tableName} where DeviceId='{device.DeviceId}' and dwYear + '-' + dwMonth + '-' + dwDay = convert(date, getdate())");
                     }
                 }
             }
