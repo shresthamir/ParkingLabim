@@ -133,7 +133,7 @@ namespace ParkingManagement.ViewModel
             {
                 if (ex.Number == 2627)
                     MessageBox.Show("Entered Terminal Code already exist in the database. Enter unique Code and try again", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Hand);
-                MessageBox.Show(ex.Number + " : " + ex.Message, "Vehicle Type", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(ex.Number + " : " + ex.Message,  LabelCaption.LabelCaptions["Vehicle Type"], MessageBoxButton.OK, MessageBoxImage.Error);
             }
             catch (Exception ex)
             {

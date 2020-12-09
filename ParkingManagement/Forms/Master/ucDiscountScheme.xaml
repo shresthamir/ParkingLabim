@@ -54,7 +54,7 @@
                                                AllowEditing="True"
                                                AutoGenerateColumns="False" >
                             <syncfusion:SfDataGrid.Columns>
-                                <syncfusion:GridTemplateColumn HeaderText="Vehicle Type" Width="150">
+                                <syncfusion:GridTemplateColumn HeaderText="{Binding Converter={StaticResource LabelConverter}, ConverterParameter='Vehicle Type'}" Width="150">
                                     <syncfusion:GridTemplateColumn.CellTemplate>
                                         <DataTemplate>
                                             <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding VType}"/>

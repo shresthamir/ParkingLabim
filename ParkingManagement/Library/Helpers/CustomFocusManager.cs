@@ -15,26 +15,26 @@ namespace ParkingManagement.Library.Helpers
         private static void FocusChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var fe = (FrameworkElement)d;
-            if(e.OldValue == null)
+            if (e.OldValue == null)
             {
-                fe.GotFocus+=fe_GotFocus;
+                fe.GotFocus += fe_GotFocus;
                 fe.LostFocus += fe_LostFocus;
             }
-            if(!fe.IsVisible)
+            if (!fe.IsVisible)
             {
                 fe.IsVisibleChanged += new DependencyPropertyChangedEventHandler(fe_IsVisibleChanged);
             }
-            if((bool)e.NewValue)
+            if ((bool)e.NewValue)
             {
                 fe.IsEnabled = true;
-              System.Windows.Input.Keyboard.Focus(fe);       
+                System.Windows.Input.Keyboard.Focus(fe);
             }
         }
 
         private static void fe_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             var fe = (FrameworkElement)sender;
-            if(fe.IsVisible && (bool)((FrameworkElement)sender).GetValue(IsFocusedProperty))
+            if (fe.IsVisible && (bool)((FrameworkElement)sender).GetValue(IsFocusedProperty))
             {
                 fe.IsVisibleChanged -= fe_IsVisibleChanged;
                 fe.Focus();

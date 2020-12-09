@@ -20,4 +20,18 @@ namespace ParkingManagement.Library.ValueConverter
             return 0;
         }
     }
+
+    public class LabelCaptionConverter : IValueConverter
+    {
+
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return LabelCaption.LabelCaptions[parameter.ToString()] ?? parameter;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return parameter;
+        }
+    }
 }

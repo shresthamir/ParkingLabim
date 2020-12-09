@@ -1,4 +1,5 @@
 ﻿using AccessControlDownloader.ViewModel;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +25,13 @@ namespace AccessControlDownloader
         public MainWindow()
         {
             InitializeComponent();
+            this.Closing += MainWindow_Closing;
             this.DataContext = new MainViewModel();
+        }
+
+        private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            LogManager.GetLogger("MainViewModel").Info("IMS Device Sync App is Closing");
         }
     }
 }

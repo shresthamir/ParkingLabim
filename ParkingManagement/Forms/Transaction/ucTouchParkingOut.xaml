@@ -155,7 +155,7 @@
                                 <Label Content="{Binding PIN.VType.Description}" Width="200"/>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal">
-                                <Label Content="Plate No"></Label>
+                                <Label Content="{Binding Converter={StaticResource LabelConverter}, ConverterParameter='Plate No'}"></Label>
                                 <TextBlock Text=":"/>
                                 <Label Content="{Binding PIN.PlateNo}" Width="200"/>
                             </StackPanel>

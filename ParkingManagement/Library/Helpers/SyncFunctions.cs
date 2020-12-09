@@ -12,7 +12,7 @@ namespace ParkingManagement.Library.Helpers
 {
     static class SyncFunctions
     {
-        const string Url = "http://202.166.207.75:9050/api";
+        const string Url = "http://103.1.92.174:9050/api";
         public static string username { get; private set; }
         static string password;
         public static bool CbmsTest;

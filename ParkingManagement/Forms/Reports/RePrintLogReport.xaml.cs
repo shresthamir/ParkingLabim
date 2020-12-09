@@ -390,7 +390,7 @@ namespace ParkingManagement.Forms.Reports
             }
             else if (ReportFlag == 9)
             {
-                Report.Columns.Add(new GridTextColumn { HeaderText = "Vehicle Type", DisplayBinding = new Binding("CUSTOMER_NAME"), Width = 120 });
+                Report.Columns.Add(new GridTextColumn { HeaderText = LabelCaption.LabelCaptions["Vehicle Type"], DisplayBinding = new Binding("CUSTOMER_NAME"), Width = 120 });
                 Report.Columns.Add(new GridTextColumn { HeaderText = "In Date", DisplayBinding = new Binding("PRINTED_DATE") { StringFormat = "MM/dd/yyyy" }, Width = 70 });
                 Report.Columns.Add(new GridTextColumn { HeaderText = "In Time", DisplayBinding = new Binding("PRINTED_TIME"), Width = 70, TextAlignment = TextAlignment.Center });
                 Report.Columns.Add(new GridTextColumn { HeaderText = "Out Date", DisplayBinding = new Binding("BILL_DATE") { StringFormat = "MM/dd/yyyy" }, Width = 70 });
@@ -409,7 +409,7 @@ namespace ParkingManagement.Forms.Reports
             {
                 Report.Columns.Add(new GridTextColumn { HeaderText = "Date", DisplayBinding = new Binding("BILL_DATE") { StringFormat = "MM/dd/yyyy" }, Width = 70 });
                 Report.Columns.Add(new GridTextColumn { HeaderText = "Miti", DisplayBinding = new Binding("MITI"), Width = 70 });
-                Report.Columns.Add(new GridTextColumn { HeaderText = "Vehicle Type", DisplayBinding = new Binding("CUSTOMER_NAME"), Width = 120 });
+                Report.Columns.Add(new GridTextColumn { HeaderText = LabelCaption.LabelCaptions["Vehicle Type"], DisplayBinding = new Binding("CUSTOMER_NAME"), Width = 120 });
                 Report.Columns.Add(new GridTextColumn { HeaderText = "Count", DisplayBinding = new Binding("REPRINTNO"), Width = 70 });
                 Report.Columns.Add(new GridTextColumn { HeaderText = "C. Hours", DisplayBinding = new Binding("TAXABLE_IMPORT") { StringFormat = "#,###,#0.00" }, TextAlignment = TextAlignment.Right, Width = 100 });
                 Report.Columns.Add(new GridTextColumn { HeaderText = "C. Amount", DisplayBinding = new Binding("TAXABLE_AMOUNT") { StringFormat = "#,###,#0.00" }, TextAlignment = TextAlignment.Right, Width = 120 });

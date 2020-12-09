@@ -39,7 +39,7 @@ namespace ParkingManagement.ViewModel
                     VTypeList = new ObservableCollection<VoucherType>(Conn.Query<VoucherType>(strSql));
                     strSql = @"SELECT VTypeID, [Description] FROM VehicleType";
                     VehicleTypeList = new ObservableCollection<VehicleType>(Conn.Query<VehicleType>(strSql));
-                    VehicleTypeList.Add(new VehicleType { VTypeID = 0, Description = "All Vehicle Type" });
+                    VehicleTypeList.Add(new VehicleType { VTypeID = 0, Description = $"All {LabelCaption.LabelCaptions["Vehicle Type"]}" });
                 }
                 LoadData = new RelayCommand(ExecuteLoad, CanExecuteLoad);
                 NewCommand = new RelayCommand(ExecuteNew);

@@ -81,24 +81,23 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="BarcodeLib">
-      <HintPath>..\..\..\..\Users\Amir\Desktop\bishaka Programming\Library\BarcodeLib.dll</HintPath>
+      <HintPath>..\..\Library\BarcodeLib.dll</HintPath>
     </Reference>
     <Reference Include="Dapper">
-      <HintPath>..\..\..\..\Users\Amir\Desktop\bishaka Programming\Library\Dapper.dll</HintPath>
+      <HintPath>..\..\Library\Dapper.dll</HintPath>
     </Reference>
-    <Reference Include="ExcelDataReader, Version=3.4.0.0, Culture=neutral, PublicKeyToken=93517dbe6a4012fa, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\UpdatePackage\ExcelDataReader.dll</HintPath>
+    <Reference Include="ExcelDataReader">
+      <HintPath>..\..\Library\ExcelDataReader.dll</HintPath>
     </Reference>
     <Reference Include="ExcelDataReader.DataSet, Version=3.4.0.0, Culture=neutral, PublicKeyToken=93517dbe6a4012fa, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\UpdatePackage\ExcelDataReader.DataSet.dll</HintPath>
+      <HintPath>..\..\Library\ExcelDataReader.DataSet.dll</HintPath>
     </Reference>
     <Reference Include="ExtendedComboBox">
-      <HintPath>..\..\..\UpdatePackage\ExtendedComboBox.dll</HintPath>
+      <HintPath>..\..\Library\ExtendedComboBox.dll</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib">
-      <HintPath>..\..\..\..\Users\Amir\source\repos\ImsPosCurrent\PosBackEnd\LibraryDll\ICSharpCode.SharpZipLib.dll</HintPath>
+      <HintPath>..\..\Library\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Expression.Interactions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -106,7 +105,7 @@
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="Microsoft.Windows.Shell">
-      <HintPath>..\..\..\..\Users\Amir\Desktop\bishaka Programming\Library\Microsoft.Windows.Shell.dll</HintPath>
+      <HintPath>..\..\Library\Microsoft.Windows.Shell.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\..\..\Library DLLs\Newtonsoft.Json.dll</HintPath>
@@ -117,38 +116,38 @@
       <HintPath>..\packages\QRCoder.1.3.5\lib\net40\QRCoder.dll</HintPath>
     </Reference>
     <Reference Include="RawPrintFunctions">
-      <HintPath>..\..\..\..\Users\Amir\Desktop\bishaka Programming\Library\RawPrintFunctions.dll</HintPath>
+      <HintPath>..\..\Library\RawPrintFunctions.dll</HintPath>
     </Reference>
     <Reference Include="ReachFramework" />
     <Reference Include="Syncfusion.Compression.Base">
-      <HintPath>..\..\..\..\Users\Amir\Desktop\bishaka Programming\IMS - Ticketing Software\ParkingManagement\bin\x86\Debug\Syncfusion.Compression.Base.dll</HintPath>
+      <HintPath>..\..\Library\Syncfusion\Syncfusion.Compression.Base.dll</HintPath>
     </Reference>
     <Reference Include="Syncfusion.Core">
-      <HintPath>..\..\..\..\Users\Amir\Desktop\bishaka Programming\IMS - Ticketing Software\ParkingManagement\bin\x86\Debug\Syncfusion.Core.dll</HintPath>
+      <HintPath>..\..\Library\Syncfusion\Syncfusion.Core.dll</HintPath>
     </Reference>
     <Reference Include="Syncfusion.Data.WPF">
-      <HintPath>..\..\..\..\Users\Amir\Desktop\bishaka Programming\IMS - Ticketing Software\ParkingManagement\bin\x86\Debug\Syncfusion.Data.WPF.dll</HintPath>
+      <HintPath>..\..\Library\Syncfusion\Syncfusion.Data.WPF.dll</HintPath>
     </Reference>
     <Reference Include="Syncfusion.Pdf.Base">
-      <HintPath>..\..\..\..\Users\Amir\Desktop\bishaka Programming\IMS - Ticketing Software\ParkingManagement\bin\x86\Debug\Syncfusion.Pdf.Base.dll</HintPath>
+      <HintPath>..\..\Library\Syncfusion\Syncfusion.Pdf.Base.dll</HintPath>
     </Reference>
     <Reference Include="Syncfusion.PdfViewer.WPF">
-      <HintPath>..\..\..\..\Users\Amir\Desktop\bishaka Programming\IMS - Ticketing Software\ParkingManagement\bin\x86\Debug\Syncfusion.PdfViewer.WPF.dll</HintPath>
+      <HintPath>..\..\Library\Syncfusion\Syncfusion.PdfViewer.WPF.dll</HintPath>
     </Reference>
     <Reference Include="Syncfusion.SfGrid.WPF">
-      <HintPath>..\..\..\..\Users\Amir\Desktop\bishaka Programming\IMS - Ticketing Software\ParkingManagement\bin\x86\Debug\Syncfusion.SfGrid.WPF.dll</HintPath>
+      <HintPath>..\..\Library\Syncfusion\Syncfusion.SfGrid.WPF.dll</HintPath>
     </Reference>
     <Reference Include="Syncfusion.SfGridConverter.WPF">
-      <HintPath>..\..\..\..\Users\Amir\Desktop\bishaka Programming\IMS - Ticketing Software\ParkingManagement\bin\x86\Debug\Syncfusion.SfGridConverter.WPF.dll</HintPath>
+      <HintPath>..\..\Library\Syncfusion\Syncfusion 4.5\Syncfusion.SfGridConverter.WPF.dll</HintPath>
     </Reference>
     <Reference Include="Syncfusion.SfInput.WPF">
       <HintPath>..\..\..\..\Users\Amir\Desktop\bishaka Programming\IMS - Ticketing Software\ParkingManagement\bin\x86\Debug\Syncfusion.SfInput.WPF.dll</HintPath>
     </Reference>
     <Reference Include="Syncfusion.Shared.WPF">
-      <HintPath>..\..\..\..\Users\Amir\Desktop\bishaka Programming\IMS - Ticketing Software\ParkingManagement\bin\x86\Debug\Syncfusion.Shared.WPF.dll</HintPath>
+      <HintPath>..\..\Library\Syncfusion\Syncfusion.Shared.WPF.dll</HintPath>
     </Reference>
     <Reference Include="Syncfusion.XlsIO.Base">
-      <HintPath>..\..\..\..\Users\Amir\Desktop\bishaka Programming\IMS - Ticketing Software\ParkingManagement\bin\x86\Debug\Syncfusion.XlsIO.Base.dll</HintPath>
+      <HintPath>..\..\Library\Syncfusion\Syncfusion.XlsIO.Base.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -180,19 +179,19 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="WPFCustomToolKit">
-      <HintPath>..\..\..\..\Users\Amir\Desktop\bishaka Programming\Library\WPFCustomToolKit.dll</HintPath>
+      <HintPath>..\..\Library\WPFCustomToolKit.dll</HintPath>
     </Reference>
     <Reference Include="Xceed.Wpf.AvalonDock">
-      <HintPath>..\..\..\..\Users\Amir\Desktop\bishaka Programming\Library\Xceed.Wpf.AvalonDock.dll</HintPath>
+      <HintPath>..\..\Library\Xceed.Wpf.AvalonDock.dll</HintPath>
     </Reference>
     <Reference Include="Xceed.Wpf.AvalonDock.Themes.Metro">
-      <HintPath>..\..\..\..\Users\Amir\Desktop\bishaka Programming\Library\Xceed.Wpf.AvalonDock.Themes.Metro.dll</HintPath>
+      <HintPath>..\..\Library\Xceed.Wpf.AvalonDock.Themes.Metro.dll</HintPath>
     </Reference>
     <Reference Include="Xceed.Wpf.Toolkit">
-      <HintPath>..\..\..\..\Users\Amir\Desktop\bishaka Programming\Library\Xceed.Wpf.Toolkit.dll</HintPath>
+      <HintPath>..\..\Library\Xceed.Wpf.Toolkit.dll</HintPath>
     </Reference>
     <Reference Include="Zen.Barcode">
-      <HintPath>..\..\..\..\Users\Amir\Desktop\bishaka Programming\Library\Zen.Barcode.dll</HintPath>
+      <HintPath>..\..\Library\Zen.Barcode.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -339,6 +338,7 @@
     <Compile Include="Library\Helpers\ExportToPdfHelper.cs" />
     <Compile Include="Library\Helpers\StyleSelectors.cs" />
     <Compile Include="Library\Helpers\SyncFunctions.cs" />
+    <Compile Include="Library\LabelCaption.cs" />
     <Compile Include="Library\PoleDisplay.cs" />
     <Compile Include="Library\ValueConverter\RadioButtonTrueFalseConveter.cs" />
     <Compile Include="Models\Account.cs" />
@@ -842,18 +842,18 @@
     <COMReference Include="Microsoft.Office.Core">
       <Guid>{2DF8D04C-5BFA-101B-BDE5-00AA0044DE52}</Guid>
       <VersionMajor>2</VersionMajor>
-      <VersionMinor>4</VersionMinor>
+      <VersionMinor>8</VersionMinor>
       <Lcid>0</Lcid>
-      <WrapperTool>tlbimp</WrapperTool>
+      <WrapperTool>primary</WrapperTool>
       <Isolated>False</Isolated>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
     <COMReference Include="Microsoft.Office.Interop.Excel">
       <Guid>{00020813-0000-0000-C000-000000000046}</Guid>
       <VersionMajor>1</VersionMajor>
-      <VersionMinor>6</VersionMinor>
+      <VersionMinor>9</VersionMinor>
       <Lcid>0</Lcid>
-      <WrapperTool>tlbimp</WrapperTool>
+      <WrapperTool>primary</WrapperTool>
       <Isolated>False</Isolated>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>

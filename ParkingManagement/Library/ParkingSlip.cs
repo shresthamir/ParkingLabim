@@ -64,7 +64,7 @@ namespace ParkingManagement.Library
             if (!string.IsNullOrEmpty(PIN.PlateNo))
             {
                 i += 17;
-                G.DrawString(string.Format("Plate No : {0}", PIN.PlateNo), new Font(new FontFamily("Segoe UI"), 9), Brushes.Black, new RectangleF(10, i, paperWidth, 18));
+                G.DrawString($"{LabelCaption.LabelCaptions["Plate No"]} : {PIN.PlateNo}", new Font(new FontFamily("Segoe UI"), 9), Brushes.Black, new RectangleF(10, i, paperWidth, 18));
             }
 
             i += 22;

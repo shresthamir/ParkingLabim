@@ -268,7 +268,7 @@ namespace ParkingManagement.ViewModel
                 using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
                 {
                     //PrintBill(VSales.BillNo);
-                    Print(VSales.BillNo, "INVOCE");
+                    Print(VSales.BillNo, "INVOICE");
                     string DuplicateCaption = GlobalClass.GetReprintCaption(VSales.BillNo);
                     GlobalClass.SavePrintLog(VSales.BillNo, null, DuplicateCaption);
                     GlobalClass.SetUserActivityLog("Voucher Sales Invoice", "Re-Print", WorkDetail: string.Empty, VCRHNO: VSales.BillNo, Remarks: "Reprinted : " + DuplicateCaption);
@@ -389,7 +389,7 @@ namespace ParkingManagement.ViewModel
                     if (!string.IsNullOrEmpty(VSales.BillNo))
                     {
                         //PrintBill(VSales.BillNo, true);
-                        Print(VSales.BillNo, "ABBREVIATED TAX INVOCE");
+                        Print(VSales.BillNo, "ABBREVIATED TAX INVOICE");
 
                         if (GenerateVoucher)
                         {

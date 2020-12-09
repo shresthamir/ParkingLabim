@@ -21,4 +21,5 @@
     <vc:NoteToAmountConverter x:Key="ToAmount"/>
     <vc:RadioButtonTrueFalseConveter x:Key="ReportOption"/>
     <vc:TimeSpanToStringConverter x:Key="TimeSpanToString"/>
+    <vc:LabelCaptionConverter x:Key="LabelConverter"/>
 </ResourceDictionary>

@@ -56,7 +56,7 @@ namespace ParkingManagement.ViewModel
         public ObservableCollection<Device> DeviceList { get { return _Device; } set { _Device = value; OnPropertyChanged("DeviceList"); } }
         public ObservableCollection<VehicleType> TVehicleTypeList { get { return _TVehicleTypeList; } set { _TVehicleTypeList = value; OnPropertyChanged("TVehicleTypeList"); } }
         public VehicleType SelectedTVehicleType { get { return _SelectedTVehicleType; } set { _SelectedTVehicleType = value; OnPropertyChanged("SelectedTVehicleType"); } }
-        
+
         public ObservableCollection<RateMaster> RSchemes
         {
             get { return _RSchemes; }
@@ -92,7 +92,7 @@ namespace ParkingManagement.ViewModel
         public RelayCommand SaveWithPrepaidCommand { get { return new RelayCommand(SaveWithPrepaid); } }
         public RelayCommand VehicleSelectCommand { get { return new RelayCommand(ExecuteVehicleSelect); } }
 
-       
+
 
         public RelayCommand RePrintCommand { get { return new RelayCommand(ExecuteRePrint, CanExecuteRePrint); } }
         public RelayCommand LoadInvoice { get { return new RelayCommand(ExecuteLoadInvoice, CanLoadInvoice); } }
@@ -435,7 +435,7 @@ namespace ParkingManagement.ViewModel
                 {
                     string BillNo = InvoicePrefix + InvoiceNo;
                     string DuplicateCaption = GlobalClass.GetReprintCaption(BillNo);
-                    PrintBill(BillNo, conn, (TaxInvoice) ? "INVOICE" : "ABBREVIATED TAX INVOCE", DuplicateCaption);
+                    PrintBill(BillNo, conn, (TaxInvoice) ? "INVOICE" : "ABBREVIATED TAX INVOICE", DuplicateCaption);
                     GlobalClass.SavePrintLog(BillNo, null, DuplicateCaption);
                     GlobalClass.SetUserActivityLog("Exit", "Re-Print", WorkDetail: string.Empty, VCRHNO: BillNo, Remarks: "Reprinted : " + DuplicateCaption);
                 }
@@ -474,13 +474,6 @@ namespace ParkingManagement.ViewModel
         {
             try
             {
-                window = new SelectExitVehicle(this);
-                window.ShowDialog();
-                if (SelectedTVehicleType == null)
-                {
-                    MessageBox.Show("Please select Exit Vehicle Type", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                    return;
-                }
                 decimal ChargedHours = 0;
                 decimal ChargedAmount = 0;
                 using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
@@ -508,13 +501,14 @@ namespace ParkingManagement.ViewModel
                     //                    var PINS = conn.Query<ParkingIn>(string.Format(@"SELECT PID, VehicleType, InDate, InMiti, InTime, PlateNo, Barcode, UID FROM ParkingInDetails 
                     //WHERE((BARCODE <> '' AND  BARCODE = '{0}') OR(ISNULL(PLATENO, '') <> '' AND ISNULL(PlateNo, '') = '{0}'))
                     //AND FYID = {1} ORDER BY PID DESC", obj, GlobalClass.FYID));
-
+                    int bcode = 0;
+                    int.TryParse(obj.ToString(), out bcode);
                     var PINS = conn.Query<ParkingIn>(@"select PID, VehicleType, InDate, InMiti, InTime, PlateNo, Barcode, UID from ParkingInDetails where ParkingInDetails.PID not in (select PID from ParkingOutDetails where FYID=@fyid)
-                    and((BARCODE <> '' AND  BARCODE = @barcode) OR(ISNULL(PLATENO, '') <> '' AND ISNULL(PlateNo, '') = @barcode))
-                    AND FYID = @fyid", new { barcode = obj, fyid = GlobalClass.FYID });
+                    and((BARCODE <> '' AND  (BARCODE = @barcode OR BARCODE = @barcode1)) OR(ISNULL(PLATENO, '') <> '' AND ISNULL(PlateNo, '') = @barcode))
+                    AND FYID = @fyid", new { barcode = obj, barcode1 = bcode.ToString() , fyid = GlobalClass.FYID });
 
 
-                    //var PINS = conn.Query<ParkingIn>(@"select* from ParkingInDetails
+                    //var PINS = conn.Query<ParkingIn>(@"select * from ParkingInDetails
                     //                    left join ParkingOutDetails on ParkingInDetails.PID = ParkingOutDetails.PID
                     //where ParkingOutDetails.PID is null
                     //and((BARCODE <> '' AND  BARCODE = @barcode) OR(ISNULL(PLATENO, '') <> '' AND ISNULL(PlateNo, '') = @barcode))
@@ -527,7 +521,14 @@ namespace ParkingManagement.ViewModel
                         PIN.Barcode = string.Empty;
                         return;
                     }
-                    PIN = PINS.First();
+                    PIN = PINS.OrderByDescending(x=>x.InDate.Add(DateTime.Parse(x.InTime).TimeOfDay)).First();
+                    window = new SelectExitVehicle(this);
+                    window.ShowDialog();
+                    if (SelectedTVehicleType == null)
+                    {
+                        MessageBox.Show($"Please select Exit {LabelCaption.LabelCaptions["Vehicle Type"]}", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                        return;
+                    }
                     //PIN.VType = conn.Query<VehicleType>(string.Format("SELECT VTypeId, Description FROM VehicleType WHERE VTypeId = {0}", PIN.VehicleType)).First();
                     PIN.VType = conn.Query<VehicleType>(string.Format("SELECT VTypeId, Description FROM VehicleType WHERE VTypeId = {0}", SelectedTVehicleType.VTypeID)).First();
                     var POUTS = conn.Query<ParkingOut>(string.Format("SELECT * FROM ParkingOutDetails WHERE PID = {0} AND FYID = {1}", PIN.PID, GlobalClass.FYID));
@@ -538,6 +539,7 @@ namespace ParkingManagement.ViewModel
                         PIN.Barcode = string.Empty;
                         return;
                     }
+                    POUT.VehicleType = SelectedTVehicleType.VTypeID;
                     POUT.Rate_ID = (int)conn.ExecuteScalar("SELECT RATE_ID FROM RATEMASTER WHERE IsDefault = 1");
 
                     DateTime ServerTime = nepDate.GetServerTime();
@@ -928,7 +930,7 @@ namespace ParkingManagement.ViewModel
                     if (!string.IsNullOrEmpty(BillNo))
                     {
                         RawPrinterHelper.SendStringToPrinter(GlobalClass.PrinterName, ((char)27).ToString() + ((char)112).ToString() + ((char)0).ToString() + ((char)64).ToString() + ((char)240).ToString(), "Receipt");   //Open Cash Drawer
-                        PrintBill(BillNo.ToString(), conn, (TaxInvoice) ? "TAX INVOICE" : "ABBREVIATED TAX INVOCE");
+                        PrintBill(BillNo.ToString(), conn, (TaxInvoice) ? "TAX INVOICE" : "ABBREVIATED TAX INVOICE");
                         if (TaxInvoice)
                         {
                             PrintBill(BillNo.ToString(), conn, "INVOICE");
@@ -1095,8 +1097,8 @@ namespace ParkingManagement.ViewModel
                 dr = da.getData(string.Format(@"SELECT PS.*,VT.Description VType,ISNULL(PIN.PlateNo,'') PlateNo,PIN.InTime,PIN.InMiti,POUT.OutTime,POUT.OutMiti,U.UserName, POUT.Interval, POUT.ChargedHours FROM ParkingSales PS 
                                     INNER JOIN Users U ON U.UID=PS.UID
                                     LEFT JOIN ParkingOutDetails POUT  ON PS.PID = POUT.PID AND PS.FYID = POUT.FYID
-                                    LEFT JOIN (ParkingInDetails PIN   
-                                    LEFT JOIN VehicleType VT ON VT.VTypeID=PIN.VehicleType) ON PS.PID = PIN.PID AND PS.FYID = PIN.FYID
+                                    LEFT JOIN ParkingInDetails PIN ON PS.PID = PIN.PID AND PS.FYID = PIN.FYID
+                                    LEFT JOIN VehicleType VT ON VT.VTypeID= (CASE ISNULL(POUT.VehicleType, 0) WHEN 0 THEN PIN.VehicleType ELSE POUT.VehicleType END) 
                                     WHERE BillNo = '{0}' AND PS.FYID = {1}", BillNo, GlobalClass.FYID), conn).Rows[0];
 
             }
@@ -1119,7 +1121,7 @@ namespace ParkingManagement.ViewModel
             }
 
             strPrint += string.Format("Bill No : {0}    Date : {1}", BillNo.PadRight(7, ' '), dr["TMiti"]) + Environment.NewLine;
-            strPrint += string.Format("Vehicle Type : {0} {1}", dr["VType"], string.IsNullOrEmpty(dr["PlateNo"].ToString()) ? string.Empty : "(" + dr["PlateNo"] + ")") + Environment.NewLine;
+            strPrint += string.Format($"{LabelCaption.LabelCaptions["Vehicle Type"]} : {0} {1}", dr["VType"], string.IsNullOrEmpty(dr["PlateNo"].ToString()) ? string.Empty : "(" + dr["PlateNo"] + ")") + Environment.NewLine;
             strPrint += string.Format("Name    : {0}", dr["BillTo"]) + Environment.NewLine;
             strPrint += string.Format("Address : {0}", dr["BillToAdd"]) + Environment.NewLine;
             strPrint += string.Format("PAN     : {0}", dr["BillToPan"]) + Environment.NewLine;

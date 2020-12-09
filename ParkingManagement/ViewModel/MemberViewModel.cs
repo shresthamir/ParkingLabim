@@ -116,7 +116,7 @@ namespace ParkingManagement.ViewModel
         {
             using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
             {
-                DeviceList = new ObservableCollection<Device>(conn.Query<Device>("select * from DeviceList"));
+                DeviceList = new ObservableCollection<Device>(conn.Query<Device>("SELECT * FROM DeviceList WHERE IsMemberDevice = 1"));
             }
         }
         public MemberViewModel()
@@ -285,7 +285,6 @@ namespace ParkingManagement.ViewModel
                 });
                 MessageBox.Show("Member successfully saved.", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Information);
                 UndoMethod(null);
-
             }
             catch (Exception ex)
             {
@@ -332,7 +331,6 @@ namespace ParkingManagement.ViewModel
                                 //card.CardId = res.FirstOrDefault().CardId;
                                 zkem.SetStrCardNumber(member.Barcode);
                                 zkem.SetUserInfo(zkem.MachineNumber, member.MemberId, member.Barcode, "", 0, true);
-
                                 //card.DeviceList.Where(x => x.DeviceId == device.DeviceId).ToList().ForEach(x => x.Status = true);
                             }
                         }

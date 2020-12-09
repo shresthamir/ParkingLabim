@@ -121,9 +121,9 @@
                                         <RowDefinition Height="25"/>
                                         <RowDefinition/>
                                     </Grid.RowDefinitions>
-                                    <StackPanel Visibility="{Binding Path=(Lib:GlobalClass.EnablePlateNo), Converter={StaticResource BoolToVisibility}}" Orientation="Horizontal" Margin="2">
-                                        <Label Content="Plate No" Width="60"/>
-                                        <TextBox Height="26" Width="150"  Text="{Binding PlateNo, UpdateSourceTrigger=PropertyChanged}">
+                                    <StackPanel Visibility="{Binding Path=(Lib:GlobalClass.EnablePlateNo), Converter={StaticResource BoolToVisibility}}" Orientation="Horizontal" Margin="5 2 2 2">
+                                        <Label Content="{Binding Converter={StaticResource LabelConverter}, ConverterParameter='Plate No'}" Width="80"/>
+                                        <TextBox Height="26" Width="120"  Text="{Binding PlateNo, UpdateSourceTrigger=PropertyChanged}">
                                             <TextBox.InputBindings>
                                                 <KeyBinding Key="Return" Command="{Binding Path=DataContext.SaveCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}"
                                                             CommandParameter="{Binding Path=DataContext,RelativeSource={RelativeSource AncestorType=TextBox}}"/>

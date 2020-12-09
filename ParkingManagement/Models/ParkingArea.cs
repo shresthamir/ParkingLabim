@@ -75,7 +75,7 @@ namespace ParkingManagement.Models
                 else if (string.IsNullOrEmpty(FLOOR))
                     return "Floor cannot be empty";
                 else if (VehicleType <= 0)
-                    return "Please select a vehicle type.";
+                    return $"Please select a {LabelCaption.LabelCaptions["Vehicle Type"]}.";
                 else if (Capacity < 0)
                     return "Vehicle Capacity cannot be less than Zero. Please enter non negative number.";
                 return string.Empty;
@@ -100,7 +100,7 @@ namespace ParkingManagement.Models
                         break;
                     case "VehicleType":
                         if (VehicleType <= 0)
-                            Result = "Please select a vehicle type.";
+                            Result = $"Please select a {LabelCaption.LabelCaptions["Vehicle Type"]}.";
                         break;
                     case "Capacity":
                         if (Capacity < 0)

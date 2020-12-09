@@ -161,7 +161,7 @@ namespace ParkingManagement.ViewModel
                 {
                     string BillNo = InvoicePrefix + InvoiceNo;
                     string DuplicateCaption = GlobalClass.GetReprintCaption(BillNo);
-                    POutVMTouch.PrintBill(BillNo, conn, (TaxInvoice) ? "INVOICE" : "ABBREVIATED TAX INVOCE", DuplicateCaption);
+                    POutVMTouch.PrintBill(BillNo, conn, (TaxInvoice) ? "INVOICE" : "ABBREVIATED TAX INVOICE", DuplicateCaption);
                     GlobalClass.SavePrintLog(BillNo, null, DuplicateCaption);
                     GlobalClass.SetUserActivityLog("Exit", "Re-Print", WorkDetail: string.Empty, VCRHNO: BillNo, Remarks: "Reprinted : " + DuplicateCaption);
 
@@ -311,7 +311,8 @@ namespace ParkingManagement.ViewModel
                                 UID = POUT.UID,
                                 SESSION_ID = POUT.SESSION_ID,
                                 FYID = GlobalClass.FYID,
-                                TaxInvoice = TaxInvoice
+                                TaxInvoice = TaxInvoice,
+                                ExpiryDate = DateTime.Now
                             };
                             PSales.Save(tran);
                             TParkingSalesDetails PSalesDetails = new TParkingSalesDetails
@@ -347,7 +348,7 @@ namespace ParkingManagement.ViewModel
                     {
                         if (!GlobalClass.NoRawPrinter)
                             RawPrinterHelper.SendStringToPrinter(GlobalClass.PrinterName, ((char)27).ToString() + ((char)112).ToString() + ((char)0).ToString() + ((char)64).ToString() + ((char)240).ToString(), "Receipt");   //Open Cash Drawer
-                        POutVMTouch.PrintBill(BillNo.ToString(), conn, (TaxInvoice) ? "TAX INVOICE" : "ABBREVIATED TAX INVOCE");
+                        POutVMTouch.PrintBill(BillNo.ToString(), conn, (TaxInvoice) ? "TAX INVOICE" : "ABBREVIATED TAX INVOICE");
                         if (TaxInvoice)
                         {
                             POutVMTouch.PrintBill(BillNo.ToString(), conn, "INVOICE");

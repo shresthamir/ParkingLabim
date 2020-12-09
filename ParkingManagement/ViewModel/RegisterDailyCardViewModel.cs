@@ -57,7 +57,7 @@ namespace ParkingManagement.ViewModel
         {
             try
             {
-                foreach (var device in DeviceList.Where(x=>x.DeviceType== (int)DeviceType.Entry))
+                foreach (var device in DeviceList.Where(x=>x.DeviceType == (int)DeviceType.Entry))
                 {
                     int maxCardId = await GetCardIdFromDb();
 
@@ -212,7 +212,7 @@ namespace ParkingManagement.ViewModel
         {
             using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
             {
-                DeviceList = new ObservableCollection<Device>(conn.Query<Device>("select * from DeviceList"));
+                DeviceList = new ObservableCollection<Device>(conn.Query<Device>("SELECT * FROM DeviceList WHERE IsMemberDevice = 0"));
             }
         }
 

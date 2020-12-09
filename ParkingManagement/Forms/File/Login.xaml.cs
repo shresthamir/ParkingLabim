@@ -98,7 +98,6 @@ namespace ParkingManagement.Forms.File
                     new MainWindow().Show();
                     this.Close();
                 }
-
             }
             catch (Exception ex)
             {
@@ -137,7 +136,6 @@ namespace ParkingManagement.Forms.File
         private void txtPassword_GotFocus(object sender, RoutedEventArgs e)
         {
             ((PasswordBox)sender).SelectAll();
-
         }
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
@@ -152,7 +150,6 @@ namespace ParkingManagement.Forms.File
                 }
                 e.Handled = true;
             }
-
         }
 
         private void etbPassword_TextChanged(object sender, TextChangedEventArgs e)

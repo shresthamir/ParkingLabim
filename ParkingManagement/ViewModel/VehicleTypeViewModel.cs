@@ -168,7 +168,7 @@ namespace ParkingManagement.ViewModel
         private void UpdateVehicleType()
         {
 
-            if (MessageBox.Show(string.Format(UpdateConfirmText, "Vehicle Type"), MessageBoxCaption, MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
+            if (MessageBox.Show(string.Format(UpdateConfirmText,  LabelCaption.LabelCaptions["Vehicle Type"]), MessageBoxCaption, MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
                 return;
             try
             {

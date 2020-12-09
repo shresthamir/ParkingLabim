@@ -29,7 +29,7 @@
                 <DataGridTextColumn IsReadOnly="True" Binding="{Binding InDate, StringFormat={}{0:dd/MM/yyyy}}" Header="Date" Width="90"/>
                 <DataGridTextColumn IsReadOnly="True" Binding="{Binding InMiti}" Header="Miti" Width="90"/>
                 <DataGridTextColumn IsReadOnly="True" Binding="{Binding InTime}" Header="Time" Width="90"/>
-                <DataGridTextColumn IsReadOnly="True" Binding="{Binding PlateNo}" Header="Plate No" Width="120"/>
+                <DataGridTextColumn IsReadOnly="True" Binding="{Binding PlateNo}" Header="{Binding Converter={StaticResource LabelConverter}, ConverterParameter='Plate No'}" Width="120"/>
                 <DataGridTextColumn IsReadOnly="True" Binding="{Binding Barcode}" Header="Barcode" Width="120"/>
                 <DataGridCheckBoxColumn Header="Close" Binding="{Binding Close}" Width="50"/>
                 <DataGridTextColumn Header="Remarks" Binding="{Binding Remarks}" Width="250"/>

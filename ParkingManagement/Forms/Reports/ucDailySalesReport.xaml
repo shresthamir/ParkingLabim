@@ -40,7 +40,7 @@
                         <ComboBox x:Name="cmdSummary" Width="150" SelectedIndex="0">
                             <ComboBox.Items>
                                 <ComboBoxItem Content="User"/>
-                                <ComboBoxItem Content="Vehicle Type"/>
+                                <ComboBoxItem Content="{Binding Converter={StaticResource LabelConverter}, ConverterParameter='Vehicle Type'}"/>
                                 <ComboBoxItem Content="Rate"/>
                                 <!--<ComboBoxItem Content="Party"/>-->
                             </ComboBox.Items>

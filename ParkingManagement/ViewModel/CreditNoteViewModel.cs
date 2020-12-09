@@ -354,7 +354,7 @@ namespace ParkingManagement.ViewModel
             strPrint += string.Format("PAN     : {0}", dr["BillToPan"]) + Environment.NewLine;
             strPrint += string.Format("Ref No  : {0}", dr["RefBillNo"]) + Environment.NewLine;
             strPrint += string.Format("C/N Remarks: {0}", dr["Remarks"]) + Environment.NewLine;
-            strPrint += string.Format("Vehicle Type : {0} {1}", dr["VType"], string.IsNullOrEmpty(dr["PlateNo"].ToString()) ? string.Empty : "(" + dr["PlateNo"] + ")") + Environment.NewLine;
+            strPrint += string.Format($"{LabelCaption.LabelCaptions["Vehicle Type"]} : {0} {1}", dr["VType"], string.IsNullOrEmpty(dr["PlateNo"].ToString()) ? string.Empty : "(" + dr["PlateNo"] + ")") + Environment.NewLine;
             strPrint += "".PadRight(PrintLen, '-') + Environment.NewLine;
             strPrint += string.Format("Sn.|{0}|  Amount  |", Particulars) + Environment.NewLine;
             strPrint += string.Format("1.  {0}  {1}", Description, GParse.ToDecimal(((bool)dr["TaxInvoice"]) ? dr["Amount"] : dr["GrossAmount"]).ToString("#0.00").PadLeft(8, ' ')) + Environment.NewLine;

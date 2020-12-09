@@ -20,11 +20,13 @@ using System.Windows.Threading;
 using zkemkeeper;
 using ParkingManagement.Services;
 using ParkingManagement.Dtos;
+using System.Runtime.InteropServices;
 
 namespace AccessControlDownloader.ViewModel
 {
     public class MainViewModel : INotifyPropertyChanged
     {
+        private string ConnectionString;
         private static Logger MainLogger = LogManager.GetLogger("MainViewModel");
         public event PropertyChangedEventHandler PropertyChanged;
         //string clearHour = ConfigurationManager.AppSettings["clearHour"];
@@ -38,14 +40,14 @@ namespace AccessControlDownloader.ViewModel
             }
         }
 
-        public RelayCommand ReadLogDateCommand { get; set; }
         public ObservableCollection<Device> DeviceList { get { return _Device; } set { _Device = value; OnPropertyChanged("DeviceList"); } }
         public DateTime DateToday { get { return _DateToday; } set { _DateToday = value; OnPropertyChanged("DateToday"); } }
-        public bool initialLoad { get; set; } = true;
-
+        public string Message { get { return _Message; } set { _Message = value; OnPropertyChanged("Message"); } }
         public MainViewModel()
         {
-            ReadLogDateCommand = new RelayCommand(ExecuteReadLog);
+            SqlConnectionStringBuilder sbr = new SqlConnectionStringBuilder(GlobalClass.DataConnectionString);
+            sbr.ApplicationName = "AccessControlDownloader";
+            ConnectionString = sbr.ConnectionString;
             GetAdminUser();
             GetDeviceList();
             //CheckDeviceStatus();
@@ -72,69 +74,75 @@ namespace AccessControlDownloader.ViewModel
                 }
             }
         }
-
+        DispatcherTimer dispatchTimer;
+        DispatcherTimer ContingencyTimer;
         public void StartTimer()
         {
-            DispatcherTimer dispatchTimer = new DispatcherTimer();
+            DateToday = DateTime.Now;
+            ContingencyTimer = new DispatcherTimer();
+            ContingencyTimer.Tick += new EventHandler(ContingencyTimer_Tick);
+            ContingencyTimer.Interval = new TimeSpan(0, 1, 0);
+            ContingencyTimer.Start();
+
+            dispatchTimer = new DispatcherTimer();
             dispatchTimer.Tick += new EventHandler(DispatchTime_Tick);
-            dispatchTimer.Interval = new TimeSpan(0, 0, 1);
+            dispatchTimer.Interval = new TimeSpan(0, 1, 0);
             dispatchTimer.Start();
+            Task.Run(async () =>
+            {
+                await ExecuteReadLog(true);
+            });
         }
 
-        private int timerSec = 0;
-        private int timerToSyncDeviceTime = 0;
-        private async void DispatchTime_Tick(object sender, EventArgs e)
+        private void ContingencyTimer_Tick(object sender, EventArgs e)
         {
-            try
+            if (DateToday.AddMinutes(5) < DateTime.Now)
             {
-                //var idleTime = IdleTimeDetector.GetIdleTimeInfo();
-                //if (idleTime.IdleTime.TotalSeconds >= 100)
-                //{
+                if (!dispatchTimer.IsEnabled)
+                    dispatchTimer.Start();
+                else
+                    Message = "The Sync App is not working properly. Please restart the app.";
+            }
+        }
 
-                //}
-
-                if (timerSec == 60)
+        private int timerToSyncDeviceTime = 0;
+        private void DispatchTime_Tick(object sender, EventArgs e)
+        {
+            dispatchTimer.Stop();
+            Task.Run(async () =>
+            {
+                try
                 {
-                    ExecuteReadLog(null);
-                    await SaveAccountBill();
-
-                    timerSec = 0;
+                    await ExecuteReadLog(false);
+                    //await SaveAccountBill();
+                    timerToSyncDeviceTime++;
+                    DateToday = DateTime.Now;
+                    dispatchTimer.Start();
                 }
-
-                timerSec++;
-                timerToSyncDeviceTime++;
-                DateToday = DateTime.Now;
-
-
-
-                //CheckDeviceStatus();
-
-            }
-            catch (Exception ex)
-            {
-                MainLogger.Error("From DispatchTime_Tick: " + ex.Message.ToString());
-            }
+                catch (Exception ex)
+                {
+                    if (!dispatchTimer.IsEnabled)
+                        dispatchTimer.Start();
+                    MainLogger.Error("From DispatchTime_Tick: " + ex.GetBaseException().Message);
+                }
+            });
         }
 
         private void GetDeviceList()
         {
-            using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
+            using (SqlConnection conn = new SqlConnection(ConnectionString))
             {
-                DeviceList = new ObservableCollection<Device>(conn.Query<Device>("select  * from DeviceList D join vehicletype V on D.vehicletype=V.vtypeid"));
+                DeviceList = new ObservableCollection<Device>(conn.Query<Device>("SELECT D.DeviceId, D.DeviceName, D.DeviceIP, D.DevicePort, D.VehicleType, D.IsMemberDevice, D.DeviceType, V.VTypeID, V.Description, V.Capacity, V.UID, V.ButtonImage FROM DeviceList D JOIN VehicleType V on D.VehicleType = V.VTypeID"));
                 foreach (Device vtype in DeviceList)
                 {
-                    if (vtype.ButtonImage == null)
-                    {
-                        continue;
-                    }
-
-                    vtype.ImageSource = Imaging.BinaryToImage(vtype.ButtonImage);
+                    if ((vtype.ButtonImage?.Length ?? 0) > 0)
+                        vtype.ImageSource = Imaging.BinaryToImage(vtype.ButtonImage);
                 }
             }
         }
         private void GetAdminUser()
         {
-            using (SqlConnection conn = new SqlConnection(GlobalClass.DataConnectionString))
+            using (SqlConnection conn = new SqlConnection(ConnectionString))
             {
                 var user = conn.Query<User>(string.Format("SELECT UID, UserName, [Password], FullName, UserCat, [STATUS], DESKTOP_ACCESS, MOBILE_ACCESS, SALT  FROM USERS WHERE UserName = 'admin'")).FirstOrDefault();
                 if (user == null)
@@ -162,16 +170,16 @@ namespace AccessControlDownloader.ViewModel
         private ObservableCollection<Device> _Device;
         private DateTime _DateToday;
 
-        private async void ExecuteReadLog(object obj)
+        private async Task ExecuteReadLog(bool initialLoad = false)
         {
             try
             {
+                await Task.Yield();
                 // Skip logs of exit device 
                 //foreach (var device in DeviceList.Where(x => x.DeviceType == (int)DeviceType.Entry))
-                foreach (var device in DeviceList)
+                foreach (Device device in DeviceList)
                 {
                     var zkem = new zkemkeeper.CZKEM();
-
                     device.DeviceIp = device.DeviceIp.Trim();
                     bool isValidIpA = UniversalStatic.ValidateIP(device.DeviceIp);
                     if (!isValidIpA)
@@ -180,35 +188,35 @@ namespace AccessControlDownloader.ViewModel
                         device.GridBackground = new SolidColorBrush(Colors.Red);
                         MainLogger.Error($"Invalid Ip: {device.DeviceIp}");
                         continue;
-                        //throw new Exception("The Device IP is invalid !!");
                     }
+
+                    MainLogger.Info($"{device.DeviceIp} is valid IP Address");
 
                     isValidIpA = UniversalStatic.PingTheDevice(device.DeviceIp);
                     if (!isValidIpA)
                     {
                         device.Status = false;
                         device.GridBackground = new SolidColorBrush(Colors.Red);
-                        MainLogger.Error($"Failed to ping {device.DeviceIp}");
+                        MainLogger.Info($"Failed to ping {device.DeviceIp}");
                         continue;
-                        //throw new Exception("The device at " + device.DeviceIp + ":" + device.DevicePort + " did not respond!!");
                     }
+                    MainLogger.Info($"Ping successfull to {device.DeviceIp}");
 
                     if (zkem.Connect_Net(device.DeviceIp, device.DevicePort))
                     {
-                        //MainLogger.Info($"Connected to Device sucessfully: {device.DeviceIp}");
+                        MainLogger.Info($"Connected to Device sucessfully: {device.DeviceIp}");
                         device.Status = true;
                         device.GridBackground = new SolidColorBrush(Colors.LightGreen);
-                        //List<MainViewModel> logData = new List<MainViewModel>();
 
                         ////To get device time every hour
-                        if (initialLoad || timerToSyncDeviceTime == 3600)
+                        if (initialLoad || timerToSyncDeviceTime == 60)
                         {
-                            initialLoad = false;
                             var deviceDate = GetDeviceDate(zkem);
 
                             if (deviceDate.ToString("g") != DateTime.Now.ToString("g"))
                             {
                                 zkem.SetDeviceTime(zkem.MachineNumber);
+
                                 MainLogger.Info($"System date and device found different. So Date time synced with device: {device.DeviceIp}");
                                 deviceDate = GetDeviceDate(zkem);
                             }
@@ -223,61 +231,48 @@ namespace AccessControlDownloader.ViewModel
 
                         if (zkem.ReadAllGLogData(zkem.MachineNumber))
                         {
+                            int counter = 0;
                             //MainViewModel ld = new MainViewModel();
-
                             while (zkem.GetGeneralLogData(zkem.MachineNumber, ref dwTMachineNumber, ref dwEnrollNumberInt, ref dwEMachineNumber, ref dwVerifyMode, ref dwInOutMode, ref dwYear, ref dwMonth, ref dwDay, ref dwHour, ref dwMinute))
                             {
+                                MainLogger.Debug($"{DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt")} {dwEnrollNumberInt.ToString().PadRight(15, ' ')} {dwYear} {dwMonth} {dwDay} {dwHour} {dwMinute}");
                                 if (dwEnrollNumberInt > short.MaxValue || dwEnrollNumberInt < short.MinValue)
                                 {
                                     continue;
                                 }
-                                //logData.Add(new MainViewModel
-                                //{
-                                //    dwTMachineNumber = ld.dwTMachineNumber,
-                                //    dwEMachineNumber = ld.dwEMachineNumber,
-                                //    dwEnrollNumberInt = ld.dwEnrollNumberInt,
-                                //    dwVerifyMode = ld.dwVerifyMode,
-                                //    dwInOutMode = ld.dwInOutMode,
-                                //    dwYear = ld.dwYear,
-                                //    dwMonth = ld.dwMonth,
-                                //    dwDay = ld.dwDay,
-                                //    dwHour = ld.dwHour,
-                                //    dwMinute = ld.dwMinute
-                                //});
+                                counter++;
                                 if (device.DeviceType == (int)DeviceType.Entry)
                                 {
-                                    using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
-                                    {
-                                        conn.Open();
-                                        using (SqlTransaction tran = conn.BeginTransaction())
-                                        {
-                                            //SaveLogsToDb(this, tran, device);
-                                            SaveToParkingInDetails(this, tran, device);
+                                    SaveLogsToDb(this, device);
 
-                                            string query = "select CardId from parkingindetails p join DailyCards d on p.Barcode=d.CardNumber where pid not in(select pid from ParkingOutDetails)";
-                                            var res=conn.Query<int>(query, transaction: tran);
-                                            if (res != null)
-                                            {
-                                                foreach(var id in res)
-                                                {
-                                                    //if (CheckIfMemberCard(this.dwEnrollNumberInt, tran))
-                                                    if (CheckIfMemberCard(id, tran))
-                                                    {
-                                                        //To Deactivate member card
-                                                        zkem.EnableUser(zkem.MachineNumber, id, zkem.MachineNumber, 10, false);
-                                                        MainLogger.Info($"Card with id: {id} is disabled.");
-                                                    }
-                                                }
-                                            }
+                                    await SaveToParkingInDetails(this, device);
 
-                                            
-                                            tran.Commit();
-                                        }
-                                    }
+
+                                    //if (device.IsMemberDevice == 1)
+                                    //{
+                                    //    zkem.EnableUser(zkem.MachineNumber, dwEnrollNumberInt, zkem.MachineNumber, 10, false);
+                                    //}
+                                    ////Commented By Amir [Remove after review]
+                                    ////string query = "select CardId from parkingindetails p join DailyCards d on p.Barcode=d.CardNumber where pid not in(select pid from ParkingOutDetails)";
+                                    ////var res = conn.Query<int>(query, transaction: tran);
+                                    ////if (res != null)
+                                    ////{
+                                    ////    foreach (var id in res)
+                                    ////    {
+                                    ////        //if (CheckIfMemberCard(this.dwEnrollNumberInt, tran))
+                                    ////        if (CheckIfMemberCard(id, tran))
+                                    ////        {
+                                    ////            //To Deactivate member card
+                                    ////            zkem.EnableUser(zkem.MachineNumber, id, zkem.MachineNumber, 10, false);
+                                    ////            MainLogger.Info($"Card with id: {id} is disabled.");
+                                    ////        }
+                                    ////    }
+                                    ////}
+
                                 }
                                 else if (device.DeviceType == (int)DeviceType.Exit)
                                 {
-                                    using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
+                                    using (SqlConnection conn = new SqlConnection(ConnectionString))
                                     {
                                         conn.Open();
                                         using (SqlTransaction tran = conn.BeginTransaction())
@@ -295,79 +290,35 @@ namespace AccessControlDownloader.ViewModel
                                 }
                             }
 
-                            //-------------------save to log before clearing data--------------
-                            //var logs = logData.Select(x => new DeviceLog
-                            //{
-                            //    dwTMachineNumber = x.dwTMachineNumber,
-                            //    dwEMachineNumber = x.dwEMachineNumber,
-                            //    dwEnrollNumberInt = x.dwEnrollNumberInt,
-                            //    dwVerifyMode = x.dwVerifyMode,
-                            //    dwInOutMode = x.dwInOutMode,
-                            //    dwYear = x.dwYear,
-                            //    dwMonth = x.dwMonth,
-                            //    dwDay = x.dwDay,
-                            //    dwHour = x.dwHour,
-                            //    dwMinute = ld.dwMinute,
-                            //    DeviceIp = device.DeviceIp,
-                            //    DeviceId = device.DeviceId
-                            //});
-                            //string jsonLogsObj = JsonConvert.SerializeObject(logs);
-                            //MainLogger.Info(jsonLogsObj);
-                            //-------------------save to log before clearing data--------------
-
                             //clear data of current device
-                            var TimeToClear = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, Convert.ToInt32(GlobalClass.clearhour), Convert.ToInt32(GlobalClass.clearminute), 0);
-                            if (DateTime.Now >= TimeToClear && DateTime.Now <= TimeToClear.AddMinutes(2))
-                            {
-
-                                zkem.EnableDevice(zkem.MachineNumber, false);
-                                MainLogger.Info($"Disabled device to clear logs: {device.DeviceIp}");
-                                zkem.ClearGLog(zkem.MachineNumber);
-                                MainLogger.Info($"Cleared logs of device: {device.DeviceIp}");
-
-                                zkem.EnableDevice(zkem.MachineNumber, true);
-                                MainLogger.Info($"Enabled device after clrearing logs: {device.DeviceIp}");
-
-                                DisableExpiredMember(zkem);
-                            }
-
-                            //using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
+                            //if (timerToSyncDeviceTime == 60)
                             //{
-                            //    conn.Open();
-                            //    using (SqlTransaction tran = conn.BeginTransaction())
-                            //    {
-                            //        foreach (var log in logData)
-                            //        {
-                            //            //// Skip logs of member device
-                            //            //if (device.IsMemberDevice == 1)
-                            //            //{
-                            //            //    if (CheckIfMemberCard(ld.dwEnrollNumberInt, tran))
-                            //            //    {
-                            //            //        //To Deactivate member card
-                            //            //        zkem.EnableUser(zkem.MachineNumber, ld.dwEnrollNumberInt, zkem.MachineNumber, 10, false);
-                            //            //    }
-                            //            //    continue;
-                            //            //}
-                            //            SaveLogsToDb(log, tran, device);
-                            //            SaveToParkingInDetails(log, tran, device);
-                            //            if (CheckIfMemberCard(log.dwEnrollNumberInt, tran))
-                            //            {
-                            //                //To Deactivate member card
-                            //                zkem.EnableUser(zkem.MachineNumber, log.dwEnrollNumberInt, zkem.MachineNumber, 10, false);
-                            //            }
-                            //        }
-                            //        tran.Commit();
-                            //    }
+                            zkem.EnableDevice(zkem.MachineNumber, false);
+                            MainLogger.Info($"Disabled device to clear logs: {device.DeviceIp}");
+
+                            zkem.ClearGLog(zkem.MachineNumber);
+                            MainLogger.Info($"Cleared logs of device: {device.DeviceIp}");
+
+                            zkem.EnableDevice(zkem.MachineNumber, true);
+                            MainLogger.Info($"Enabled device after clrearing logs: {device.DeviceIp}");
+
+                            DisableExpiredMember(zkem);
+                            if (counter > 0)
+                            {
+                                device.LastDownloadTime = DateTime.Now.ToString("hh:mm tt");
+                                device.LastDownloadCount = counter;
+                            }
                             //}
                         }
+                        zkem.Disconnect();
+                        Marshal.ReleaseComObject(zkem);
                     }
                     else
                     {
                         device.Status = false;
                         device.GridBackground = new SolidColorBrush(Colors.Red);
-
                     }
-                    using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
+                    using (SqlConnection conn = new SqlConnection(ConnectionString))
                     {
                         var tableName = device.DeviceType == 1 ? "deviceLog" : "exitdevicelog";
                         //var totalEnteredVechicle = conn.ExecuteScalar<int>($"SELECT count(*) FROM PARKINGINDETAILS p join devicelist d on p.vehicletype=d.vehicletype where deviceid='{device.DeviceId}' and convert(date, indate) = convert(date, getdate())");
@@ -378,11 +329,13 @@ namespace AccessControlDownloader.ViewModel
             }
             catch (Exception ex)
             {
-                MainLogger.Error("From ExecuteReadLog: " + ex.Message.ToString());
+                MainLogger.Error("From ExecuteReadLog: " + ex.GetBaseException().ToString());
             }
         }
 
         bool alreadyEntered = false;
+        private string _Message;
+
         async Task SaveAccountBill()
         {
             if (!TimeToSaveAccount()) return;
@@ -566,7 +519,7 @@ namespace AccessControlDownloader.ViewModel
         }
         private async Task<DailyTransactionDto> GetParkingSalesOfTheDay()
         {
-            using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
+            using (SqlConnection conn = new SqlConnection(ConnectionString))
             {
                 conn.Open();
                 var res = await BillingService.GetLastParkingBillDate(GlobalClass.mcode);
@@ -587,7 +540,7 @@ namespace AccessControlDownloader.ViewModel
         }
         private async Task<IEnumerable<dynamic>> GetMembershipSalesOfTheDay()
         {
-            using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
+            using (SqlConnection conn = new SqlConnection(ConnectionString))
             {
                 conn.Open();
                 var res = await BillingService.GetLastMembersBillDate(GlobalClass.mcode);
@@ -614,7 +567,7 @@ namespace AccessControlDownloader.ViewModel
 
         private void DisableExpiredMember(CZKEM zkem)
         {
-            using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
+            using (SqlConnection conn = new SqlConnection(ConnectionString))
             {
                 conn.Open();
                 var query = "select m.Barcode,* from members m join dailycards c on m.BARCODE=c.CardNumber where ExpiryDate < GETDATE()";
@@ -673,125 +626,45 @@ namespace AccessControlDownloader.ViewModel
                         zkem.SetDeviceTime(zkem.MachineNumber);
                         MainLogger.Info($"Date time synced with device: {device.DeviceIp}");
                     }
-
-
-                    //if (device.DeviceType == (int)DeviceType.Entry)
-                    //{
-                    //    zkem.EnableDevice(zkem.MachineNumber, false);
-                    //    MainLogger.Info($"Disabled device: {device.DeviceIp}");
-                    //    MainLogger.Info($"Starting to ReadAllGLogData : {device.DeviceIp}");
-
-                    //    if (zkem.ReadAllGLogData(zkem.MachineNumber))
-                    //    {
-                    //        if (zkem.GetGeneralLogData(zkem.MachineNumber, ref dwTMachineNumber, ref dwEnrollNumberInt, ref dwEMachineNumber, ref dwVerifyMode, ref dwInOutMode, ref dwYear, ref dwMonth, ref dwDay, ref dwHour, ref dwMinute))
-                    //        {
-                    //            while (zkem.GetGeneralLogData(zkem.MachineNumber, ref dwTMachineNumber, ref dwEnrollNumberInt, ref dwEMachineNumber, ref dwVerifyMode, ref dwInOutMode, ref dwYear, ref dwMonth, ref dwDay, ref dwHour, ref dwMinute))
-                    //            {
-                    //                if (dwEnrollNumberInt > short.MaxValue || dwEnrollNumberInt < short.MinValue)
-                    //                {
-                    //                    continue;
-                    //                }
-                    //                using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
-                    //                {
-                    //                    conn.Open();
-                    //                    using (SqlTransaction tran = conn.BeginTransaction())
-                    //                    {
-                    //                        SaveLogsToDb(this, tran, device);
-                    //                        SaveToParkingInDetails(this, tran, device);
-                    //                        if (CheckIfMemberCard(this.dwEnrollNumberInt, tran))
-                    //                        {
-                    //                            //To Deactivate member card
-                    //                            zkem.EnableUser(zkem.MachineNumber, this.dwEnrollNumberInt, zkem.MachineNumber, 10, false);
-                    //                        }
-                    //                        tran.Commit();
-                    //                    }
-                    //                }
-                    //            }
-                    //        }
-                    //        else
-                    //        {
-                    //            MainLogger.Info($"No transaction data found on device: {device.DeviceIp}");
-                    //        }
-                    //    }
-                    //    else
-                    //    {
-                    //        MainLogger.Info($"No transaction data found on device: {device.DeviceIp}");
-                    //    }
-                    //    //clear data of current device
-                    //    zkem.ClearGLog(zkem.MachineNumber);
-                    //    MainLogger.Info($"Cleared logs of device: {device.DeviceIp}");
-
-                    //    zkem.EnableDevice(zkem.MachineNumber, true);
-                    //    MainLogger.Info($"Enabled device: {device.DeviceIp}");
-                    //}
                 }
             }
-
         }
 
-        private bool SaveLogsToDb(MainViewModel log, SqlTransaction tran, Device device, int pid)
+        private bool SaveLogsToDb(MainViewModel log, Device device, int pid = 0)
         {
-            var alreadyExist = tran.Connection.QueryFirstOrDefault<DeviceLog>(@"Select * from deviceLog where dwTMachineNumber=@dwTMachineNumber and
-                                                                                                                dwEMachineNumber=@dwEMachineNumber and
-                                                                                                                dwEnrollNumberInt=@dwEnrollNumberInt and
-                                                                                                                dwVerifyMode=@dwVerifyMode and
-                                                                                                                dwInOutMode=@dwInOutMode and
-                                                                                                                dwYear=@dwYear and
-                                                                                                                dwMonth=@dwMonth and
-                                                                                                                dwDay=@dwDay and
-                                                                                                                dwHour=@dwHour and
-                                                                                                                dwMinute=@dwMinute and
-                                                                                                                DeviceIp=@DeviceIp and
-                                                                                                                DeviceId=@DeviceId and
-                                                                                                                pid=@pid", new
-            {
-                dwTMachineNumber = log.dwTMachineNumber,
-                dwEMachineNumber = log.dwEMachineNumber,
-                dwEnrollNumberInt = log.dwEnrollNumberInt,
-                dwVerifyMode = log.dwVerifyMode,
-                dwInOutMode = log.dwInOutMode,
-                dwYear = log.dwYear,
-                dwMonth = log.dwMonth,
-                dwDay = log.dwDay,
-                dwHour = log.dwHour,
-                dwMinute = log.dwMinute,
-                DeviceIp = device.DeviceIp,
-                DeviceId = device.DeviceId,
-                pid = pid
-            }, tran);
-            if (alreadyExist == null)
+            using (SqlConnection conn = new SqlConnection(ConnectionString))
             {
                 string strSQL = @"INSERT INTO deviceLog(
-                                                        id,                   
-                                                        dwTMachineNumber,
-                                                        dwEMachineNumber,
-                                                        dwEnrollNumberInt,
-                                                        dwVerifyMode,
-                                                        dwInOutMode,
-                                                        dwYear,
-                                                        dwMonth,
-                                                        dwDay,
-                                                        dwHour,
-                                                        dwMinute,
-                                                        DeviceIp,
-                                                        DeviceId,
-                                                        pid) 
-                                                    values(
-                                                        (SELECT ISNULL(MAX(ID),0) +1 FROM deviceLog),
-                                                        @dwTMachineNumber,
-                                                        @dwEMachineNumber,
-                                                        @dwEnrollNumberInt,
-                                                        @dwVerifyMode,
-                                                        @dwInOutMode,
-                                                        @dwYear,
-                                                        @dwMonth,
-                                                        @dwDay,
-                                                        @dwHour,
-                                                        @dwMinute,
-                                                        @DeviceIp,
-                                                        @DeviceId,
-                                                        @pid)";
-                tran.Connection.Execute(strSQL, new
+                                                    id,                   
+                                                    dwTMachineNumber,
+                                                    dwEMachineNumber,
+                                                    dwEnrollNumberInt,
+                                                    dwVerifyMode,
+                                                    dwInOutMode,
+                                                    dwYear,
+                                                    dwMonth,
+                                                    dwDay,
+                                                    dwHour,
+                                                    dwMinute,
+                                                    DeviceIp,
+                                                    DeviceId,
+                                                    pid) 
+                                                values(
+                                                    (SELECT ISNULL(MAX(ID),0) +1 FROM deviceLog),
+                                                    @dwTMachineNumber,
+                                                    @dwEMachineNumber,
+                                                    @dwEnrollNumberInt,
+                                                    @dwVerifyMode,
+                                                    @dwInOutMode,
+                                                    @dwYear,
+                                                    @dwMonth,
+                                                    @dwDay,
+                                                    @dwHour,
+                                                    @dwMinute,
+                                                    @DeviceIp,
+                                                    @DeviceId,
+                                                    @pid)";
+                conn.Execute(strSQL, new
                 {
                     dwTMachineNumber = log.dwTMachineNumber,
                     dwEMachineNumber = log.dwEMachineNumber,
@@ -806,11 +679,10 @@ namespace AccessControlDownloader.ViewModel
                     DeviceIp = device.DeviceIp,
                     DeviceId = device.DeviceId,
                     pid = pid
-                }, tran);
-                MainLogger.Info($"Saved logs of device: {device.DeviceIp}");
-                return true;
+                });
             }
-            return false;
+            MainLogger.Info($"Saved logs of device: {device.DeviceIp}");
+            return true;
         }
         private void SaveLogsToExitDb(MainViewModel log, SqlTransaction tran, Device device, int pid)
         {
@@ -908,58 +780,60 @@ namespace AccessControlDownloader.ViewModel
             return true;
         }
 
-        private void SaveToParkingInDetails(MainViewModel ld, SqlTransaction tran, Device device)
+        private async Task SaveToParkingInDetails(MainViewModel ld, Device device, bool Retry = false)
         {
             try
             {
-                ParkingIn Parking = new ParkingIn();
-
-                var maxcardId = GetMaxCardId();
-                if (ld.dwEnrollNumberInt <= maxcardId)
+                using (SqlConnection conn = new SqlConnection(ConnectionString))
                 {
-                    Parking.PID = Convert.ToInt32(GetInvoiceNo("PID", tran));
-                    Parking.FYID = GlobalClass.FYID;
-                    Parking.Barcode = GetCardNumberByEnrollId(ld.dwEnrollNumberInt);
-                    Parking.UID = GlobalClass.User.UID;
-                    //Parking.PlateNo = ld.dwEnrollNumber;
-                    Parking.SESSION_ID = 1;
-                    var logDate = new DateTime(ld.dwYear, ld.dwMonth, ld.dwDay, ld.dwHour, ld.dwMinute, ld.dwSecond);
-                    Parking.InDate = new DateTime(ld.dwYear, ld.dwMonth, ld.dwDay);
-                    Parking.InTime = logDate.ToString("hh:mm:ss tt");
-                    var nepDate = new DateConverter(GlobalClass.TConnectionString);
-                    Parking.InMiti = nepDate.CBSDate(Parking.InDate);
-                    Parking.VehicleType = GetVechicleTypeByDeviceId(device.DeviceId);
-
-                    var alreadyExist = tran.Connection.QueryFirstOrDefault<ParkingIn>($"Select * from parkingindetails where fyid=@fyid and vehicletype=@vehicletype and indate=@indate and inmiti=@inmiti and intime=@intime and barcode=@Barcode", Parking, tran);
-                    //var alreadyExist = tran.Connection.QueryFirstOrDefault<ParkingIn>($"Select * from parkingindetails where ParkingInDetails.PID not in (Select PID from ParkingOutDetails where FYID=@fyid) and barcode=@Barcode", Parking, tran);
-                    if (alreadyExist == null)
+                    conn.Open();
+                    using (SqlTransaction tran = conn.BeginTransaction())
                     {
-                        string strSQL = @"INSERT INTO ParkingInDetails(PID, FYID, VehicleType, InDate, InTime, PlateNo, Barcode, [UID], InMiti, SESSION_ID)
+                        ParkingIn Parking = new ParkingIn();
+                        Parking.Barcode = await GetCardNumberByEnrollId(ld.dwEnrollNumberInt);
+                        if (string.IsNullOrEmpty(Parking.Barcode))
+                        {
+                            MainLogger.Error($"CardId: {ld.dwEnrollNumberInt} is not present in database!");
+                            return;
+                        }
+                        Parking.FYID = GlobalClass.FYID;
+                        Parking.UID = GlobalClass.User.UID;
+                        //Parking.PlateNo = ld.dwEnrollNumber;
+                        Parking.SESSION_ID = 1;
+                        var logDate = new DateTime(ld.dwYear, ld.dwMonth, ld.dwDay, ld.dwHour, ld.dwMinute, ld.dwSecond);
+                        Parking.InDate = new DateTime(ld.dwYear, ld.dwMonth, ld.dwDay);
+                        Parking.InTime = logDate.ToString("hh:mm:ss tt");
+                        Parking.InMiti = tran.Connection.ExecuteScalar<string>("select MITI from datemiti WHERE AD = @InDate", new { Parking.InDate }, tran);
+                        Parking.VehicleType = device.VehicleType;
+
+                        var alreadyExist = tran.Connection.QueryFirstOrDefault<ParkingIn>($"Select * from parkingindetails where fyid = @fyid and vehicletype=@vehicletype and indate=@indate and inmiti=@inmiti and intime=@intime and barcode=@Barcode", Parking, tran);
+                        //var alreadyExist = tran.Connection.QueryFirstOrDefault<ParkingIn>($"Select * from parkingindetails where ParkingInDetails.PID not in (Select PID from ParkingOutDetails where FYID=@fyid) and barcode=@Barcode", Parking, tran);
+                        if (alreadyExist == null)
+                        {
+                            Parking.PID = Convert.ToInt32(await GetPID("PID", tran));
+                            string strSQL = @"INSERT INTO ParkingInDetails(PID, FYID, VehicleType, InDate, InTime, PlateNo, Barcode, [UID], InMiti, SESSION_ID)
                           Values(@PID, @FYID, @VehicleType,@InDate,@InTime,@PlateNo,@Barcode,@UID,@InMiti, @SESSION_ID)";
-                        tran.Connection.Execute(strSQL, Parking, tran);
-
-                        tran.Connection.Execute("UPDATE tblSequence SET CurNo = CurNo + 1 WHERE VNAME = 'PID' AND FYID = " + GlobalClass.FYID, transaction: tran);
-                        SaveLogsToDb(ld, tran, device, Parking.PID);
+                            tran.Connection.Execute(strSQL, Parking, tran);
+                            tran.Commit();
+                        }
                     }
-                    //else
-                    //{
-                    //    MainLogger.Info("---------------From SaveLogsToDb: Already Exists:---------------");
-                    //    string jsonLogsObj = JsonConvert.SerializeObject(alreadyExist);
-                    //    MainLogger.Info(jsonLogsObj);
-                    //    MainLogger.Info("---------------End SaveLogsToDb: Already Exists:----------------");
-
-                    //}
-
                 }
-                else
+            }
+            catch (SqlException SqlEx)
+            {
+                if (SqlEx.Number == 2627)
                 {
-                    //MessageBox.Show($"CardId: {ld.dwEnrollNumberInt} is not present in database!");
-                    MainLogger.Error($"CardId: {ld.dwEnrollNumberInt} is not present in database!");
+                    await GetPID("PID");
+                    if (!Retry)
+                        await SaveToParkingInDetails(ld, device, true);
                 }
+                MainLogger.Error("From SaveLogsToDb: " + SqlEx.GetBaseException().Message);
+                MainLogger.Error(Newtonsoft.Json.JsonConvert.SerializeObject(new { ld.dwEnrollNumberInt, ld.dwYear, ld.dwMonth, ld.dwDay, ld.dwHour, ld.dwMinute, ld.dwSecond, device.DeviceIp }, Formatting.Indented));
             }
             catch (Exception ex)
             {
-                MainLogger.Error("From SaveLogsToDb: " + ex.Message.ToString());
+                MainLogger.Error("From SaveLogsToDb: " + ex.GetBaseException().Message);
+                MainLogger.Error(Newtonsoft.Json.JsonConvert.SerializeObject(new { ld.dwEnrollNumberInt, ld.dwYear, ld.dwMonth, ld.dwDay, ld.dwHour, ld.dwMinute, ld.dwSecond, device.DeviceIp }, Formatting.Indented));
             }
         }
         private bool SaveToParkingOutDetails(MainViewModel ld, SqlTransaction tran, Device device)
@@ -987,8 +861,7 @@ namespace AccessControlDownloader.ViewModel
 
             POUT.OutDate = new DateTime(ld.dwYear, ld.dwMonth, ld.dwDay);
             POUT.OutTime = logDate.ToString("hh:mm:ss tt");
-            var nepDate = new DateConverter(GlobalClass.TConnectionString);
-            POUT.OutMiti = nepDate.CBSDate(POUT.OutDate);
+            POUT.OutMiti = tran.Connection.ExecuteScalar<string>("select MITI from datemiti WHERE AD = @OutDate", new { POUT.OutDate }, tran);
 
             POUT.Interval = GetInterval(PIN.InDate, POUT.OutDate, PIN.InTime, POUT.OutTime);
             POUT.PID = PIN.PID;
@@ -1015,37 +888,53 @@ namespace AccessControlDownloader.ViewModel
 
         private int GetMaxCardId()
         {
-            using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
+            using (SqlConnection conn = new SqlConnection(ConnectionString))
             {
                 int cardid = conn.QueryFirstOrDefault<int>($"select max(isnull(cardid,0)) from dailycards");
                 return cardid;
             }
         }
 
-        private byte GetVechicleTypeByDeviceId(int deviceId)
-        {
-            using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
-            {
-                byte vehicleType = conn.QueryFirstOrDefault<byte>($"select vehicletype from DeviceList where deviceid='{deviceId}'");
-                return vehicleType;
-            }
-        }
 
-        private string GetCardNumberByEnrollId(int dwEnrollNumberInt)
+
+        private async Task<string> GetCardNumberByEnrollId(int dwEnrollNumberInt)
         {
-            using (SqlConnection conn = new SqlConnection(GlobalClass.TConnectionString))
+            using (SqlConnection conn = new SqlConnection(ConnectionString))
             {
-                string cardNumber = conn.QueryFirstOrDefault<string>($"select cardnumber from dailycards where cardid='{dwEnrollNumberInt}'");
+                string cardNumber = await conn.QueryFirstOrDefaultAsync<string>($"select cardnumber from dailycards where cardid = @dwEnrollNumberInt", new { dwEnrollNumberInt });
                 return cardNumber;
             }
         }
 
-        string GetInvoiceNo(string VNAME, SqlTransaction tran)
+
+        async Task<string> GetPID(string VNAME)
         {
-            string invoice = tran.Connection.ExecuteScalar<string>("SELECT CurNo FROM tblSequence WHERE VNAME = @VNAME AND FYID = @FYID", new { VNAME = VNAME, FYID = GlobalClass.FYID }, tran);
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(ConnectionString))
+                {
+                    conn.Open();
+                    using (SqlTransaction tran = conn.BeginTransaction())
+                    {
+                        string pid = await GetPID(VNAME, tran);
+                        tran.Commit();
+                        return pid;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MainLogger.Error("From GetPID: " + ex.GetBaseException().Message);
+                return string.Empty;
+            }
+        }
+        async Task<string> GetPID(string VNAME, SqlTransaction tran)
+        {
+            string invoice;
+            invoice = await tran.Connection.ExecuteScalarAsync<string>("UPDATE tblSequence SET CurNo = CurNo + 1 OUTPUT DELETED.CurNo WHERE VNAME = @VNAME AND FYID = @FYID", new { VNAME = VNAME, FYID = GlobalClass.FYID }, tran);
             if (string.IsNullOrEmpty(invoice))
             {
-                tran.Connection.Execute("INSERT INTO tblSequence(VNAME, FYID, CurNo) VALUES(@VNAME, @FYID, 1)", new { VNAME = VNAME, FYID = GlobalClass.FYID }, tran);
+                await tran.Connection.ExecuteAsync("INSERT INTO tblSequence(VNAME, FYID, CurNo) VALUES(@VNAME, @FYID, 1)", new { VNAME = VNAME, FYID = GlobalClass.FYID }, tran);
                 invoice = "1";
             }
             return invoice;

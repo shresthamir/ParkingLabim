@@ -20,14 +20,100 @@
             <DropShadowBitmapEffect/>
         </Border.BitmapEffect>
         <StackPanel VerticalAlignment="top">
-            <!--<StackPanel Margin="20">
-                <TextBox Text="Access Control Device Syncer" HorizontalAlignment="Center" FontWeight="Bold" Background="#19717C" Foreground="White" Padding="10"/>
-            </StackPanel>-->
-            <!--<DockPanel Margin="0,30,0,0">
-                <Label Grid.Column="0" Width="150" Content="{Binding DateToday}" HorizontalAlignment="Left"/>
-                <Button HorizontalAlignment="Right" Grid.Column="1" x:Name="ReadLogDate" Content="ReadLogDate" Command="{Binding ReadLogDateCommand}" Margin="5 0 5 0" Width="100"/>
-            </DockPanel>-->
+            <Border BorderThickness="1" BorderBrush="Black" CornerRadius="2">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Access Control Device Status" FontSize="15" FontWeight="Bold" Padding="10 5"/>
+                    <TextBlock Text="{Binding DateToday}" HorizontalAlignment="Right" FontSize="15" FontWeight="SemiBold" Padding="10 5"/>
+                    <TextBlock Grid.Row="1" Text="{Binding Message}" FontWeight="SemiBold" Foreground="Red" Padding="10 5"/>
+                </Grid>
+            </Border>
             <StackPanel >
+                <Border x:Name="Template" BorderBrush="Gainsboro" BorderThickness="1"  Width="645" Height="120" Margin="15" Padding="10" CornerRadius="10" Visibility="Collapsed">
+                    <Border.Background>
+                        <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                            <GradientStop Color="#A7D9E2" Offset="0.306"/>
+                            <GradientStop Color="#A7D9E2"/>
+                            <GradientStop Color="#A7D9E2" Offset="0.422"/>
+                            <GradientStop Color="White" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Border.Background>
+                    <Border.BitmapEffect>
+                        <DropShadowBitmapEffect/>
+                    </Border.BitmapEffect>
+                    <Grid x:Name="GrdItem" Margin="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="120"/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="150"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Image Grid.Column="0" Grid.RowSpan="3"  Source="{Binding ImageSource}" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Column="1" Foreground="black" VerticalAlignment="Center" FontWeight="Bold" FontSize="25" >
+                            <Run Text="{Binding Devicename}"/>
+                            <!--<Run Text="Entry 1"/>-->
+                        </TextBlock>
+
+                        <StackPanel Grid.ColumnSpan="5" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                            <Ellipse x:Name="eStatus" Width="18" Height="18"  Stroke="Black">
+                                <Ellipse.Style>
+                                    <Style TargetType="Ellipse">
+                                        <Setter  Property="Fill" Value="#CC4F26" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Status}" Value="True">
+                                                <Setter Property="Fill" Value="LightGreen" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Status}" Value="False">
+                                                <Setter Property="Fill" Value="#CC4F26" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Ellipse.Style>
+                            </Ellipse>
+                            <TextBlock x:Name="tStatus" Margin="5 0" FontWeight="SemiBold" FontSize="16">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Text" Value="Offline" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Status}" Value="True">
+                                                <Setter Property="Text" Value="Online" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Status}" Value="False">
+                                                <Setter Property="Text" Value="Offline" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </StackPanel>
+                        <TextBlock Grid.Column="1" Grid.Row="1" Foreground="black" VerticalAlignment="Center" FontWeight="Bold" FontSize="25">
+                            <Run Text="{Binding EnteredVehicle}" /> 
+                            <Run Text="Vehicles Entered" FontSize="16" />
+                        </TextBlock>
+                        <TextBlock Grid.Row="1" Grid.ColumnSpan="5" HorizontalAlignment="Right" Foreground="black" VerticalAlignment="Center" FontWeight="Bold" FontSize="25">
+                            <Run Text="{Binding DeviceTime}" />
+                            <!--<Run Text="10:49 AM" />-->
+                        </TextBlock>
+
+                        <TextBlock Grid.Column="1" Grid.Row="2" Foreground="black" VerticalAlignment="Center" FontWeight="SemiBold">
+                            <Run Text="Last Download Time :" /> 
+                            <Run Text="{Binding LastDownloadTime}" />
+                        </TextBlock>
+                        <TextBlock Grid.Row="2" Grid.ColumnSpan="5" HorizontalAlignment="Right" Foreground="black" VerticalAlignment="Center" FontWeight="SemiBold">
+                            <Run Text="Last download count :" />
+                            <Run Text="{Binding LastDownloadCount}" />
+                        </TextBlock>
+
+                        <!--<Button x:Name="myButton" FontWeight="Bold" FontSize="20" Content="{Binding Devicename}" Height="150" Width="150" Foreground="White" />-->
+                    </Grid>
+                </Border>
                 <ItemsControl ItemsSource="{Binding DeviceList}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -36,7 +122,7 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Border BorderBrush="Gainsboro" BorderThickness="1"  Width="645" Height="120" Margin="15" Padding="10" CornerRadius="10">
+                            <Border BorderBrush="Gainsboro" BorderThickness="1"  Width="645" Height="120" Margin="10 5" Padding="10" CornerRadius="10" >
                                 <Border.Background>
                                     <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
                                         <GradientStop Color="#A7D9E2" Offset="0.306"/>
@@ -50,55 +136,75 @@
                                 </Border.BitmapEffect>
                                 <Grid x:Name="GrdItem" Margin="0">
                                     <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="120"/>
                                         <ColumnDefinition/>
-                                        <ColumnDefinition/>
-                                        <ColumnDefinition/>
-                                        <ColumnDefinition/>
+                                        <ColumnDefinition Width="150"/>
                                     </Grid.ColumnDefinitions>
                                     <Grid.RowDefinitions>
                                         <RowDefinition/>
                                         <RowDefinition/>
+                                        <RowDefinition/>
                                     </Grid.RowDefinitions>
-                                    <Image Grid.Column="0" Height="50" Width="80" Source="{Binding ImageSource}" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                                    <TextBlock Grid.Column="1" HorizontalAlignment="Center" Foreground="black" VerticalAlignment="Center" FontWeight="Bold" FontSize="25" Text="{Binding Devicename}"/>
-                                    <TextBlock Grid.Column="2" HorizontalAlignment="Center" Foreground="black" VerticalAlignment="Center" FontWeight="Bold" FontSize="25"><Run Text="{Binding EnteredVehicle}" /> <Run Text="Vehicles Entered" FontSize="16" /></TextBlock>
-                                    <Viewbox Height="28" Grid.Column="3" HorizontalAlignment="Right">
-                                        <RadioButton x:Name="myButton" HorizontalAlignment="Right" VerticalAlignment="Center" FontWeight="Bold" Background="{Binding GridBackground}" Content="Status">
-                                            <RadioButton.Style>
-                                                <Style TargetType="RadioButton">
-                                                    <Setter Property="Background" Value="#CC4F26" />
+                                    <Image Grid.Column="0" Grid.RowSpan="3"  Width="80" Source="{Binding ImageSource}" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Column="1" Foreground="black" VerticalAlignment="Center" FontWeight="Bold" FontSize="25" >
+                            <Run Text="{Binding Devicename}"/>
+                            <!--<Run Text="Entry 1"/>-->
+                                    </TextBlock>
+
+                                    <StackPanel Grid.ColumnSpan="5" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                        <Ellipse x:Name="eStatus" Width="18" Height="18"  Stroke="Black">
+                                            <Ellipse.Style>
+                                                <Style TargetType="Ellipse">
+                                                    <Setter  Property="Fill" Value="#CC4F26" />
                                                     <Style.Triggers>
                                                         <DataTrigger Binding="{Binding Status}" Value="True">
-                                                            <Setter Property="Background" Value="LightGreen" />
+                                                            <Setter Property="Fill" Value="LightGreen" />
                                                         </DataTrigger>
                                                         <DataTrigger Binding="{Binding Status}" Value="False">
-                                                            <Setter Property="Background" Value="#CC4F26" />
+                                                            <Setter Property="Fill" Value="#CC4F26" />
                                                         </DataTrigger>
                                                     </Style.Triggers>
                                                 </Style>
-                                            </RadioButton.Style>
-                                        </RadioButton>
-                                    </Viewbox>
-                                    <TextBlock Grid.Row="1" Grid.Column="3" HorizontalAlignment="Center" Foreground="black" VerticalAlignment="Center" FontWeight="Bold" FontSize="25"><Run Text="{Binding DeviceTime}" /></TextBlock>
+                                            </Ellipse.Style>
+                                        </Ellipse>
+                                        <TextBlock x:Name="tStatus" Margin="5 0" FontWeight="SemiBold" FontSize="16">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Text" Value="Offline" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Status}" Value="True">
+                                                            <Setter Property="Text" Value="Online" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding Status}" Value="False">
+                                                            <Setter Property="Text" Value="Offline" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                    </StackPanel>
+                                    <TextBlock Grid.Column="1" Grid.Row="1" Foreground="black" VerticalAlignment="Center" FontWeight="Bold" FontSize="25">
+                            <Run Text="{Binding EnteredVehicle}" /> 
+                            <Run Text="Vehicles Entered" FontSize="16" />
+                                    </TextBlock>
+                                    <TextBlock Grid.Row="1" Grid.ColumnSpan="5" HorizontalAlignment="Right" Foreground="black" VerticalAlignment="Center" FontWeight="Bold" FontSize="25">
+                            <Run Text="{Binding DeviceTime}" />
+                            <!--<Run Text="10:49 AM" />-->
+                                    </TextBlock>
+
+                                    <TextBlock Grid.Column="1" Grid.Row="2" Foreground="black" VerticalAlignment="Center" FontWeight="SemiBold">
+                            <Run Text="Last Download Time :" /> 
+                            <Run Text="{Binding LastDownloadTime}" />
+                                    </TextBlock>
+                                    <TextBlock Grid.Row="2" Grid.ColumnSpan="5" HorizontalAlignment="Right" Foreground="black" VerticalAlignment="Center" FontWeight="SemiBold">
+                            <Run Text="Last download count :" />
+                            <Run Text="{Binding LastDownloadCount}" />
+                                    </TextBlock>
 
                                     <!--<Button x:Name="myButton" FontWeight="Bold" FontSize="20" Content="{Binding Devicename}" Height="150" Width="150" Foreground="White" />-->
                                 </Grid>
                             </Border>
-
-                            <!--<DataTemplate.Triggers>
-                                <Trigger Property="ItemsControl.AlternationIndex" Value="1">
-                                    <Setter Property="Background" Value="LightGray" TargetName="myButton"/>
-                                </Trigger>
-
-                                <DataTrigger Binding="{Binding Status}" Value="true">
-                                    <Setter Property="Background" Value="#228B22" TargetName="myButton"/>
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Status}" Value="false">
-                                    <Setter Property="Background" Value="#CC4F26" TargetName="myButton"/>
-                                </DataTrigger>
-                            </DataTemplate.Triggers>-->
                         </DataTemplate>
-
                     </ItemsControl.ItemTemplate>
 
                     <!--<system:String>Item #1</system:String>

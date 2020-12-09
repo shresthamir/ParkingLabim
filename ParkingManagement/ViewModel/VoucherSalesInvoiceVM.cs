@@ -375,7 +375,7 @@ namespace ParkingManagement.ViewModel
                     if (!string.IsNullOrEmpty(VSales.BillNo))
                     {
                         PrintBill(VSales.BillNo, true);
-                        //Print(VSales.BillNo, "ABBREVIATED TAX INVOCE");
+                        //Print(VSales.BillNo, "ABBREVIATED TAX INVOICE");
 
                         if (GenerateVoucher)
                         {

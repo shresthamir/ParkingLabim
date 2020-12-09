@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:Behavior="clr-namespace:ParkingManagement.ACommandBehavior"
+             xmlns:Lib="clr-namespace:ParkingManagement.Library"
              >
     <UserControl.Resources>
         <Style TargetType="Button" BasedOn="{StaticResource NewButton}">
@@ -50,6 +51,7 @@
                         <RowDefinition Height="35"/>
                         <RowDefinition Height="35"/>
                         <RowDefinition Height="35"/>
+                        <RowDefinition Height="35"/>
                     </Grid.RowDefinitions>
                     <Label Content="Member Id"></Label>
                     <TextBox Grid.Column="1"  Text="{Binding member.MemberId}" IsEnabled="{Binding BarcodeEnabled}" ></TextBox>
@@ -66,27 +68,29 @@
                     <Label Grid.Row="3" Content="Mobile No"></Label>
                     <TextBox Grid.Row="3" Grid.Column="1" IsEnabled="{Binding EntryPanelEnabled}"  Text="{Binding member.Mobile, ValidatesOnDataErrors=True}" />
                     
-                    <Label Grid.Row="4" Content="Scheme"></Label>
-                    <ComboBox Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="3" ItemsSource="{Binding SchemeList}" DisplayMemberPath="SchemeName" SelectedValuePath="SchemeId" SelectedValue="{Binding member.SchemeId}" IsEnabled="{Binding EntryPanelEnabled}" ></ComboBox>
-                    <Label Grid.Row="5" Content="D.O.B"></Label>
-                    <DatePicker VerticalAlignment="Center" Grid.Row="5" Grid.Column="1" IsEnabled="{Binding EntryPanelEnabled}"  Text="{Binding member.DOB, Mode=TwoWay, ValidatesOnDataErrors=True}">
+                    <Label Grid.Row="3" Grid.Column="3" Content="D.O.B"></Label>
+                    <DatePicker VerticalAlignment="Center" Grid.Row="3" Grid.Column="4" IsEnabled="{Binding EntryPanelEnabled}"  Text="{Binding member.DOB, Mode=TwoWay, ValidatesOnDataErrors=True}">
                         <DatePicker.Resources>
                             <Style TargetType="Button"/>
                         </DatePicker.Resources>
                     </DatePicker>
-                    <!--<Label Grid.Row="5" Content="Activation Date"></Label>
-                    <DatePicker VerticalAlignment="Center" Grid.Row="5" Grid.Column="1" IsEnabled="{Binding EntryPanelEnabled}"  Text="{Binding member.ActivationDate, Mode=TwoWay, ValidatesOnDataErrors=True}">
+                    
+                    <Label Grid.Row="4" Content="Scheme"></Label>
+                    <ComboBox Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="3" ItemsSource="{Binding SchemeList}" DisplayMemberPath="SchemeName" SelectedValuePath="SchemeId" SelectedValue="{Binding member.SchemeId}" IsEnabled="{Binding EntryPanelEnabled}" ></ComboBox>
+
+                    <Label Grid.Row="5" Content="Activation Date" Visibility="{x:Static Lib:GlobalClass.MemberActivationExpiryVisible}"></Label>
+                    <DatePicker VerticalAlignment="Center" Grid.Row="5" Grid.Column="1" IsEnabled="{Binding EntryPanelEnabled}"  Text="{Binding member.ActivationDate, Mode=TwoWay, ValidatesOnDataErrors=True}" Visibility="{x:Static Lib:GlobalClass.MemberActivationExpiryVisible}">
                         <DatePicker.Resources>
                             <Style TargetType="Button"/>
                         </DatePicker.Resources>
                     </DatePicker>
 
-                    <Label Grid.Row="5" Grid.Column="3" Content="Expiry Date"></Label>
-                    <DatePicker VerticalAlignment="Center"  Grid.Row="5" Grid.Column="4" IsEnabled="{Binding EntryPanelEnabled}"  Text="{Binding member.ExpiryDate,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}">
+                    <Label Grid.Row="5" Grid.Column="3" Content="Expiry Date" Visibility="{x:Static Lib:GlobalClass.MemberActivationExpiryVisible}"></Label>
+                    <DatePicker VerticalAlignment="Center"  Grid.Row="5" Grid.Column="4" IsEnabled="{Binding EntryPanelEnabled}"  Text="{Binding member.ExpiryDate,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Visibility="{x:Static Lib:GlobalClass.MemberActivationExpiryVisible}">
                         <DatePicker.Resources>
                             <Style TargetType="Button"/>
                         </DatePicker.Resources>
-                    </DatePicker>-->
+                    </DatePicker>
 
                 </Grid>
             </StackPanel>

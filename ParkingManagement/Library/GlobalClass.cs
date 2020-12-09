@@ -42,6 +42,7 @@ namespace ParkingManagement.Library
         public static Visibility StampVisible;
         public static Visibility StaffVisible;
         public static Visibility PrepaidVisible;
+        public static Visibility MemberActivationExpiryVisible;
         public static JObject PrepaidInfo;
         public static bool EnablePlateNo { get; set; }
         public static byte AllowMultiVehicleForStaff;
@@ -90,7 +91,8 @@ namespace ParkingManagement.Library
                     var Setting = cnmain.Query(@"SELECT CompanyName, CompanyAddress, CompanyInfo, ISNULL(GraceTime, 5) GraceTime, 
                                 ISNULL(ShowCollectionAmountInCashSettlement, 0) ShowCollectionAmountInCashSettlement, ISNULL(DisableCashAmountChange,0) DisableCashAmountChange, 
                                 SettlementMode, ISNULL(AllowMultiVehicleForStaff,0) AllowMultiVehicleForStaff, ISNULL(SlipPrinterWidth, 58) SlipPrinterWidth, 
-                                ISNULL(EnableStaff, 0) EnableStaff, ISNULL(EnableStamp, 0) EnableStamp, ISNULL(EnableDiscount, 0) EnableDiscount, ISNULL(EnablePlateNo, 0) EnablePlateNo, 
+                                ISNULL(EnableStaff, 0) EnableStaff, ISNULL(EnableStamp, 0) EnableStamp, ISNULL(EnableDiscount, 0) EnableDiscount, ISNULL(EnablePlateNo, 0) EnablePlateNo,
+                                ISNULL(EnableMemberwiseExpiry, 0) EnableMemberwiseExpiry,
                                 ISNULL(EnablePrepaid, 0) EnablePrepaid, ISNULL(PrepaidInfo, '{}') PrepaidInfo, MemberBarcodePrefix,ServerIpAddress,mcode,clearminute,clearhour FROM tblSetting").First();
                     CompanyName = Setting.CompanyName;
                     CompanyAddress = Setting.CompanyAddress;
@@ -104,6 +106,7 @@ namespace ParkingManagement.Library
                     StaffVisible = ((bool)Setting.EnableStaff) ? Visibility.Visible : Visibility.Collapsed;
                     StampVisible = ((bool)Setting.EnableStamp) ? Visibility.Visible : Visibility.Collapsed;
                     PrepaidVisible = ((bool)Setting.EnablePrepaid) ? Visibility.Visible : Visibility.Collapsed;
+                    MemberActivationExpiryVisible = ((bool)Setting.EnableMemberwiseExpiry) ? Visibility.Visible : Visibility.Collapsed;
                     EnablePlateNo = (bool)Setting.EnablePlateNo;
                     MemberBarcodePrefix = Setting.MemberBarcodePrefix;
                     PrepaidInfo = Newtonsoft.Json.JsonConvert.DeserializeObject<JObject>(Setting.PrepaidInfo);
@@ -431,7 +434,22 @@ CREATE TABLE DiscountScheme (SchemeId INT NOT NULL, SchemeName VARCHAR(100) NOT 
                 conn.Execute("ALTER TABLE PARKINGOUTDETAILS ALTER COLUMN OutTime VARCHAR(12) NOT NULL");
                 conn.Execute("ALTER TABLE ParkingSales ALTER COLUMN TTime VARCHAR(12) NOT NULL");
             }
-            conn.Execute("UPDATE tblSetting SET UpdateHistory = 10");
+            if (UpdateHistory < 11)
+            {
+                conn.Execute(@"IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'ParkingOutDetails' AND COLUMN_NAME = 'VehicleType')
+ALTER TABLE ParkingOutDetails ADD VehicleType TINYINT");                
+            }
+            if(UpdateHistory < 12)
+            {
+                conn.Execute("IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'ParkingInDetails' AND COLUMN_NAME = 'STAMP') ALTER TABLE ParkingInDetails ADD STAMP DATETIME");
+                conn.Execute("IF NOT EXISTS (SELECT * FROM sysobjects WHERE xtype = 'D' AND NAME = 'DF_ParkingInDetails_STAMP') ALTER TABLE ParkingInDetails ADD CONSTRAINT DF_ParkingInDetails_STAMP DEFAULT(GETDATE()) FOR STAMP");
+            }
+            if (UpdateHistory < 13)
+            {
+                conn.Execute(@"IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'tblSetting' AND COLUMN_NAME = 'EnableMemberwiseExpiry')
+ALTER TABLE tblSetting ADD EnableMemberwiseExpiry bit");
+            }
+            conn.Execute("UPDATE tblSetting SET UpdateHistory = 11");
         }
 
         public static bool StartSession()

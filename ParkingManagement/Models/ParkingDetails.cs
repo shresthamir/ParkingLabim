@@ -71,6 +71,7 @@ namespace ParkingManagement.Models
         private string _BILLTO;
         private string _BILLTOADD;
         private string _BILLTOPAN;
+        private byte _VehicleTypeID;
 
         public int PID { get { return _PID; } set { _PID = value; OnPropertyChanged("PID"); } }
         public byte FYID { get { return _FYID; } set { _FYID = value; OnPropertyChanged("FYID"); } }
@@ -91,6 +92,7 @@ namespace ParkingManagement.Models
         public string BILLTO { get { return _BILLTO; } set { _BILLTO = value; OnPropertyChanged("BILLTO"); } }
         public string BILLTOADD { get { return _BILLTOADD; } set { _BILLTOADD = value; OnPropertyChanged("BILLTOADD"); } }
         public string BILLTOPAN { get { return _BILLTOPAN; } set { _BILLTOPAN = value; OnPropertyChanged("BILLTOPAN"); } }
+        public byte VehicleType { get { return _VehicleTypeID; } set { _VehicleTypeID = value; OnPropertyChanged("VehicleType"); } }
         public TParkingOut()
         {
             UID = GlobalClass.User.UID;
@@ -100,8 +102,8 @@ namespace ParkingManagement.Models
 
         public override bool Save(System.Data.SqlClient.SqlTransaction tran)
         {
-            string strSQL = @"INSERT INTO ParkingOutDetails( PID, FYID, OutDate, OutMiti, OutTime, Interval, Rate_ID, ChargedAmount, CashAmount, RoyaltyAmount, Remarks, UID, ChargedHours, SESSION_ID, STAFF_BARCODE, BILLTO, BILLTOADD, BILLTOPAN) 
-                                                                                VALUES(@PID, @FYID, @OutDate, @OutMiti, @OutTime, @Interval, @Rate_ID, @ChargedAmount, @CashAmount, @RoyaltyAmount, @Remarks, @UID, @ChargedHours, @SESSION_ID, @STAFF_BARCODE, @BILLTO, @BILLTOADD, @BILLTOPAN)";
+            string strSQL = @"INSERT INTO ParkingOutDetails( PID, FYID, OutDate, OutMiti, OutTime, Interval, Rate_ID, ChargedAmount, CashAmount, RoyaltyAmount, Remarks, UID, ChargedHours, SESSION_ID, STAFF_BARCODE, BILLTO, BILLTOADD, BILLTOPAN, VehicleType) 
+                                                                                VALUES(@PID, @FYID, @OutDate, @OutMiti, @OutTime, @Interval, @Rate_ID, @ChargedAmount, @CashAmount, @RoyaltyAmount, @Remarks, @UID, @ChargedHours, @SESSION_ID, @STAFF_BARCODE, @BILLTO, @BILLTOADD, @BILLTOPAN, @VehicleType)";
             return tran.Connection.Execute(strSQL, this, transaction: tran) == 1;
         }
 

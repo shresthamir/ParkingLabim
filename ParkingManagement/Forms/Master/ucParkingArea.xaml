@@ -80,7 +80,7 @@
                 <DataGridTextColumn Binding="{Binding PA_Name}" Header="Name" Width="200"/>
                 <DataGridTextColumn Binding="{Binding Description}" Header="Description" Width="250"/>
                 <DataGridTextColumn Binding="{Binding FLOOR}" Header="Floor" Width="100"/>
-                <DataGridTextColumn Binding="{Binding VType.Description}" Header="Vehicle Type" Width="200"/>
+                <DataGridTextColumn Binding="{Binding VType.Description}" Header="{Binding Converter={StaticResource LabelConverter}, ConverterParameter='Vehicle Type'}" Width="200"/>
                 <DataGridTextColumn Binding="{Binding Capacity}" Header="Capacity" Width="150"/>
             </DataGrid.Columns>
         </DataGrid>
